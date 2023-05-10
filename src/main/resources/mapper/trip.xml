@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ringdingdong.ridingthewind.model.mapper.TourMapper">
+	
+	<resultMap type="TourSidoDto" id="sido">
+		<result column="sido_code" property="sidoCode"/>
+		<result column="sido_name" property="sidoName"/>
+	</resultMap>
+	
+	<resultMap type="TourGugunDto" id="gugun">
+		<result column="gugun_code" property="gugunCode"/>
+		<result column="gugun_name" property="gugunName"/>
+	</resultMap>
+	
+	<resultMap type="TourDto" id="tripinfo">
+		<result column="content_id" property="contentId"/>
+		<result column="content_type_id" property="contentTypeId"/>
+		<result column="title" property="title"/>
+		<result column="addr1" property="addr1"/>
+		<result column="addr2" property="addr2"/>
+		<result column="zipcode" property="zipcode"/>
+		<result column="tel" property="tel"/>
+		<result column="first_image" property="firstImage"/>
+		<result column="first_image2" property="firstImage2"/>
+		<result column="readcount" property="readCount"/>
+		<result column="sido_code" property="sidoCode"/>
+		<result column="gugun_code" property="gugunCode"/>
+		<result column="latitude" property="latitude"/>
+		<result column="longitude" property="longitude"/>
+		<result column="mlevel" property="mlevel"/>
+	</resultMap>
+	
+	
+	<select id="getSido" resultType="TourSidoDto" resultMap="sido">
+		select sido_code, sido_name 
+		from sido
+	</select>
+	
+	<select id="getGugun" parameterType="Integer" resultType="TourGugunDto" resultMap="gugun" >
+		select gugun_code, gugun_name from gugun 
+		where sido_code = #{sidoCode}
+	</select>
+	
+	<select id="getList" parameterType="int" resultType="TourDto" resultMap="tripinfo">
+		select * from attraction_info 
+		where sido_code = #{sidoCode} and gugun_code = #{gugunCode}
+	</select>
+	
+	<insert id="addtour">
+		insert into personal_trip (member_id, content_id, `select`)
+		values (#{memberId}, #{contentId}, 1);
+	</insert>
+</mapper>
