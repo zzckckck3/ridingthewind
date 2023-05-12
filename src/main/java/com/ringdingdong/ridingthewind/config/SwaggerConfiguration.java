@@ -18,11 +18,9 @@ public class SwaggerConfiguration {
 
 //	Swagger-UI 2.x 확인
 //	http://localhost:8080/{your-app-root}/swagger-ui.html
-//	Swagger-UI 3.x 확인
-//	http://localhost:8080/{your-app-root}/swagger-ui/index.html
 
 	private String version = "V1";
-	private String title = "SSAFY enjoyTrip " + version;
+	private String title = "Riding The Wind" + version;
 	
 	@Bean
 	public Docket api() {
