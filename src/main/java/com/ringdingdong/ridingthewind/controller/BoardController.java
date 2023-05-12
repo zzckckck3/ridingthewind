@@ -1,15 +1,19 @@
 package com.ringdingdong.ridingthewind.controller;
 
+import com.ringdingdong.ridingthewind.enumerate.ResponseResult;
 import com.ringdingdong.ridingthewind.model.BoardDto;
 import com.ringdingdong.ridingthewind.model.MemberDto;
 import com.ringdingdong.ridingthewind.model.service.BoardService;
 import com.ringdingdong.ridingthewind.util.PageNavigation;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -17,39 +21,32 @@ import javax.servlet.http.HttpSession;
 import java.util.List;
 import java.util.Map;
 
-@Controller
+@RestController
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 @RequestMapping(value = "/board")
+@RequiredArgsConstructor
+@Api("게시판 컨트롤러 API V1")
 public class BoardController {
-	private BoardService boardService;
 
-	public BoardController(BoardService boardService) {
-		super();
-		this.boardService = boardService;
+	private final BoardService boardService;
+
+	@ApiOperation(value = "게시판 글작성", notes = "새로운 게시글 정보를 입력한다. 그리고 DB입력 성공여부에 따라 'success' 또는 'fail' 문자열을 반환한다.", response = String.class)
+	@PostMapping
+	public ResponseEntity<String> write(
+			@RequestBody @ApiParam(value = "게시글 정보.", required = true) BoardDto boardDto) throws Exception {
+		if (boardService.writeArticle(boardDto)) {
+			return new ResponseEntity<>(ResponseResult.S.name(), HttpStatus.OK);
+		}
+		return new ResponseEntity<>(ResponseResult.FAIL.name(), HttpStatus.NO_CONTENT);
+		// if res === '200' {} else {}
+		// 404 401 500 //
+		// if res === 'SUCCESS' {} else {}
 	}
-	
-	@GetMapping("/write")
-	public String write(@RequestParam Map<String, String> map, Model model) {
-		model.addAttribute("pgno", map.get("pgno"));
-		model.addAttribute("key", map.get("key"));
-		model.addAttribute("word", map.get("word"));
-		return "board/write";
-	}
-	
-	@PostMapping("/write")
-	public String write(BoardDto boardDto, HttpSession session, RedirectAttributes redirectAttributes) throws Exception {
-		MemberDto memberDto = (MemberDto) session.getAttribute("memberinfo");
-		boardDto.setMemberId(memberDto.getMemberId());
-		boardService.writeArticle(boardDto);
-		redirectAttributes.addAttribute("pgno", "1");
-		redirectAttributes.addAttribute("key", "");
-		redirectAttributes.addAttribute("word", "");
-		return "redirect:/board/list";
-	}
-	
-	@GetMapping("/list")
-	public ModelAndView list(@RequestParam Map<String, String> map) throws Exception {
+
+	@ApiOperation(value = "게시판 글목록", notes = "모든 게시글의 정보를 반환한다.", response = List.class)
+	@GetMapping
+	public ResponseEntity<List<BoardDto>> list(@RequestParam Map<String, String> map) throws Exception {
 		ModelAndView mav = new ModelAndView();
-		System.out.println(map.get("pgno"));
 		List<BoardDto> list = boardService.listArticle(map);
 		PageNavigation pageNavigation = boardService.makePageNavigation(map);
 		

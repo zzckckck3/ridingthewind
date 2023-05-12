@@ -9,12 +9,18 @@ import java.util.Map;
 
 @Mapper
 public interface BoardMapper {
-	void writeArticle(BoardDto boardDto) throws SQLException;
+	// Insert
+	int writeArticle(BoardDto boardDto) throws SQLException;
+
+	// Select
 	List<BoardDto> listArticle(Map<String, Object> param) throws SQLException;
 	int getTotalArticleCount(Map<String, Object> param) throws SQLException;
 	BoardDto getArticle(int articleNo) throws SQLException;
-	void updateHit(int articleNo) throws SQLException;
-	
-	void modifyArticle(BoardDto boardDto) throws SQLException;
-	void deleteArticle(int articleNo) throws SQLException;
+
+	// Update
+	int updateHit(int articleNo) throws SQLException;
+	int modifyArticle(BoardDto boardDto) throws SQLException;
+
+	// Delete
+	int deleteArticle(int articleNo) throws SQLException;
 }

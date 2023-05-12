@@ -4,6 +4,7 @@ import com.ringdingdong.ridingthewind.model.BoardDto;
 import com.ringdingdong.ridingthewind.model.mapper.BoardMapper;
 import com.ringdingdong.ridingthewind.util.PageNavigation;
 import com.ringdingdong.ridingthewind.util.SizeConstant;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -11,18 +12,14 @@ import java.util.List;
 import java.util.Map;
 
 @Service
+@RequiredArgsConstructor
 public class BoardServiceImpl implements BoardService {
 	
-	private BoardMapper boardMapper;
-
-	public BoardServiceImpl(BoardMapper boardMapper) {
-		super();
-		this.boardMapper = boardMapper;
-	}
+	private final BoardMapper boardMapper;
 
 	@Override
-	public void writeArticle(BoardDto boardDto) throws Exception {
-		boardMapper.writeArticle(boardDto);
+	public boolean writeArticle(BoardDto boardDto) throws Exception {
+		return boardMapper.writeArticle(boardDto) == 1;
 	}
 
 	@Override
@@ -77,18 +74,18 @@ public class BoardServiceImpl implements BoardService {
 	}
 
 	@Override
-	public void updateHit(int articleNo) throws Exception {
-		boardMapper.updateHit(articleNo);
+	public boolean updateHit(int articleNo) throws Exception {
+		return boardMapper.updateHit(articleNo) == 1;
 	}
 
 	@Override
-	public void modifyArticle(BoardDto boardDto) throws Exception {
-		boardMapper.modifyArticle(boardDto);
+	public boolean modifyArticle(BoardDto boardDto) throws Exception {
+		return boardMapper.modifyArticle(boardDto) == 1;
 	}
 
 	@Override
-	public void deleteArticle(int articleNo) throws Exception {
-		boardMapper.deleteArticle(articleNo);
+	public boolean deleteArticle(int articleNo) throws Exception {
+		return boardMapper.deleteArticle(articleNo) == 1;
 	}
 
 }
