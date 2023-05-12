@@ -18,6 +18,13 @@ target/
 .project
 Servers/
 
+### Vue js ###
+node_modules/
+dist/
+npm-debug.log
+yarn-error.log
+
 ### Application Setting ###
 *.yml
 *.properties
+
