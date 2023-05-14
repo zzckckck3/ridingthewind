@@ -1,7 +1,7 @@
 package com.ringdingdong.ridingthewind.model.service;
 
-import com.ringdingdong.ridingthewind.model.BoardDto;
-import com.ringdingdong.ridingthewind.model.mapper.BoardMapper;
+import com.ringdingdong.ridingthewind.model.Article;
+import com.ringdingdong.ridingthewind.model.mapper.ArticleMapper;
 import com.ringdingdong.ridingthewind.util.PageNavigation;
 import com.ringdingdong.ridingthewind.util.SizeConstant;
 import lombok.RequiredArgsConstructor;
@@ -13,17 +13,17 @@ import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
-public class BoardServiceImpl implements BoardService {
+public class ArticleServiceImpl implements ArticleService {
 	
-	private final BoardMapper boardMapper;
+	private final ArticleMapper articleMapper;
 
 	@Override
-	public boolean writeArticle(BoardDto boardDto) throws Exception {
-		return boardMapper.writeArticle(boardDto) == 1;
+	public boolean writeArticle(Article article) throws Exception {
+		return articleMapper.writeArticle(article) == 1;
 	}
 
 	@Override
-	public List<BoardDto> listArticle(Map<String, String> map) throws Exception {
+	public List<Article> listArticle(Map<String, String> map) throws Exception {
 		Map<String, Object> param = new HashMap<String, Object>();
 		String key = map.get("key");
 		System.out.println(key);
@@ -36,7 +36,7 @@ public class BoardServiceImpl implements BoardService {
 		param.put("start", start);
 		param.put("listsize", SizeConstant.LIST_SIZE);
 
-		return boardMapper.listArticle(param);
+		return articleMapper.listArticle(param);
 	}
 	
 	@Override
@@ -55,7 +55,7 @@ public class BoardServiceImpl implements BoardService {
 //			key = "member_id";
 		param.put("key",  key == null ? "" : key);
 		param.put("word", map.get("word") == null ? "" : map.get("word"));
-		int totalCount = boardMapper.getTotalArticleCount(param);
+		int totalCount = articleMapper.getTotalArticleCount(param);
 		pageNavigation.setTotalCount(totalCount);
 		int totalPageCount = (totalCount - 1) / sizePerPage + 1;
 		pageNavigation.setTotalPageCount(totalPageCount);
@@ -69,23 +69,23 @@ public class BoardServiceImpl implements BoardService {
 	}
 
 	@Override
-	public BoardDto getArticle(int articleNo) throws Exception {
-		return boardMapper.getArticle(articleNo);
+	public Article getArticle(int articleNo) throws Exception {
+		return articleMapper.getArticle(articleNo);
 	}
 
 	@Override
 	public boolean updateHit(int articleNo) throws Exception {
-		return boardMapper.updateHit(articleNo) == 1;
+		return articleMapper.updateHit(articleNo) == 1;
 	}
 
 	@Override
-	public boolean modifyArticle(BoardDto boardDto) throws Exception {
-		return boardMapper.modifyArticle(boardDto) == 1;
+	public boolean modifyArticle(Article article) throws Exception {
+		return articleMapper.modifyArticle(article) == 1;
 	}
 
 	@Override
 	public boolean deleteArticle(int articleNo) throws Exception {
-		return boardMapper.deleteArticle(articleNo) == 1;
+		return articleMapper.deleteArticle(articleNo) == 1;
 	}
 
 }

@@ -1,20 +1,20 @@
 package com.ringdingdong.ridingthewind.model.service;
 
-import com.ringdingdong.ridingthewind.model.BoardDto;
+import com.ringdingdong.ridingthewind.model.Article;
 import com.ringdingdong.ridingthewind.util.PageNavigation;
 
 import java.util.List;
 import java.util.Map;
 
-public interface BoardService {
+public interface ArticleService {
 
-	boolean writeArticle(BoardDto boardDto) throws Exception;
-	List<BoardDto> listArticle(Map<String, String> map) throws Exception;
+	boolean writeArticle(Article article) throws Exception;
+	List<Article> listArticle(Map<String, String> map) throws Exception;
 	PageNavigation makePageNavigation(Map<String, String> map) throws Exception;
-	BoardDto getArticle(int articleNo) throws Exception;
+	Article getArticle(int articleNo) throws Exception;
 	boolean updateHit(int articleNo) throws Exception;
 	
-	boolean modifyArticle(BoardDto boardDto) throws Exception;
+	boolean modifyArticle(Article article) throws Exception;
 	boolean deleteArticle(int articleNo) throws Exception;
 	
 }

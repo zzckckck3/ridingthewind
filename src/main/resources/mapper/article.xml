@@ -2,9 +2,9 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
 	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.ringdingdong.ridingthewind.model.mapper.BoardMapper">
+<mapper namespace="com.ringdingdong.ridingthewind.model.mapper.ArticleMapper">
 
-	<resultMap type="boardDto" id="article">
+	<resultMap type="article" id="article">
 		<result column="article_no" property="articleNo"/>
 		<result column="member_id" property="memberId"/>
 		<result column="member_name" property="memberName"/>
@@ -14,8 +14,8 @@
 		<result column="register_time" property="registerTime"/>
 	</resultMap>
 
-	<insert id="writeArticle" parameterType="boardDto">
-		insert into board (member_id, subject, content, hit, register_time)
+	<insert id="writeArticle" parameterType="article">
+		insert into article (member_id, subject, content, hit, register_time)
 		values (#{memberId}, #{subject}, #{content}, 0, now())
 		<selectKey resultType="int" keyProperty="articleNo" order="AFTER">
 			select last_insert_id()
@@ -34,45 +34,45 @@
 	</sql>
 
 	<select id="listArticle" parameterType="map" resultMap="article">
-		select b.article_no, b.member_id, b.subject, b.content, b.hit, b.register_time, m.member_name
-		from board b, member m 
-		where b.member_id = m.member_id
+		select a.article_no, a.member_id, a.subject, a.content, a.hit, a.register_time, m.member_name
+		from article a, member m
+		where a.member_id = m.member_id
 		<include refid="search"></include>
-		order by b.article_no desc
+		order by a.article_no desc
 		limit #{start}, #{listsize}
 	</select>
 	
 	<select id="getTotalArticleCount" parameterType="map" resultType="int">
 		select count(article_no)
-		from board
+		from article
 		<where>
 			<include refid="search"></include>
 		</where>
 	</select>
 	
 	<select id="getArticle" parameterType="int" resultMap="article">
-		select b.article_no, b.member_id, b.subject, b.content, b.hit, b.register_time, m.member_name 
-		from board b, member m
-		where b.member_id = m.member_id
-		and b.article_no = #{articleNo}
+		select a.article_no, a.member_id, a.subject, a.content, a.hit, a.register_time, m.member_name
+		from article a, member m
+		where a.member_id = m.member_id
+		and a.article_no = #{articleNo}
 	</select>
 
 	
 	<update id="updateHit" parameterType="int">
-		update board
+		update article
 		set hit = hit + 1
 		where article_no = #{articleNo}
 	</update>
 	
-	<update id="modifyArticle" parameterType="boardDto">
-		update board
+	<update id="modifyArticle" parameterType="article">
+		update article
 		set subject = #{subject}, content = #{content}
 		where article_no = #{articleNo}
 	</update>
 
 	
 	<delete id="deleteArticle" parameterType="int">
-		delete from board
+		delete from article
 		where article_no = #{articleNo}
 	</delete>
 	
