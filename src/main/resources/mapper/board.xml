@@ -15,11 +15,11 @@
 	</resultMap>
 
 	<insert id="writeArticle" parameterType="boardDto">
-		insert into board (member_id, subject, content, hit, register_time)
-		values (#{memberId}, #{subject}, #{content}, 0, now())
-		<selectKey resultType="int" keyProperty="articleNo" order="AFTER">
-			select last_insert_id()
+		<selectKey resultType="int" keyProperty="articleNo" order="BEFORE">
+			select MAX(article_no)+1 from board
 		</selectKey>
+		insert into board (article_no, member_id, subject, content)
+		values (#{articleNo}, #{memberId}, #{subject}, #{content})
 	</insert>
 	
 	<sql id="search">
