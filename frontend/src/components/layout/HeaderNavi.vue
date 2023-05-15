@@ -24,7 +24,7 @@
 <script>
 export default {
     data: () => ({
-        links: ["Dashboard", "Messages", "Profile", "Updates"],
+        links: ["공지사항", "로그인", "회원가입", "FAQS"],
     }),
 };
 </script>
