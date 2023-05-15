@@ -16,8 +16,10 @@ import java.util.Set;
 @EnableSwagger2
 public class SwaggerConfiguration {
 
-//	Swagger-UI 2.x 확인
-//	http://localhost:8080/{your-app-root}/swagger-ui.html
+/*
+	Swagger-UI 2.x
+	http://localhost/swagger-ui.html
+*/
 
 	private String version = "V1";
 	private String title = "Riding The Wind" + version;
