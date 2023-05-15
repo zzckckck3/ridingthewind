@@ -13,5 +13,5 @@ public interface TourService {
 	List<TourGugunDto> getGugun(int sidoCode) throws Exception;
 	List<TourDto> getList(int sidoCode, int gugunCode) throws SQLException;
 	List<TourDto> getList(String memberId) throws SQLException;
-	void addtour(int contentId, String memberId) throws Exception;
+	boolean addtour(int contentId, String memberId) throws Exception;
 }

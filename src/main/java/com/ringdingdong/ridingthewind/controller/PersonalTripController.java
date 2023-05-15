@@ -1,24 +1,28 @@
 package com.ringdingdong.ridingthewind.controller;
 
-import com.ringdingdong.ridingthewind.model.MemberDto;
-import com.ringdingdong.ridingthewind.model.service.PersonalTripService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-
 import javax.servlet.http.HttpSession;
 
-@Controller
-@RequestMapping(value = "/mypage")
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
+import com.ringdingdong.ridingthewind.model.MemberDto;
+import com.ringdingdong.ridingthewind.model.service.PersonalTripService;
+
+@RestController
+@RequestMapping(value = "/mypage")
 public class PersonalTripController {
 	
 	private final Logger logger = LoggerFactory.getLogger(PersonalTripController.class);
+	private static final String SUCCESS = "success";
+	private static final String FAIL = "fail";
 	
 	private PersonalTripService personalTripService;
 
@@ -26,48 +30,24 @@ public class PersonalTripController {
 		super();
 		this.personalTripService = personalTripService;
 	}
-
-	@GetMapping("/info")
-	public String mypage() {
-		return "member/mypage";
-	}
 	
-	@GetMapping("/edit")
-	public String edit() {
-		return "member/updatememberinfo";
-	}
-	
-	@PostMapping("/edit")
-	public String edit(MemberDto memberDto, Model model) {
+	@PutMapping("/edit")
+	public ResponseEntity<String> edit(@RequestBody MemberDto memberDto) throws Exception {
 		logger.debug("memberDto info : {}", memberDto);
-		
-		try {
-			personalTripService.editMember(memberDto);
-			return "redirect:/";
-		} catch (Exception e) {
-			e.printStackTrace();
-			model.addAttribute("msg", "회원 가입 중 문제 발생!!!");
-			return "error/error";
+		if(personalTripService.editMember(memberDto)) {
+			return new ResponseEntity<String>(SUCCESS, HttpStatus.OK);			
 		}
+		return new ResponseEntity<String>(FAIL, HttpStatus.NO_CONTENT);
 	}
 	
-	@GetMapping("/withdrawal")
-	public String withdrawal() {
-		return "member/withdrawal";
-	}
-	
-	@PostMapping("/withdrawal/{memberId}/{memberPassword}")
-	public String withdrawal(@PathVariable("memberId") String memberId, @PathVariable("memberPassword") String memberPassword, HttpSession session) {
+	@DeleteMapping("/withdrawal/{memberId}/{memberPassword}")
+	public ResponseEntity<String> withdrawal(@PathVariable("memberId") String memberId, @PathVariable("memberPassword") String memberPassword, HttpSession session) throws Exception {
 		logger.debug("memberId info : {}, memberPassword info : {}", memberId, memberPassword);
-		
-		try {
-			personalTripService.deleteMember(memberId, memberPassword);
+		if(personalTripService.deleteMember(memberId, memberPassword)) {
 			session.invalidate();
-			return "redirect:/";
-		} catch (Exception e) {
-			e.printStackTrace();
-			return "error/error";
+			return new ResponseEntity<String>(SUCCESS, HttpStatus.OK);				
 		}
+		return new ResponseEntity<String>(FAIL, HttpStatus.NO_CONTENT);
 	}
 }
 

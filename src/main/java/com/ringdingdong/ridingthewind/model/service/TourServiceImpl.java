@@ -40,8 +40,8 @@ public class TourServiceImpl implements TourService{
 	}
 
 	@Override
-	public void addtour(int contentId, String memberId) throws Exception {
-		tourMapper.addtour(contentId, memberId);
+	public boolean addtour(int contentId, String memberId) throws Exception {
+		return tourMapper.addtour(contentId, memberId) == 1;
 	}
 
 }
