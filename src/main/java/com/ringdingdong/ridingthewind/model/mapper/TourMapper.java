@@ -13,5 +13,5 @@ public interface TourMapper {
 	List<TourGugunDto> getGugun(int sidoCode) throws Exception;
 	List<TourDto> getList(int sidoCode, int gugunCode) throws SQLException;
 	List<TourDto> getList(String memberId) throws SQLException;
-	void addtour(@Param("contentId") int contentId, @Param("memberId") String memberId) throws SQLException;
+	int addtour(@Param("contentId") int contentId, @Param("memberId") String memberId) throws SQLException;
 }

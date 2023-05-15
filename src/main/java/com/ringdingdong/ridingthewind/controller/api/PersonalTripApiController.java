@@ -2,7 +2,6 @@ package com.ringdingdong.ridingthewind.controller.api;
 
 import com.ringdingdong.ridingthewind.model.PersonalTripDto;
 import com.ringdingdong.ridingthewind.model.service.PersonalTripService;
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;

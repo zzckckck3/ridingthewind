@@ -7,6 +7,7 @@ import com.ringdingdong.ridingthewind.model.TourSidoDto;
 import com.ringdingdong.ridingthewind.model.service.TourService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -16,10 +17,12 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.util.List;
 
-@Controller
+@RestController
 @RequestMapping(value = "/tour")
 public class TourController {
 	private final Logger logger = LoggerFactory.getLogger(TourController.class);
+	private static final String SUCCESS = "success";
+	private static final String FAIL = "fail";
 	
 	private TourService tourService;
 
@@ -29,45 +32,36 @@ public class TourController {
 	}
 	
 	@GetMapping("/sido")
-	public String mvsido() {
-		return "tours/tour";
-	}
-	
-	@PostMapping("/sido")
-	@ResponseBody
 	public ResponseEntity<List<TourSidoDto>> sido() throws Exception {
-		 List<TourSidoDto> list = tourService.getSido();
-		 return ResponseEntity.ok(list);
+		List<TourSidoDto> list = tourService.getSido();
+		logger.debug("sido info : {}", list); 
+		return ResponseEntity.ok(list);
 	}
 	
 	@GetMapping("/gugun")
-	@ResponseBody
 	public ResponseEntity<List<TourGugunDto>> gugun(@RequestParam("search-area") int sidoCode) throws Exception {
 		List<TourGugunDto> list = tourService.getGugun(sidoCode);
+		logger.debug("gugun info : {}", list); 
 		return ResponseEntity.ok(list);
 	}
 	
-	@PostMapping("/attraction-info")
-	@ResponseBody
+	@GetMapping("/attraction-info")
 	public ResponseEntity<List<TourDto>> attraction_info(@RequestParam("search-area") int sidoCode, @RequestParam("search-area-gu") int gugunCode) throws Exception {
 		List<TourDto> list = tourService.getList(sidoCode, gugunCode);
+		logger.debug("attraction info : {}", list); 
 		return ResponseEntity.ok(list);
 	}
 	
-
 	@PostMapping("/addtour/{contentid}")
-	@ResponseBody
-	public void addtour(@PathVariable("contentid") int contentId, HttpServletRequest request, HttpServletResponse response) throws Exception{
+	public ResponseEntity<String> addtour(@PathVariable("contentid") int contentId, HttpServletRequest request, HttpServletResponse response) throws Exception{
 		HttpSession session = request.getSession();
 		MemberDto memberDto = (MemberDto) session.getAttribute("memberinfo");
 		String memberId = memberDto.getMemberId();
-		tourService.addtour(contentId, memberId);
+		if(tourService.addtour(contentId, memberId)) {
+			return new ResponseEntity<String>(SUCCESS, HttpStatus.OK);			
+		}
+		return new ResponseEntity<String>(FAIL, HttpStatus.NO_CONTENT);
 	}
 
-	@GetMapping("/share-list")
-	public String shareList() {
-		return "tours/shareboardlist";
-	}
-	
 
 }
