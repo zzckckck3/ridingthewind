@@ -4,22 +4,24 @@
 
 <mapper namespace="com.ringdingdong.ridingthewind.model.mapper.ArticleMapper">
 
-	<resultMap type="article" id="article">
+	<resultMap type="articleDto" id="articleDto">
 		<result column="article_no" property="articleNo"/>
 		<result column="member_id" property="memberId"/>
-		<result column="member_name" property="memberName"/>
 		<result column="subject" property="subject"/>
 		<result column="content" property="content"/>
 		<result column="hit" property="hit"/>
+		<result column="like" property="like"/>
 		<result column="register_time" property="registerTime"/>
+		<result column="modify_time" property="modifyTime"/>
+		<result column="member_name" property="memberName"/>
 	</resultMap>
 
-	<insert id="writeArticle" parameterType="article">
-		insert into article (member_id, subject, content, hit, register_time)
-		values (#{memberId}, #{subject}, #{content}, 0, now())
-		<selectKey resultType="int" keyProperty="articleNo" order="AFTER">
-			select last_insert_id()
+	<insert id="writeArticle" parameterType="articleDto">
+		<selectKey resultType="int" keyProperty="articleNo" order="BEFORE">
+			select max(article_no) + 1
 		</selectKey>
+		insert into article (articleNo, member_id, subject, content)
+		values (#{articleNo}, #{memberId}, #{subject}, #{content})
 	</insert>
 	
 	<sql id="search">
@@ -33,8 +35,8 @@
 		</if>
 	</sql>
 
-	<select id="listArticle" parameterType="map" resultMap="article">
-		select a.article_no, a.member_id, a.subject, a.content, a.hit, a.register_time, m.member_name
+	<select id="listArticle" parameterType="map" resultMap="articleDto">
+		select a.article_no, a.subject, a.content, a.hit, a.register_time, m.member_name
 		from article a, member m
 		where a.member_id = m.member_id
 		<include refid="search"></include>
@@ -50,7 +52,7 @@
 		</where>
 	</select>
 	
-	<select id="getArticle" parameterType="int" resultMap="article">
+	<select id="getArticle" parameterType="int" resultMap="articleDto">
 		select a.article_no, a.member_id, a.subject, a.content, a.hit, a.register_time, m.member_name
 		from article a, member m
 		where a.member_id = m.member_id
@@ -64,7 +66,7 @@
 		where article_no = #{articleNo}
 	</update>
 	
-	<update id="modifyArticle" parameterType="article">
+	<update id="modifyArticle" parameterType="articleDto">
 		update article
 		set subject = #{subject}, content = #{content}
 		where article_no = #{articleNo}

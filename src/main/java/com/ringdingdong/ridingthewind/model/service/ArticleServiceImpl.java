@@ -1,6 +1,6 @@
 package com.ringdingdong.ridingthewind.model.service;
 
-import com.ringdingdong.ridingthewind.model.Article;
+import com.ringdingdong.ridingthewind.model.ArticleDto;
 import com.ringdingdong.ridingthewind.model.mapper.ArticleMapper;
 import com.ringdingdong.ridingthewind.util.PageNavigation;
 import com.ringdingdong.ridingthewind.util.SizeConstant;
@@ -18,17 +18,15 @@ public class ArticleServiceImpl implements ArticleService {
 	private final ArticleMapper articleMapper;
 
 	@Override
-	public boolean writeArticle(Article article) throws Exception {
-		return articleMapper.writeArticle(article) == 1;
+	public boolean writeArticle(ArticleDto articleDto) throws Exception {
+		return articleMapper.writeArticle(articleDto) == 1;
 	}
 
 	@Override
-	public List<Article> listArticle(Map<String, String> map) throws Exception {
+	// 변경 예정
+	public List<ArticleDto> listArticle(Map<String, String> map) throws Exception {
 		Map<String, Object> param = new HashMap<String, Object>();
 		String key = map.get("key");
-		System.out.println(key);
-//		if("memberid".equals(key))
-//			key = "b.member_id";
 		param.put("key", key == null ? "" : key);
 		param.put("word", map.get("word") == null ? "" : map.get("word"));
 		int pgNo = Integer.parseInt(map.get("pgno") == null ? "1" : map.get("pgno"));
@@ -40,13 +38,14 @@ public class ArticleServiceImpl implements ArticleService {
 	}
 	
 	@Override
+	// 변경 예정
 	public PageNavigation makePageNavigation(Map<String, String> map) throws Exception {
 		PageNavigation pageNavigation = new PageNavigation();
 
 		int naviSize = SizeConstant.NAVIGATION_SIZE;
 		int sizePerPage = SizeConstant.LIST_SIZE;
 		int currentPage = Integer.parseInt(map.get("pgno"));
-		
+
 		pageNavigation.setCurrentPage(currentPage);
 		pageNavigation.setNaviSize(naviSize);
 		Map<String, Object> param = new HashMap<String, Object>();
@@ -69,7 +68,7 @@ public class ArticleServiceImpl implements ArticleService {
 	}
 
 	@Override
-	public Article getArticle(int articleNo) throws Exception {
+	public ArticleDto getArticle(int articleNo) throws Exception {
 		return articleMapper.getArticle(articleNo);
 	}
 
@@ -79,8 +78,8 @@ public class ArticleServiceImpl implements ArticleService {
 	}
 
 	@Override
-	public boolean modifyArticle(Article article) throws Exception {
-		return articleMapper.modifyArticle(article) == 1;
+	public boolean modifyArticle(ArticleDto articleDto) throws Exception {
+		return articleMapper.modifyArticle(articleDto) == 1;
 	}
 
 	@Override

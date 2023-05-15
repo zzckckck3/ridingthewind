@@ -7,14 +7,16 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public class Article {
+public class ArticleDto {
 
 	private int articleNo;
 	private String memberId;
-	private String memberName;
 	private String subject;
 	private String content;
 	private int hit;
+	private int like;
 	private String registerTime;
+	private String modifyTime;
+	private String memberName;
 
 }
