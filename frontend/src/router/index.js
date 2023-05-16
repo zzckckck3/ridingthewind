@@ -36,6 +36,20 @@ const routes = [
       },
     ],
   },
+  {
+    path: "/tour",
+    name: "tour",
+    component: () => import(/* webpackChunkName: "trip" */ "@/views/TourInfoView.vue"),
+    redirect: "/tour/info",
+    children: [
+      {
+        path: "info",
+        name: "tourinfo",
+        component: () =>
+          import(/* webpackChunkName: "board" */ "@/components/tour/TourSearchInfo.vue"),
+      },
+    ]
+  }
 ];
 
 const router = new VueRouter({
