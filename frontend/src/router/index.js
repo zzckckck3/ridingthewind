@@ -23,16 +23,16 @@ const routes = [
     ],
   },
   {
-    path: "/board",
-    name: "board",
-    component: () => import(/* webpackChunkName: "board" */ "@/views/BoardView.vue"),
-    redirect: "/board/list",
+    path: "/notice",
+    name: "notice",
+    component: () => import(/* webpackChunkName: "notice" */ "@/views/NoticeView.vue"),
+    redirect: "/notice/list",
     children: [
       {
         path: "list",
-        name: "boardList",
+        name: "noticeList",
         component: () =>
-          import(/* webpackChunkName: "board" */ "@/components/board/BoardNoticeList.vue"),
+          import(/* webpackChunkName: "notice" */ "@/components/notice/NoticeList.vue"),
       },
     ],
   },
