@@ -1,6 +1,7 @@
 package com.ringdingdong.ridingthewind.model.service;
 
 import com.ringdingdong.ridingthewind.model.ArticleDto;
+import com.ringdingdong.ridingthewind.model.ArticleParameterDto;
 import com.ringdingdong.ridingthewind.model.mapper.ArticleMapper;
 import com.ringdingdong.ridingthewind.util.PageNavigation;
 import com.ringdingdong.ridingthewind.util.SizeConstant;
@@ -14,7 +15,7 @@ import java.util.Map;
 @Service
 @RequiredArgsConstructor
 public class ArticleServiceImpl implements ArticleService {
-	
+
 	private final ArticleMapper articleMapper;
 
 	@Override
@@ -23,20 +24,19 @@ public class ArticleServiceImpl implements ArticleService {
 	}
 
 	@Override
-	// 변경 예정
-	public List<ArticleDto> listArticle(Map<String, String> map) throws Exception {
+	public List<ArticleDto> listArticle(ArticleParameterDto articleParameterDto) throws Exception {
 		Map<String, Object> param = new HashMap<String, Object>();
-		String key = map.get("key");
+		String key = articleParameterDto.getKey();
 		param.put("key", key == null ? "" : key);
-		param.put("word", map.get("word") == null ? "" : map.get("word"));
-		int pgNo = Integer.parseInt(map.get("pgno") == null ? "1" : map.get("pgno"));
-		int start = pgNo * SizeConstant.LIST_SIZE - SizeConstant.LIST_SIZE;
+		param.put("word", articleParameterDto.getWord() == null ? "" : articleParameterDto.getWord());
+		int pgNo = articleParameterDto.getPg();
+		int start = (pgNo - 1) * articleParameterDto.getSpp();
 		param.put("start", start);
-		param.put("listsize", SizeConstant.LIST_SIZE);
+		param.put("listsize", articleParameterDto.getSpp());
 
 		return articleMapper.listArticle(param);
 	}
-	
+
 	@Override
 	// 변경 예정
 	public PageNavigation makePageNavigation(Map<String, String> map) throws Exception {

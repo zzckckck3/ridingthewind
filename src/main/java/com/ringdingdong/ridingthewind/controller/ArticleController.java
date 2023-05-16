@@ -2,6 +2,7 @@ package com.ringdingdong.ridingthewind.controller;
 
 import com.ringdingdong.ridingthewind.enumerate.ResponseResult;
 import com.ringdingdong.ridingthewind.model.ArticleDto;
+import com.ringdingdong.ridingthewind.model.ArticleParameterDto;
 import com.ringdingdong.ridingthewind.model.service.ArticleService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -10,6 +11,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @CrossOrigin(origins = "*", allowedHeaders = "*")
@@ -29,26 +32,11 @@ public class ArticleController {
 		return new ResponseEntity<>(ResponseResult.FAIL.name(), HttpStatus.NO_CONTENT);
 	}
 
-//	@ApiOperation(value = "게시판 글목록", notes = "모든 게시글의 정보를 반환한다.", response = List.class)
-//	@GetMapping
-//	public ResponseEntity<List<BoardDto>> listArticle(@ApiParam(value = "게시글을 얻기위한 부가정보.", required = true) ArticleParameterDto articleParameterDto) throws Exception {
-//		return new ResponseEntity<>(boardService.listArticle(articleParameterDto), HttpStatus.OK);
-//	}
-
-//	@GetMapping
-//	public ResponseEntity<List<BoardDto>> list(@RequestParam Map<String, String> map) throws Exception {
-//		ModelAndView mav = new ModelAndView();
-//		List<BoardDto> list = boardService.listArticle(map);
-//		PageNavigation pageNavigation = boardService.makePageNavigation(map);
-//
-//		mav.addObject("articles", list);
-//		mav.addObject("navigation", pageNavigation);
-//		mav.addObject("pgno", map.get("pgno"));
-//		mav.addObject("key", map.get("key"));
-//		mav.addObject("word", map.get("word"));
-//		mav.setViewName("board/list");
-//		return mav;
-//	}
+	@ApiOperation(value = "게시판 글목록", notes = "모든 게시글의 정보를 반환한다.", response = List.class)
+	@GetMapping
+	public ResponseEntity<List<ArticleDto>> listArticle(@ApiParam(value = "게시글을 얻기위한 부가정보.", required = true) ArticleParameterDto articleParameterDto) throws Exception {
+		return new ResponseEntity<>(articleService.listArticle(articleParameterDto), HttpStatus.OK);
+	}
 
 	@ApiOperation(value = "게시판 글보기", notes = "글번호에 해당하는 게시글의 정보를 반환한다.", response = ArticleDto.class)
 	@GetMapping("/{articleNo}")
@@ -63,7 +51,7 @@ public class ArticleController {
 		if (articleService.modifyArticle(articleDto)) {
 			return new ResponseEntity<>(ResponseResult.SUCCESS.name(), HttpStatus.OK);
 		}
-		return new ResponseEntity<>(ResponseResult.FAIL.name(), HttpStatus.OK);
+		return new ResponseEntity<>(ResponseResult.FAIL.name(), HttpStatus.NO_CONTENT);
 	}
 
 	@ApiOperation(value = "게시판 글삭제", notes = "글번호에 해당하는 게시글의 정보를 삭제한다. 그리고 DB삭제 성공여부에 따라 'success' 또는 'fail' 문자열을 반환한다.", response = String.class)
@@ -72,7 +60,7 @@ public class ArticleController {
 		if (articleService.deleteArticle(articleNo)) {
 			return new ResponseEntity<>(ResponseResult.SUCCESS.name(), HttpStatus.OK);
 		}
-		return new ResponseEntity<>(ResponseResult.FAIL.name(), HttpStatus.OK);
+		return new ResponseEntity<>(ResponseResult.FAIL.name(), HttpStatus.NO_CONTENT);
 	}
 
 }
