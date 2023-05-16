@@ -48,8 +48,14 @@ const routes = [
         component: () =>
           import(/* webpackChunkName: "board" */ "@/components/tour/TourSearchInfo.vue"),
       },
-    ]
-  }
+    ],
+  },
+  {
+    path: "/mypage",
+    name: "mypage",
+    component: () => import(/* webpackChunkName: "trip" */ "@/views/PersonalTripView.vue"),
+    children: [],
+  },
 ];
 
 const router = new VueRouter({

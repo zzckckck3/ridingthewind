@@ -1,16 +1,22 @@
 <template>
     <v-app-bar app color="grey-light" flat>
+
+        <!-- 좌 상단 홈 버튼 -->
         <v-col cols="auto">
             <v-btn elevation="8" size="x-large" :to="{ name: 'home' }">홈(버튼 좀 구진듯)</v-btn>
         </v-col>
 
+
+        <!-- 중앙 메뉴 탭 -->
         <v-tabs centered class="ml-n9" color="black darken-1">
             <v-tab :to="{ name: 'signin' }">로그인</v-tab>
             <v-tab :to="{ name: 'noticeList' }">공지사항</v-tab>
             <v-tab :to="{ name: 'tour' }">여행정보</v-tab>
-            <v-tab :to="{ name: 'noticeList' }">여행계획</v-tab>
+            <v-tab :to="{ name: 'mypage' }">여행계획</v-tab>
         </v-tabs>
 
+
+        <!-- 우측 회원 관리 창 -->
         <v-avatar
             class="hidden-sm-and-down"
             color="grey darken-1 shrink"
@@ -47,8 +53,9 @@
                     </v-list-item-avatar>
 
                     <v-list-item-content>
-                    <v-list-item-title>Name</v-list-item-title>
-                    <v-list-item-subtitle>ID or Email</v-list-item-subtitle>
+                        <v-list-item-title>Name</v-list-item-title>
+                    
+                        <v-list-item-subtitle>ID or Email</v-list-item-subtitle>
                     </v-list-item-content>
 
                 </v-list-item>
@@ -57,43 +64,43 @@
                 <v-divider></v-divider>
 
                 <v-list>
-                <v-list-item>
-                    <v-list-item-action>
-                    <v-switch
-                        v-model="message"
-                        color="purple"
-                    ></v-switch>
-                    </v-list-item-action>
-                    <v-list-item-title>Enable messages</v-list-item-title>
-                </v-list-item>
+                    <v-list-item>
+                        <v-list-item-action>
+                        <v-switch
+                            v-model="message"
+                            color="purple"
+                        ></v-switch>
+                        </v-list-item-action>
+                        <v-list-item-title>Enable messages</v-list-item-title>
+                    </v-list-item>
 
-                <v-list-item>
-                    <v-list-item-action>
-                    <v-switch
-                        v-model="hints"
-                        color="purple"
-                    ></v-switch>
-                    </v-list-item-action>
-                    <v-list-item-title>Enable hints</v-list-item-title>
-                </v-list-item>
+                    <v-list-item>
+                        <v-list-item-action>
+                        <v-switch
+                            v-model="hints"
+                            color="purple"
+                        ></v-switch>
+                        </v-list-item-action>
+                        <v-list-item-title>Enable hints</v-list-item-title>
+                    </v-list-item>
                 </v-list>
 
                 <v-card-actions>
-                <v-spacer></v-spacer>
+                    <v-spacer></v-spacer>
 
-                <v-btn
-                    text
-                    @click="menu = false"
-                >
-                    Cancel
-                </v-btn>
-                <v-btn
-                    color="primary"
-                    text
-                    @click="menu = false"
-                >
-                    Save
-                </v-btn>
+                    <v-btn
+                        text
+                        @click="menu = false"
+                    >
+                        Cancel
+                    </v-btn>
+                    <v-btn
+                        color="primary"
+                        text
+                        @click="menu = false"
+                    >
+                        Save
+                    </v-btn>
                 </v-card-actions>
             </v-card>
             </v-menu>
