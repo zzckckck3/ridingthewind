@@ -51,13 +51,14 @@ public class MemberServiceImpl implements MemberService {
 	}
 
 	@Override
-	public void updateMember(MemberDto memberDto) throws Exception {
-		memberMapper.updateMember(memberDto);
+	public int updateMember(MemberDto memberDto) throws Exception {
+		return memberMapper.updateMember(memberDto);
 	}
 
 	@Override
 	public void deleteMember(String memberId) throws Exception {
 		memberMapper.deleteMember(memberId);		
 	}
+
 
 }

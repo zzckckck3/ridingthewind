@@ -16,6 +16,6 @@ public interface MemberMapper {
 	/* Admin */
 	List<MemberDto> listMember(Map<String, Object> map) throws SQLException;
 	MemberDto getMember(String memberId) throws SQLException;
-	void updateMember(MemberDto memberDto) throws SQLException;
+	int updateMember(MemberDto memberDto) throws SQLException;
 	void deleteMember(String memberId) throws SQLException;
 }
