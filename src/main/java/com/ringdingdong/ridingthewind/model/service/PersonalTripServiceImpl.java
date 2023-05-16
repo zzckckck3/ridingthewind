@@ -1,12 +1,14 @@
 package com.ringdingdong.ridingthewind.model.service;
 
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.ringdingdong.ridingthewind.model.MemberDto;
 import com.ringdingdong.ridingthewind.model.PersonalTripDto;
 import com.ringdingdong.ridingthewind.model.mapper.PersonalTripMapper;
 import com.ringdingdong.ridingthewind.util.PasswordEncryptor;
-import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 public class PersonalTripServiceImpl implements PersonalTripService {
@@ -29,16 +31,18 @@ public class PersonalTripServiceImpl implements PersonalTripService {
 	}
 
 	@Override
-	public void editMember(MemberDto memberDto) throws Exception {
+	@Transactional
+	public boolean editMember(MemberDto memberDto) throws Exception {
 		memberDto.setMemberPassword(PasswordEncryptor.encrypt(memberDto.getMemberPassword()));
-		personalTripMapper.editMember(memberDto);
+		return personalTripMapper.editMember(memberDto) == 1;
 		
 	}
 
 	@Override
-	public void deleteMember(String memberId, String memberPassword) throws Exception {
+	@Transactional
+	public boolean deleteMember(String memberId, String memberPassword) throws Exception {
 		memberPassword = PasswordEncryptor.encrypt(memberPassword);
-		personalTripMapper.deleteMember(memberId, memberPassword);
+		return personalTripMapper.deleteMember(memberId, memberPassword) == 1;
 	}
 	
 

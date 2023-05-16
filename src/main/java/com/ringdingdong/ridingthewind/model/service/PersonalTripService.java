@@ -10,6 +10,6 @@ public interface PersonalTripService {
 	/* API */
 	List<PersonalTripDto> listPersonalTrip(String memberId) throws Exception;
 	void deleteTrip(String memberId, int contentId) throws Exception;
-	void editMember(MemberDto memberDto) throws Exception;
-	void deleteMember(String memberId, String memberPassword)throws Exception;
+	boolean editMember(MemberDto memberDto) throws Exception;
+	boolean deleteMember(String memberId, String memberPassword)throws Exception;
 }

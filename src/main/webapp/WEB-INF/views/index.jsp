@@ -87,12 +87,9 @@
 						<a href="tour?action=mvtrip" class="btn btn-primary" onclick='Gwang()'>광주 관광??;</a>
 					</div>
 				</div>
-				
+
 			</div>
-
 			<hr>
-
-
 		</div>
 		<!--End of Main-->
 
@@ -100,11 +97,16 @@
 		<%@ include file="common/footer.jsp" %>
 		<!--End of Footer-->
 	</div>
-
-
+	<form id="testform" method="post">
+		<input type="submit" id="test-btn" value="test">
+	</form>
 	<script src="./assets/js/main.js"></script>
 	<script>
-
+	document.querySelector("#test-btn").addEventListener("click", function (){
+		let form = document.querySelector("#testform");
+		form.setAttribute("action","${root}/member/update");
+		form.submit();
+	})
     </script>
 </body>
 </html>
