@@ -15,7 +15,7 @@ public interface MemberService {
 	/* Admin */
 	List<MemberDto> listMember(Map<String, Object> map) throws Exception;
 	MemberDto getMember(String memberId) throws Exception;
-	void updateMember(MemberDto memberDto) throws Exception;
+	int updateMember(MemberDto memberDto) throws Exception;
 	void deleteMember(String memberId) throws Exception;
 	
 }
