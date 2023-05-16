@@ -93,7 +93,7 @@ public class MemberController {
 	@PostMapping("/login")
 	public String login(@RequestParam Map<String, String> map, @RequestParam(name = "saveid", required = false) String saveid, Model model, HttpSession session, HttpServletResponse response) {
 		logger.debug("login map : {}", map);
-
+		System.out.println("로그인 접속");
 		try {
 			MemberDto memberDto = memberService.loginMember(map);
 			if(memberDto != null) {
