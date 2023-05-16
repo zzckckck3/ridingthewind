@@ -11,7 +11,7 @@ import lombok.Setter;
 public class ArticleParameterDto {
 
 	@ApiModelProperty(value = "현재 페이지 번호")
-	private int pg;
+	private int curPage;
 	@ApiModelProperty(value = "페이지당 글갯수")
 	private int spp;
 	@ApiModelProperty(value = "페이지의 시작 글번호")
@@ -22,13 +22,13 @@ public class ArticleParameterDto {
 	private String word;
 	
 	public ArticleParameterDto() {
-		pg = 1;
+		curPage = 1;
 		spp = 20;
 	}
 
-	public void setPg(int pg) {
+	public void setCurPage(int pg) {
 		pg = pg == 0 ? 1 : pg;
-		this.pg = pg;
+		this.curPage = pg;
 	}
 
 }
