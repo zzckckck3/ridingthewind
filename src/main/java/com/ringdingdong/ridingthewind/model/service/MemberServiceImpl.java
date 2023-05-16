@@ -35,7 +35,7 @@ public class MemberServiceImpl implements MemberService {
 
 	@Override
 	public MemberDto loginMember(Map<String, String> map) throws Exception {
-		map.replace("memberPw", PasswordEncryptor.encrypt(map.get("memberPw")));
+		//map.replace("memberPw", PasswordEncryptor.encrypt(map.get("memberPw")));
 		return memberMapper.loginMember(map);
 	}
 	

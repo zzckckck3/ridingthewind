@@ -3,32 +3,47 @@ package com.ringdingdong.ridingthewind.controller;
 import com.ringdingdong.ridingthewind.model.MemberDto;
 import com.ringdingdong.ridingthewind.model.service.MemberService;
 import com.ringdingdong.ridingthewind.model.service.MemberServiceImpl;
+import io.jsonwebtoken.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Key;
+
+import javax.crypto.spec.SecretKeySpec;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.xml.bind.DatatypeConverter;
+import java.util.Base64;
+import java.util.Date;
 import java.util.Map;
+
+import static sun.security.x509.CertificateX509Key.KEY;
 
 @RestController
 @RequestMapping(value = "/member")
-
 public class MemberController {
 
 	private final Logger logger = LoggerFactory.getLogger(MemberController.class);
 
 	private MemberService memberService;
 
+	@Autowired
 	public MemberController(MemberService memberService) {
 		super();
 		this.memberService = memberService;
 	}
+
+
+	@Value("${ridingthewind.jwt.secretKey}")
+	private String secretKey;
 
 	@GetMapping("/join")
 	public String join() {
@@ -91,33 +106,74 @@ public class MemberController {
 
 
 	@PostMapping("/login")
-	public String login(@RequestParam Map<String, String> map, @RequestParam(name = "saveid", required = false) String saveid, Model model, HttpSession session, HttpServletResponse response) {
+	public ResponseEntity<?> login(@RequestBody Map<String, String> map, @RequestParam(name = "saveid", required = false) String saveid, HttpSession session, HttpServletResponse response) {
 		logger.debug("login map : {}", map);
-		System.out.println("로그인 접속");
 		try {
 			MemberDto memberDto = memberService.loginMember(map);
 			if(memberDto != null) {
-				session.setAttribute("memberinfo", memberDto);
+				final String headerString = "X-JWT";
+				byte[] apiKeySecretBytes = Base64.getDecoder().decode(secretKey);
+				SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
+				final Key KEY = new SecretKeySpec(apiKeySecretBytes, signatureAlgorithm.getJcaName());
 
-				Cookie cookie = new Cookie("memberInfo", map.get("memberId"));
-				cookie.setPath("/");
-				if("ok".equals(saveid)) {
-					cookie.setMaxAge(60*60*24*365*40);
-				} else {
-					cookie.setMaxAge(0);
-				}
-				response.addCookie(cookie);
-				return "redirect:/";
+				//----------------------------------------------
+				// 토큰만들기
+				String jwt = Jwts.builder()
+						.setHeaderParam("typ", "JWT")
+						.claim("uid", map.get("memberId"))
+						.setExpiration(new Date(System.currentTimeMillis()  +  (60 * 60 * 24) ) )
+						.signWith(signatureAlgorithm, KEY)
+						.compact();
+
+				System.out.println(isTokenValid(jwt, KEY));
+
+				//----------------------------------------------
+				return new ResponseEntity<>(jwt, HttpStatus.OK);
 			} else {
-				model.addAttribute("msg", "아이디 또는 비밀번호 확인 후 다시 로그인하세요!");
-				return "member/signin";
+				return ResponseEntity.status(201).body(null);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			model.addAttribute("msg", "로그인 중 문제 발생!!!");
-			return "error/error";
+			return ResponseEntity.status(201).body(null);
 		}
 	}
+
+	// 토큰 만료 확인
+	public boolean isTokenValid(String jwt,Key KEY) {
+		try {
+			Jws<Claims> claims = Jwts.parser().setSigningKey(KEY).parseClaimsJws(jwt);
+			return true;
+		} catch (JwtException e) {
+			return false;
+		}
+	}
+//	public Boolean getExpToken(String jwt) {
+//		try {
+//			Jws<Claims> claims = Jwts.parser().setSigningKey(KEY).parseClaimsJws(jwt);
+//
+//			Date exp = claims.getBody().getExpiration();
+//			Date now = new Date();
+//			if (exp.after(now)) {
+//				System.out.println(7);
+//				return true;
+//			}
+//			return false;
+//		} catch (Exception e) {
+//			return false;
+////			UnauthorizedException("Illegal Token");
+//		}
+////		throw new NullArgumentException("Token is NULL");
+//	}
+
+	public String getUserUID(String jwt) throws RuntimeException{
+		try {
+			Jws<Claims> claims = Jwts.parser().setSigningKey(KEY).parseClaimsJws(jwt);
+			return String.valueOf(claims.getBody().get("uid"));
+		} catch (Exception e) {
+			return null;
+		}
+	}
+
 
 // 마이페이지 이동 메서드
 //	@GetMapping(value="/viewinfo")
