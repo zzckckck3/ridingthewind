@@ -1,7 +1,7 @@
 <template>
-  <v-app id="inspire">
+  <v-main class="pa-16 ma-16">
       <!-- Login Component -->
-    <v-container style="max-width: 450px" fill-height>
+    <v-container style="max-width: 550px" fill-height>
       <v-layout align-center row wrap>
         <v-flex xs12>
           <v-card>
@@ -45,7 +45,7 @@
         </v-flex>
       </v-layout>
     </v-container>
-  </v-app>
+  </v-main>
 </template>
 
 <script>
