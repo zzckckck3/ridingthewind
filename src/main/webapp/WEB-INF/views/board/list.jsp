@@ -59,22 +59,22 @@
 	              </tr>
 	            </thead>
 	            <tbody>    
-					<c:forEach var="article" items="${articles}">    
+					<c:forEach var="articleDto" items="${articles}">
 		              <tr class="text-center">
-		                <th scope="row">${article.articleNo}</th>
+		                <th scope="row">${articleDto.articleNo}</th>
 		                <td class="text-start">
 		                  <a
 		                    href="#"
-		                    class="article-title link-dark"
-		                    data-no="${article.articleNo}"
+		                    class="articleDto-title link-dark"
+		                    data-no="${articleDto.articleNo}"
 		                    style="text-decoration: none"
 		                  >
-		                    ${article.subject}
+		                    ${articleDto.subject}
 		                  </a>
 		                </td>
-		                <td>${article.memberId}</td>
-		                <td>${article.hit}</td>
-		                <td>${article.registerTime}</td>
+		                <td>${articleDto.memberId}</td>
+		                <td>${articleDto.hit}</td>
+		                <td>${articleDto.registerTime}</td>
 		              </tr>            
 					</c:forEach>   
 	            </tbody>
@@ -99,7 +99,7 @@
       <input type="hidden" id="articleNo" name="articleNo" value="">
     </form>
     <script>
-    let titles = document.querySelectorAll(".article-title");
+    let titles = document.querySelectorAll(".articleDto-title");
     titles.forEach(function (title) {
       title.addEventListener("click", function () {
         document.querySelector("#articleNo").value = this.getAttribute("data-no");

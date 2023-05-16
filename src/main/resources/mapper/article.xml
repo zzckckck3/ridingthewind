@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ringdingdong.ridingthewind.model.mapper.ArticleMapper">
+
+	<resultMap type="articleDto" id="articleDto">
+		<result column="article_no" property="articleNo"/>
+		<result column="member_id" property="memberId"/>
+		<result column="subject" property="subject"/>
+		<result column="content" property="content"/>
+		<result column="hit" property="hit"/>
+		<result column="like" property="like"/>
+		<result column="register_time" property="registerTime"/>
+		<result column="modify_time" property="modifyTime"/>
+		<result column="member_name" property="memberName"/>
+	</resultMap>
+
+	<insert id="writeArticle" parameterType="articleDto">
+		<selectKey resultType="int" keyProperty="articleNo" order="BEFORE">
+			select max(article_no) + 1
+		</selectKey>
+		insert into article (articleNo, member_id, subject, content)
+		values (#{articleNo}, #{memberId}, #{subject}, #{content})
+	</insert>
+	
+	<sql id="search">
+		<if test="word != null and word != ''">
+			<if test="key == 'subject'">
+				and subject like concat('%', #{word}, '%')
+			</if>
+			<if test="key != 'subject'">
+				and ${key} = #{word}
+			</if>
+		</if>
+	</sql>
+
+	<select id="listArticle" parameterType="map" resultMap="articleDto">
+		select a.article_no, a.subject, a.content, a.hit, a.register_time, m.member_name
+		from article a, member m
+		where a.member_id = m.member_id
+		<include refid="search"></include>
+		order by a.article_no desc
+		limit #{start}, #{listsize}
+	</select>
+	
+	<select id="getTotalArticleCount" parameterType="map" resultType="int">
+		select count(article_no)
+		from article
+		<where>
+			<include refid="search"></include>
+		</where>
+	</select>
+	
+	<select id="getArticle" parameterType="int" resultMap="articleDto">
+		select a.article_no, a.member_id, a.subject, a.content, a.hit, a.register_time, m.member_name
+		from article a, member m
+		where a.member_id = m.member_id
+		and a.article_no = #{articleNo}
+	</select>
+
+	
+	<update id="updateHit" parameterType="int">
+		update article
+		set hit = hit + 1
+		where article_no = #{articleNo}
+	</update>
+	
+	<update id="modifyArticle" parameterType="articleDto">
+		update article
+		set subject = #{subject}, content = #{content}
+		where article_no = #{articleNo}
+	</update>
+
+	
+	<delete id="deleteArticle" parameterType="int">
+		delete from article
+		where article_no = #{articleNo}
+	</delete>
+	
+</mapper>

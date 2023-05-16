@@ -19,8 +19,8 @@ ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
 
--- board 테이블 생성
-CREATE TABLE IF NOT EXISTS `riding_the_wind`.`board` (
+-- articleDto 테이블 생성
+CREATE TABLE IF NOT EXISTS `riding_the_wind`.`articleDto` (
   `article_no` INT NOT NULL AUTO_INCREMENT,
   `member_id` VARCHAR(16) NULL DEFAULT NULL,
   `subject` VARCHAR(100) NULL DEFAULT NULL,
@@ -30,8 +30,8 @@ CREATE TABLE IF NOT EXISTS `riding_the_wind`.`board` (
   `like` INT NOT NULL DEFAULT 0,
   `modify_time` TIMESTAMP NULL DEFAULT now(),
   PRIMARY KEY (`article_no`),
-  INDEX `board_to_members_member_id_fk` (`member_id` ASC) VISIBLE,
-  CONSTRAINT `board_to_members_member_id_fk`
+  INDEX `article_to_members_member_id_fk` (`member_id` ASC) VISIBLE,
+  CONSTRAINT `article_to_members_member_id_fk`
     FOREIGN KEY (`member_id`)
     REFERENCES `member` (`member_id`)
     ON DELETE CASCADE)

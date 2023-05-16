@@ -17,6 +17,7 @@ target/
 .classpath
 .project
 Servers/
+bin/
 
 ### Vue js ###
 node_modules/
