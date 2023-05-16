@@ -11,6 +11,7 @@
             <v-tab :to="{ name: 'home' }">홈</v-tab>
             <v-tab :to="{ name: 'signin' }">로그인</v-tab>
             <v-tab :to="{ name: 'boardList' }">공지사항</v-tab>
+            <v-tab :to="{ name: 'tour' }">여행정보</v-tab>
         </v-tabs>
 
         <v-avatar
