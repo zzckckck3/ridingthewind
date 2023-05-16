@@ -17,13 +17,13 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @EnableSwagger2
 public class SwaggerConfiguration {
 
-//	Swagger-UI 2.x 확인
-//	http://localhost:8080/{your-app-root}/swagger-ui.html
-//	Swagger-UI 3.x 확인
-//	http://localhost:8080/{your-app-root}/swagger-ui/index.html
+/*
+	Swagger-UI 2.x
+	http://localhost/swagger-ui.html
+*/
 
 	private String version = "V1";
-	private String title = "SSAFY enjoyTrip " + version;
+	private String title = "Riding The Wind" + version;
 	
 	@Bean
 	public Docket api() {

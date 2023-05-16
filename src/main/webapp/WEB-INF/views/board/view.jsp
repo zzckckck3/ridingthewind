@@ -10,10 +10,10 @@
 	<body>
 		<div class="container">
 			<%@ include file="../common/header.jsp" %> 
-			<c:if test="${article eq null}">
+			<c:if test="${articleDto eq null}">
 				<script>
 				alert("글이 삭제되었거나 부적절한 URL 접근입니다.");
-				location.href = "${root}/article/list";
+				location.href = "${root}/articleDto/list";
 				</script>
 			</c:if>
 			<div class="row justify-content-center">
@@ -24,7 +24,7 @@
 		        </div>
 		        <div class="col-lg-8 col-md-10 col-sm-12">
 		          <div class="row my-2">
-		            <h2 class="text-secondary">${article.articleNo}. ${article.subject}</h2>
+		            <h2 class="text-secondary">${articleDto.articleNo}. ${articleDto.subject}</h2>
 		          </div>
 		          <div class="row">
 		            <div class="col-md-8">
@@ -34,15 +34,15 @@
 		                  src="https://raw.githubusercontent.com/twbs/icons/main/icons/person-fill.svg"
 		                />
 		                <p>
-		                  <span class="fw-bold">${article.memberId}</span> <br />
-		                  <span class="text-secondary fw-light"> ${article.registerTime} 조회 : ${article.hit} </span>
+		                  <span class="fw-bold">${articleDto.memberId}</span> <br />
+		                  <span class="text-secondary fw-light"> ${articleDto.registerTime} 조회 : ${articleDto.hit} </span>
 		                </p>
 		              </div>
 		            </div>
 		            <div class="col-md-4 align-self-center text-end">댓글 : 17</div>
 		            <div class="divider mb-3"></div>
 		            <div class="text-secondary">
-		              ${article.content}
+		              ${articleDto.content}
 		            </div>
 		            
 		            <div class="divider mt-3 mb-3"></div>
@@ -50,7 +50,7 @@
 		              <button type="button" id="btn-list" class="btn btn-outline-primary mb-3">
 		                글목록
 		              </button>
-		              	<c:if test="${memberinfo.memberId eq article.memberId}"> 
+		              	<c:if test="${memberinfo.memberId eq articleDto.memberId}">
 				              <button type="button" id="btn-mv-modify" class="btn btn-outline-success mb-3 ms-1">
 				                글수정
 				              </button>
@@ -61,7 +61,7 @@
 							      <input type="hidden" id="npgno" name="pgno" value="${pgno}">
 							      <input type="hidden" id="nkey" name="key" value="${key}">
 							      <input type="hidden" id="nword" name="word" value="${word}">
-							      <input type="hidden" id="articleNo" name="articleNo" value="${article.articleNo}">
+							      <input type="hidden" id="articleNo" name="articleNo" value="${articleDto.articleNo}">
 							  </form>
 							  <script>
 					      		document.querySelector("#btn-mv-modify").addEventListener("click", function () {

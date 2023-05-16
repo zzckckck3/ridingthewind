@@ -21,14 +21,14 @@
 		          	<input type="hidden" name="pgno" value="${pgno}">
 				    <input type="hidden" name="key" value="${key}">
 				   	<input type="hidden" name="word" value="${word}">
-		            <input type="hidden" name="articleNo" value="${article.articleNo}">
+		            <input type="hidden" name="articleNo" value="${articleDto.articleNo}">
 		            <div class="mb-3">
 		              <label for="subject" class="form-label">제목 : </label>
-		              <input type="text" class="form-control" id="subject" name="subject" value="${article.subject}" />
+		              <input type="text" class="form-control" id="subject" name="subject" value="${articleDto.subject}" />
 		            </div>
 		            <div class="mb-3">
 		              <label for="content" class="form-label">내용 : </label>
-		              <textarea class="form-control" id="content" name="content" rows="7">${article.content}</textarea>
+		              <textarea class="form-control" id="content" name="content" rows="7">${articleDto.content}</textarea>
 		            </div>
 		            <div class="col-auto text-center">
 		              <button type="button" id="btn-modify" class="btn btn-outline-primary mb-3">
