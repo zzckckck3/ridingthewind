@@ -11,8 +11,8 @@
 </template>
 
 <script>
-import NaviBar from "@/components/layout/HeaderNavi.vue";
-import FooterBar from "@/components/layout/FooterNavi.vue";
+import NaviBar from "@/components/layout/HeaderNaviBar.vue";
+import FooterBar from "@/components/layout/FooterNaviBar.vue";
 
 export default {
     name: "App",
