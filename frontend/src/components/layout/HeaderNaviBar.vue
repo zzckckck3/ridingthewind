@@ -12,7 +12,7 @@
             <v-tab :to="{ name: 'signin' }">로그인</v-tab>
             <v-tab :to="{ name: 'boardList' }">공지사항</v-tab>
             <v-tab :to="{ name: 'tour' }">여행정보</v-tab>
-            <v-tab :to="{ name: 'boardList' }">여행계획</v-tab>
+            <v-tab :to="{ name: 'mypage' }">여행계획</v-tab>
         </v-tabs>
 
 
