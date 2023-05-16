@@ -20,16 +20,6 @@ public class ArticleParameterDto {
 	private String key;
 	@ApiModelProperty(value = "검색어")
 	private String word;
-	
-	public ArticleParameterDto() {
-		curPage = 1;
-		spp = 20;
-	}
-
-	public void setCurPage(int pg) {
-		pg = pg == 0 ? 1 : pg;
-		this.curPage = pg;
-	}
 
 }
 

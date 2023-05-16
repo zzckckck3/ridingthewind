@@ -11,10 +11,12 @@
                 </v-col>
                 <v-col cols="1">
                     <v-select
-                        :items="sppNums"
-                        label="글 수"
+                        :items="sppList"
+                        value="`${spp}`"
+                        label="표시"
                         dense
                         outlined
+                        @input="changeSpp"
                     ></v-select>
                 </v-col>
             </v-row>
@@ -30,13 +32,8 @@
                 </tr>
             </thead>
             <tbody>
-                <tr v-for="article in articles"
-                    :key="article.articleNo">
-                    <td>
-                        <router-link :to="{ name: 'NoticeDetail', params: { articleNo: article.articleNo } }">
-                            {{ article.subject }}
-                        </router-link>
-                    </td>
+                <tr v-for="article in articles" :key="article.articleNo" @click="moveToArticleDetail(article.articleNo)">
+                    <td>{{ article.subject }}</td>
                     <td>{{ article.memberName }}</td>
                     <td>{{ article.hit }}</td>
                     <td>{{ article.like }}</td>
@@ -44,18 +41,11 @@
                 </tr>
             </tbody>
         </v-simple-table>
-        <div class="text-right">
-            <v-btn
-                color="secondary"
-                elevation="3"
-                plain
-            >등록</v-btn>
-        </div>
         <div class="text-center">
             <v-pagination
                 v-model="curPage"
                 :length="maxPage"
-                :total-visible="7"
+                :total-visible="naviSize"
             ></v-pagination>
         </div>
     </v-container>
@@ -68,32 +58,49 @@ export default {
     data () {
         return {
             headers: ['제목', '작성자', '조회수', '추천수', '작성일'],
-            sppNums: ['10', '20', '30', '40', '50'],
+            sppList: ['10', '20', '30', '40', '50'],
             articles: [],
             curPage: 1,
             spp: 10,
-            maxPage: 10
+            maxPage: 1,
+            naviSize: 1,
+            key: "",
+            word: ""
         }
     },
     created() {
-        this.getNewNoticeList(1);
+        this.getNoticeList();
     },
     watch: {
-        pg() {
-            this.getNewNoticeList();
+        curPage() {
+            this.getNoticeList();
+        },
+        spp() {
+            this.getNoticeList();
         }
     },
     methods: {
-        getNewNoticeList() {
+        getNoticeList() {
             http.get(`/article`, {
                 params: {
                     curPage: this.curPage,
-                    spp: this.spp
+                    spp: this.spp,
+                    start: (this.curPage-1) * this.spp
                 }
             })
                 .then(({ data }) => {
-                    this.articles = data;
+                    this.articles = data.articles;
+                    this.curPage = data.pageNavigation.curPage;
+                    this.spp = data.pageNavigation.spp;
+                    this.maxPage = data.pageNavigation.maxPage;
+                    this.naviSize = data.pageNavigation.naviSize;
                 });
+        },
+        moveToArticleDetail(articleNo) {
+            this.$router.push({ name: 'NoticeDetail', params: { articleNo: articleNo } });
+        },
+        changeSpp(newSpp) {
+            this.spp = newSpp;
         }
     }
 }
