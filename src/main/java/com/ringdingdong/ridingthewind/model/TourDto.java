@@ -15,6 +15,7 @@ public class TourDto {
 	private int gugunCode;
 	private double latitude;
 	private double longitude;
+	private String overView;
 	private String mlevel;
 	
 	public int getContentId() {
@@ -107,14 +108,21 @@ public class TourDto {
 	public void setMlevel(String mlevel) {
 		this.mlevel = mlevel;
 	}
+	public String getOverView() {
+		return overView;
+	}
+	public void setOverView(String overView) {
+		this.overView = overView;
+	}
 	@Override
 	public String toString() {
 		return "TourDto [contentId=" + contentId + ", contentTypeId=" + contentTypeId + ", title=" + title + ", addr1="
 				+ addr1 + ", addr2=" + addr2 + ", zipcode=" + zipcode + ", tel=" + tel + ", firstImage=" + firstImage
 				+ ", firstImage2=" + firstImage2 + ", readCount=" + readCount + ", sidoCode=" + sidoCode
-				+ ", gugunCode=" + gugunCode + ", latitude=" + latitude + ", longitude=" + longitude + ", mlevel="
-				+ mlevel + "]";
+				+ ", gugunCode=" + gugunCode + ", latitude=" + latitude + ", longitude=" + longitude + ", overView="
+				+ overView + ", mlevel=" + mlevel + "]";
 	}
+	
 	
 	
 	

@@ -7,6 +7,7 @@
                         color=""
                         elevation="3"
                         plain
+                        @click="moveToNoticeWrite"
                     >등록</v-btn>
                 </v-col>
                 <v-col cols="1">
@@ -32,7 +33,7 @@
                 </tr>
             </thead>
             <tbody>
-                <tr v-for="article in articles" :key="article.articleNo" @click="moveToArticleDetail(article.articleNo)">
+                <tr v-for="article in articles" :key="article.articleNo" @click="moveToNoticeDetail(article.articleNo)">
                     <td>{{ article.subject }}</td>
                     <td>{{ article.memberName }}</td>
                     <td>{{ article.hit }}</td>
@@ -55,6 +56,7 @@
 import http from "@/axios/http.js";
 
 export default {
+    name: "NoticeList",
     data () {
         return {
             headers: ['제목', '작성자', '조회수', '추천수', '작성일'],
@@ -94,10 +96,16 @@ export default {
                     this.spp = data.pageNavigation.spp;
                     this.maxPage = data.pageNavigation.maxPage;
                     this.naviSize = data.pageNavigation.naviSize;
+                })
+                .catch(( error ) => {
+                    this.$router.push('error/error', error);
                 });
         },
-        moveToArticleDetail(articleNo) {
-            this.$router.push({ name: 'NoticeDetail', params: { articleNo: articleNo } });
+        moveToNoticeWrite() {
+            this.$router.push({ name: 'noticeWrite'});
+        },
+        moveToNoticeDetail(articleNo) {
+            this.$router.push({ name: 'noticeDetail', params: { articleNo: articleNo } });
         },
         changeSpp(newSpp) {
             this.spp = newSpp;
