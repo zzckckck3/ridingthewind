@@ -22,13 +22,10 @@ import javax.crypto.spec.SecretKeySpec;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import javax.xml.bind.DatatypeConverter;
 import java.util.Base64;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-
-import static sun.security.x509.CertificateX509Key.KEY;
 
 @RestController
 @RequestMapping(value = "/member")
@@ -145,41 +142,6 @@ public class MemberController {
 
 	}
 
-	// 토큰 만료 확인
-	public boolean isTokenValid(String jwt,Key KEY) {
-		try {
-			Jws<Claims> claims = Jwts.parser().setSigningKey(KEY).parseClaimsJws(jwt);
-			return true;
-		} catch (JwtException e) {
-			return false;
-		}
-	}
-//	public Boolean getExpToken(String jwt) {
-//		try {
-//			Jws<Claims> claims = Jwts.parser().setSigningKey(KEY).parseClaimsJws(jwt);
-//
-//			Date exp = claims.getBody().getExpiration();
-//			Date now = new Date();
-//			if (exp.after(now)) {
-//				System.out.println(7);
-//				return true;
-//			}
-//			return false;
-//		} catch (Exception e) {
-//			return false;
-////			UnauthorizedException("Illegal Token");
-//		}
-////		throw new NullArgumentException("Token is NULL");
-//	}
-
-	public String getUserUID(String jwt) throws RuntimeException{
-		try {
-			Jws<Claims> claims = Jwts.parser().setSigningKey(KEY).parseClaimsJws(jwt);
-			return String.valueOf(claims.getBody().get("uid"));
-		} catch (Exception e) {
-			return null;
-		}
-	}
 
 
 // 마이페이지 이동 메서드
