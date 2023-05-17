@@ -5,6 +5,7 @@ import com.ringdingdong.ridingthewind.model.mapper.MemberMapper;
 import com.ringdingdong.ridingthewind.util.PasswordEncryptor;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -35,7 +36,7 @@ public class MemberServiceImpl implements MemberService {
 
 	@Override
 	public MemberDto loginMember(Map<String, String> map) throws Exception {
-		map.replace("memberPw", PasswordEncryptor.encrypt(map.get("memberPw")));
+		//map.replace("memberPw", PasswordEncryptor.encrypt(map.get("memberPw")));
 		return memberMapper.loginMember(map);
 	}
 	
@@ -58,6 +59,14 @@ public class MemberServiceImpl implements MemberService {
 	@Override
 	public void deleteMember(String memberId) throws Exception {
 		memberMapper.deleteMember(memberId);		
+	}
+
+	@Override
+	public void saveRefreshToken(String memberId, String refreshToken) {
+		Map<String, String> map = new HashMap<>();
+		map.put("memberId", memberId);
+		map.put("token", refreshToken);
+		memberMapper.saveRefreshToken(map);
 	}
 
 

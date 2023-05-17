@@ -1,34 +1,51 @@
 package com.ringdingdong.ridingthewind.controller;
 
+import com.ringdingdong.ridingthewind.enumerate.ResponseResult;
 import com.ringdingdong.ridingthewind.model.MemberDto;
+import com.ringdingdong.ridingthewind.model.service.JwtServiceImpl;
 import com.ringdingdong.ridingthewind.model.service.MemberService;
 import com.ringdingdong.ridingthewind.model.service.MemberServiceImpl;
+import io.jsonwebtoken.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Key;
+
+import javax.crypto.spec.SecretKeySpec;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.util.Base64;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 
 @RestController
 @RequestMapping(value = "/member")
-
 public class MemberController {
 
 	private final Logger logger = LoggerFactory.getLogger(MemberController.class);
 
+	@Autowired
 	private MemberService memberService;
 
+	@Autowired
+	private JwtServiceImpl jwtService;
+
+	@Autowired
 	public MemberController(MemberService memberService) {
 		super();
 		this.memberService = memberService;
 	}
+
+
 
 	@GetMapping("/join")
 	public String join() {
@@ -91,33 +108,41 @@ public class MemberController {
 
 
 	@PostMapping("/login")
-	public String login(@RequestParam Map<String, String> map, @RequestParam(name = "saveid", required = false) String saveid, Model model, HttpSession session, HttpServletResponse response) {
+	public ResponseEntity<?> login(@RequestBody Map<String, String> map, @RequestParam(name = "saveid", required = false) String saveid, HttpSession session, HttpServletResponse response) {
 		logger.debug("login map : {}", map);
-		System.out.println("로그인 접속");
+		Map<String, Object>  resultMap = new HashMap<>();
+		HttpStatus status = null;
 		try {
 			MemberDto memberDto = memberService.loginMember(map);
 			if(memberDto != null) {
-				session.setAttribute("memberinfo", memberDto);
+				String accessToken = jwtService.createAccessToken("memberId", memberDto.getMemberId());
+				String refreshToken = jwtService.createRefreshToken("memberId", memberDto.getMemberId());
 
-				Cookie cookie = new Cookie("memberInfo", map.get("memberId"));
-				cookie.setPath("/");
-				if("ok".equals(saveid)) {
-					cookie.setMaxAge(60*60*24*365*40);
-				} else {
-					cookie.setMaxAge(0);
-				}
-				response.addCookie(cookie);
-				return "redirect:/";
+				memberService.saveRefreshToken(memberDto.getMemberId(), refreshToken);
+
+				logger.debug("로그인 accessToken 정보 : {}", accessToken);
+				logger.debug("로그인 refreshToken 정보 : {}", refreshToken);
+
+				resultMap.put("access-token", accessToken);
+				resultMap.put("refresh-token", refreshToken);
+				resultMap.put("message", ResponseResult.SUCCESS.name());
+
+				status = HttpStatus.ACCEPTED;
+
 			} else {
-				model.addAttribute("msg", "아이디 또는 비밀번호 확인 후 다시 로그인하세요!");
-				return "member/signin";
+				resultMap.put("message", ResponseResult.FAIL.name());
+				status = HttpStatus.ACCEPTED;
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
-			model.addAttribute("msg", "로그인 중 문제 발생!!!");
-			return "error/error";
+			logger.error("로그인 실패 : {}", e);
+			resultMap.put("message", e.getMessage());
+			status = HttpStatus.INTERNAL_SERVER_ERROR;
 		}
+		return new ResponseEntity<Map<String, Object>>(resultMap, status);
+
 	}
+
+
 
 // 마이페이지 이동 메서드
 //	@GetMapping(value="/viewinfo")

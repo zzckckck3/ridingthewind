@@ -1,0 +1,80 @@
+<template>
+    <v-dialog v-model="dialog" max-width="300">
+        <v-card>
+            <v-card-title class="text-h6">
+                게시글을 정말<br />등록하시겠습니까?
+            </v-card-title>
+            <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn
+                    color="red darken-1"
+                    text
+                    @click.stop="writeNotice">
+                    등록
+                </v-btn>
+                <v-btn
+                    color="grey darken-1"
+                    text
+                    @click.stop="dialog = false">
+                    취소
+                </v-btn>
+            </v-card-actions>
+        </v-card>
+    </v-dialog>
+</template>
+
+<script>
+import http from "@/axios/http.js";
+
+export default {
+    name: "WriteConfirmDialog",
+    props: {
+        value: {
+            type: Boolean,
+            required: true,
+        },
+        subject: {
+            type: String,
+            required: true,
+        },
+        content: {
+            type: String,
+            required: true,
+        }
+    },
+    computed: {
+        dialog: {
+            get() {
+                return this.value;
+            },
+            set(value) {
+                this.$emit('input', value);
+            },
+        },
+    },
+    methods: {
+        writeNotice() {
+            this.dialog = false;
+            let articleInfo = {
+                articleNo: 1238712043,
+                memberId: "byh9811",
+                subject: this.subject,
+                content: this.content
+            };
+
+            http.post(`/article`, JSON.stringify(articleInfo))
+                .then(({ data }) => {
+                    if (data == "SUCCESS") {
+                        alert("등록 성공");
+                    } else {
+                        alert("등록 실패");
+                    }
+                    this.$router.push({ name: "notice" });
+                })
+                .catch(( error ) => {
+                    this.$router.push('error/error', error);
+                });
+        }
+    }
+};
+</script>

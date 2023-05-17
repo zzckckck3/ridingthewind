@@ -7,7 +7,7 @@
           <v-card>
             <div class="pa-10">
               <h1 style="text-align: center" class="mb-10">Login</h1>
-              <form>
+
                 <v-text-field
                   label="ID"
                   prepend-inner-icon="mdi-account"
@@ -23,7 +23,7 @@
                 >
                 </v-text-field>
                 <v-btn
-                  type="submit"
+                  type="button"
                   color="blue lighten-1 text-capitalize"
                   depressed
                   large
@@ -44,7 +44,6 @@
                 >
                   Sign Up
                 </v-btn>
-              </form>
             </div>
           </v-card>
         </v-flex>
@@ -54,7 +53,9 @@
 </template>
 
 <script>
-export const loginurl = "localhost:80/member/login";
+
+import http from "@/axios/http";
+export const loginurl = "/member/login";
 export default {
   data() {
     return {
@@ -67,27 +68,30 @@ export default {
   methods: {
     loginSubmit(){
         let saveData = {};
-        saveData.userId = this.userId;
-        saveData.userPwd = this.userPwd;
+        saveData.memberId = this.userId;
+        saveData.memberPw = this.userPwd;
+        alert(saveData.memberId);
+        alert(saveData.memberPw);
         try{
-            this.$axios
-                .post(loginurl, JSON.stringify(saveData), {
-                    headers: {
-                        "Content-Type": `application/json`,
-                    },
-                })
-                .then((res) => {
-                if(res.status === 200) {
+            http.post(loginurl, saveData).then(response => {
+                alert(response);
+                alert("멈춰");
+                if(response.status === 200) {
+                    alert(response.status);
                     // 로그인 성공시 처리
-                    this.$router.push('/');
+                    this.$router.push({name:'home'});
+                }else{
+                    // this.$router.push({name:'signin'});
                 }
             });
-        } catch (error) {
-            console.error(error);
+        }catch(error){
+            this.$router.push({name:'user/signin'});
+
         }
+
     },
       addUserShow(){
-
+        this.$router.push({name:'user/signup'});
       }
 
   },

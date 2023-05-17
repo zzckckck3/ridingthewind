@@ -18,9 +18,9 @@
 
 	<insert id="writeArticle" parameterType="articleDto">
 		<selectKey resultType="int" keyProperty="articleNo" order="BEFORE">
-			select max(article_no) + 1
+			select max(article_no) + 1 from article
 		</selectKey>
-		insert into article (articleNo, member_id, subject, content)
+		insert into article (article_no, member_id, subject, content)
 		values (#{articleNo}, #{memberId}, #{subject}, #{content})
 	</insert>
 	
@@ -41,7 +41,7 @@
 		where a.member_id = m.member_id
 		<include refid="search"></include>
 		order by a.article_no desc
-		limit #{start}, #{listsize}
+		limit #{start}, #{spp}
 	</select>
 	
 	<select id="getTotalArticleCount" parameterType="map" resultType="int">

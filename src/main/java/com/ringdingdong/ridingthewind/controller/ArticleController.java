@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.ringdingdong.ridingthewind.enumerate.ResponseResult;
 import com.ringdingdong.ridingthewind.model.ArticleDto;
 import com.ringdingdong.ridingthewind.model.ArticleParameterDto;
+import com.ringdingdong.ridingthewind.model.NoticeListResponseDto;
 import com.ringdingdong.ridingthewind.model.service.ArticleService;
 
 import io.swagger.annotations.Api;
@@ -44,7 +45,7 @@ public class ArticleController {
 
 	@ApiOperation(value = "게시판 글목록", notes = "모든 게시글의 정보를 반환한다.", response = List.class)
 	@GetMapping
-	public ResponseEntity<List<ArticleDto>> listArticle(@ApiParam(value = "게시글을 얻기위한 부가정보.", required = true) ArticleParameterDto articleParameterDto) throws Exception {
+	public ResponseEntity<NoticeListResponseDto> listArticle(@ApiParam(value = "게시글을 얻기위한 부가정보.", required = true) ArticleParameterDto articleParameterDto) throws Exception {
 		return new ResponseEntity<>(articleService.listArticle(articleParameterDto), HttpStatus.OK);
 	}
 

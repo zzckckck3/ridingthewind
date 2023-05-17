@@ -19,8 +19,11 @@ ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
 
--- articleDto 테이블 생성
-CREATE TABLE IF NOT EXISTS `riding_the_wind`.`articleDto` (
+alter table `member`
+add column `token` varchar(1000) null default null after `join_date`;
+
+-- article 테이블 생성
+CREATE TABLE IF NOT EXISTS `riding_the_wind`.`article` (
   `article_no` INT NOT NULL AUTO_INCREMENT,
   `member_id` VARCHAR(16) NULL DEFAULT NULL,
   `subject` VARCHAR(100) NULL DEFAULT NULL,
