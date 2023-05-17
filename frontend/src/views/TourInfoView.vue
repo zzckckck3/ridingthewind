@@ -1,5 +1,8 @@
 <template>
-<v-container class="bv-example-row mt-3 text-center">
+<v-container 
+    class="bv-example-row mt-3 text-center"
+    style="max-width: 1000px;"
+    >
 <h3 class="underline-hotpink">
     <b-icon icon="journals"></b-icon> Tour info
 </h3>
@@ -9,6 +12,6 @@
 
 <script>
 export default {
-name: "TourInfoView",
+    name: 'TourInfoView',
 };
 </script>
