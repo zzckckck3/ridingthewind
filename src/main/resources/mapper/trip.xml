@@ -14,7 +14,7 @@
 		<result column="gugun_name" property="gugunName"/>
 	</resultMap>
 	
-	<resultMap type="TourDto" id="tripinfo">
+	<resultMap type="TourDto" id="tourinfo">
 		<result column="content_id" property="contentId"/>
 		<result column="content_type_id" property="contentTypeId"/>
 		<result column="title" property="title"/>
@@ -30,6 +30,7 @@
 		<result column="latitude" property="latitude"/>
 		<result column="longitude" property="longitude"/>
 		<result column="mlevel" property="mlevel"/>
+		<result column="overview" property="overView"/>
 	</resultMap>
 	
 	
@@ -43,9 +44,10 @@
 		where sido_code = #{sidoCode}
 	</select>
 	
-	<select id="getList" parameterType="int" resultType="TourDto" resultMap="tripinfo">
-		select * from attraction_info 
-		where sido_code = #{sidoCode} and gugun_code = #{gugunCode}
+	<select id="getList" parameterType="int" resultType="TourDto" resultMap="tourinfo">
+		select * from attraction_info i join attraction_description d
+		on i.content_id = d.content_id
+		where i.sido_code = #{sidoCode} and i.gugun_code = #{gugunCode}
 	</select>
 	
 	<insert id="addtour">
