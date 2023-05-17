@@ -65,6 +65,11 @@ document.querySelector("#search-area").addEventListener("change", () => {
     }
 });
 
+
+
+
+
+
 var contentType = [12, 14, 15, 25, 28, 32, 38, 39];
 // 검색 버튼을 누르면..
 // 위 데이터를 가지고 공공데이터에 요청.
