@@ -2,16 +2,14 @@ package com.ringdingdong.ridingthewind.model.service;
 
 import com.ringdingdong.ridingthewind.model.ArticleDto;
 import com.ringdingdong.ridingthewind.model.ArticleParameterDto;
-import com.ringdingdong.ridingthewind.util.PageNavigation;
-
-import java.util.List;
-import java.util.Map;
+import com.ringdingdong.ridingthewind.model.NoticeListResponseDto;
+import com.ringdingdong.ridingthewind.model.PageNavigationResponseDto;
 
 public interface ArticleService {
 
 	boolean writeArticle(ArticleDto articleDto) throws Exception;
-	List<ArticleDto> listArticle(ArticleParameterDto articleParameterDto) throws Exception;
-	PageNavigation makePageNavigation(Map<String, String> map) throws Exception;
+	NoticeListResponseDto listArticle(ArticleParameterDto articleParameterDto) throws Exception;
+	PageNavigationResponseDto makePageNavigation(ArticleParameterDto articleParameterDto) throws Exception;
 	ArticleDto getArticle(int articleNo) throws Exception;
 	boolean updateHit(int articleNo) throws Exception;
 	
