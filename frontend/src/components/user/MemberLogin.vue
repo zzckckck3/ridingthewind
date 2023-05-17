@@ -81,18 +81,17 @@ export default {
                     // 로그인 성공시 처리
                     this.$router.push({name:'home'});
                 }else{
-                    alert("로그인 실패함 다시하셈 아무튼 다시해 다시다시다시1");
                     // this.$router.push({name:'signin'});
                 }
             });
         }catch(error){
-            alert("로그인 실패함 다시하셈 아무튼 다시해 다시다시다시2");
             this.$router.push({name:'user/signin'});
 
         }
 
     },
       addUserShow(){
+        this.$router.push({name:'user/signup'});
       }
 
   },
