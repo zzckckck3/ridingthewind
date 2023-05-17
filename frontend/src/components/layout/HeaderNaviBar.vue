@@ -3,7 +3,7 @@
 
         <!-- 좌 상단 홈 버튼 -->
         <v-col cols="auto">
-            <v-btn elevation="8" size="x-large" :to="{ name: 'home' }">홈(버튼 좀 구진듯)</v-btn>
+            <v-btn elevation="2" size="x-large" :to="{ name: 'home' }" class="white"><v-img src="@/assets/img/logo.png" :width="100" :to="{ name: 'home' }"></v-img></v-btn>
         </v-col>
 
 
@@ -38,7 +38,7 @@
                 v-bind="attrs"
                 v-on="on"
                 >
-                ID들어감
+                UserId
                 </v-btn>
             </template>
 
@@ -63,27 +63,25 @@
 
                 <v-divider></v-divider>
 
-                <v-list>
-                    <v-list-item>
-                        <v-list-item-action>
-                        <v-switch
-                            v-model="message"
-                            color="purple"
-                        ></v-switch>
-                        </v-list-item-action>
-                        <v-list-item-title>Enable messages</v-list-item-title>
-                    </v-list-item>
-
-                    <v-list-item>
-                        <v-list-item-action>
-                        <v-switch
-                            v-model="hints"
-                            color="purple"
-                        ></v-switch>
-                        </v-list-item-action>
-                        <v-list-item-title>Enable hints</v-list-item-title>
-                    </v-list-item>
-                </v-list>
+                <v-list rounded>
+                    <v-subheader>REPORTS</v-subheader>
+                    <v-list-item-group
+                        v-model="selectedItem"
+                        color="primary"
+                    >
+                        <v-list-item
+                        v-for="(item, i) in items"
+                        :key="i"
+                        >
+                        <v-list-item-icon>
+                            <v-icon v-text="item.icon"></v-icon>
+                        </v-list-item-icon>
+                        <v-list-item-content>
+                            <v-list-item-title v-text="item.text"></v-list-item-title>
+                        </v-list-item-content>
+                        </v-list-item>
+                    </v-list-item-group>
+                    </v-list>
 
                 <v-card-actions>
                     <v-spacer></v-spacer>
@@ -112,6 +110,12 @@
 export default {
     data: () => ({
         links: ["공지사항", "로그인", "회원가입", "마이페이지", "로그아웃", "FAQS"],
+        selectedItem: 1,
+      items: [
+        { text: 'Real-Time', icon: 'mdi-clock' },
+        { text: 'Audience', icon: 'mdi-account' },
+        { text: 'Conversions', icon: 'mdi-flag' },
+      ],
     }),
 };
 </script>

@@ -4,7 +4,7 @@
             <v-row>
                 <!--Left Container-->
                 <v-col class="text-center" cols="12" sm="2">
-                    <v-sheet class="grey lighten-5" rounded="lg" min-height="268">
+                    <v-sheet class="grey lighten-5" rounded="lg" min-height="268" elevation="8">
                         Left Container
                     </v-sheet>
                 </v-col>
@@ -26,7 +26,7 @@
                                 >
                                 <div class="d-flex fill-height justify-center align-center">
                                     <div class="text-h2">
-                                        Slide {{ i + 1 }}
+                                        Manager Custom {{ i + 1 }}
                                     </div>
                                 </div>
                             </v-sheet>
@@ -38,8 +38,8 @@
 
                 <!--Right Container-->
                 <v-col class="text-center" cols="12" sm="2">
-                    <v-sheet class="grey lighten-5" rounded="lg" min-height="268">
-                        Right Container
+                    <v-sheet class="grey lighten-5" rounded="lg" min-height="268" elevation="8">
+                        아마도 광고
                     </v-sheet>
                 </v-col>
             </v-row>
