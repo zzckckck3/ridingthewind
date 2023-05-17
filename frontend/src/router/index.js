@@ -40,10 +40,10 @@ const routes = [
     path: "/tour",
     name: "tour",
     component: () => import(/* webpackChunkName: "trip" */ "@/views/TourInfoView.vue"),
-    redirect: "/tour/info",
+    redirect: "/tour/sido",
     children: [
       {
-        path: "info",
+        path: "sido",
         name: "tourinfo",
         component: () =>
           import(/* webpackChunkName: "board" */ "@/components/tour/TourSearchInfo.vue"),

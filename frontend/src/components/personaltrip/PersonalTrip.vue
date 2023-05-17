@@ -21,7 +21,7 @@
           </v-col>
 
           <!-- Center tour pick position -->
-          <v-col cols=3>
+          <v-col cols=3 >
             <v-sheet
               min-height="70vh"
               max-height="100"
@@ -30,12 +30,16 @@
               class="grey lighten-5 overflow-auto"
               style="padding: 10px;"
             >
-
+              <v-container fluid style="min-width: 100px;">
+                <v-row dense class="card-list">
+                  
+                </v-row>
+              </v-container>
             </v-sheet>
           </v-col>
 
           <!-- Right tour just pick position -->
-          <v-col cols=3>
+          <v-col cols=3 >
             <v-sheet
               min-height="70vh"
               max-height="100"
@@ -45,13 +49,14 @@
               style="padding: 10px;"
             >
               <v-container fluid>
-                <v-row dense>
+                <v-row dense class="card-list">
                   <v-col
                     v-for="card in cards"
                     :key="card.title"
                     :cols="card.flex"
                   >
-                    <v-card>
+                  
+                    <v-card >
                       <v-img
                         :src="card.src"
                         class="white--text align-end"
@@ -60,8 +65,6 @@
                       >
                         <v-card-title v-text="card.title" style="font-size: medium;"></v-card-title>
                       </v-img>
-                      
-
                       <v-card-actions>
                         <v-spacer></v-spacer>
                         <!-- 버튼 추가 할거면 여기 -->
@@ -94,16 +97,30 @@
 </template>
 
 <script>
-  export default {
-    data: () => ({
-      cards: [
-        { title: 'Pre-fab homes', src: 'https://cdn.vuetifyjs.com/images/cards/house.jpg', text:'1번 예시입니다', flex: 6, show: false },
-        { title: 'Favorite road trips', src: 'https://cdn.vuetifyjs.com/images/cards/road.jpg', text:'2번 예시입니다', flex: 6, show: false },
-        { title: 'Best airlines', src: 'https://cdn.vuetifyjs.com/images/cards/plane.jpg', text: '3번 예시입니다.', flex: 6, show: false },
-        { title: 'Pre-fab homes', src: 'https://cdn.vuetifyjs.com/images/cards/house.jpg', text:'1번 예시입니다', flex: 6, show: false },
-        { title: 'Favorite road trips', src: 'https://cdn.vuetifyjs.com/images/cards/road.jpg', text:'2번 예시입니다', flex: 6, show: false },
-        { title: 'Best airlines', src: 'https://cdn.vuetifyjs.com/images/cards/plane.jpg', text:'3번 예시입니다.', flex: 6, show: false },
-      ],
-    }),
-  }
+import Sortable from 'sortablejs';
+
+export default {
+  mounted() {
+    const columns = document.querySelectorAll(".card-list");
+
+    columns.forEach((column) => {
+      new Sortable(column, {
+        group: "shared",
+        animation: 150,
+        ghostClass: "blue-background-class"
+      });
+    });
+  },
+  data: () => ({
+    cards: [
+      { title: 'Pre-fab homes', src: 'https://cdn.vuetifyjs.com/images/cards/house.jpg', text: '1번 예시입니다', flex: 6, show: false },
+      { title: 'Favorite road trips', src: 'https://cdn.vuetifyjs.com/images/cards/road.jpg', text: '2번 예시입니다', flex: 6, show: false },
+      { title: 'Best airlines', src: 'https://cdn.vuetifyjs.com/images/cards/plane.jpg', text: '3번 예시입니다.', flex: 6, show: false },
+      { title: 'Pre-fab homes2', src: 'https://cdn.vuetifyjs.com/images/cards/house.jpg', text: '1번 예시입니다', flex: 6, show: false },
+      { title: 'Favorite road trips2', src: 'https://cdn.vuetifyjs.com/images/cards/road.jpg', text: '2번 예시입니다', flex: 6, show: false },
+      { title: 'Best airlines2', src: 'https://cdn.vuetifyjs.com/images/cards/plane.jpg', text: '3번 예시입니다.', flex: 6, show: false },
+   ],
+  }),
+};
 </script>
+
