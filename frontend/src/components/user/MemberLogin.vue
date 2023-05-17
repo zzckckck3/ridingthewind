@@ -70,28 +70,25 @@ export default {
         let saveData = {};
         saveData.memberId = this.userId;
         saveData.memberPw = this.userPwd;
-        alert(saveData.memberId);
-        alert(saveData.memberPw);
         try{
             http.post(loginurl, saveData).then(response => {
-                alert(response);
-                alert("멈춰");
-                if(response.status === 200) {
-                    alert(response.status);
+                if(response.status === 202) {
+                    alert("로그인에 성공하였습니다.");
                     // 로그인 성공시 처리
                     this.$router.push({name:'home'});
                 }else{
                     // this.$router.push({name:'signin'});
+                    alert("로그인 실패");
                 }
             });
         }catch(error){
-            this.$router.push({name:'user/signin'});
+            this.$router.push({name:'signin'});
 
         }
 
     },
       addUserShow(){
-        this.$router.push({name:'user/signup'});
+        this.$router.push({name:'signup'});
       }
 
   },

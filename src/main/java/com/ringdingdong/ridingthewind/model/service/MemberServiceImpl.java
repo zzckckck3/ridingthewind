@@ -30,7 +30,7 @@ public class MemberServiceImpl implements MemberService {
 
 	@Override
 	public void joinMember(MemberDto memberDto) throws Exception {
-		memberDto.setMemberPassword(PasswordEncryptor.encrypt(memberDto.getMemberPassword()));
+//		memberDto.setMemberPassword(PasswordEncryptor.encrypt(memberDto.getMemberPassword()));
 		memberMapper.joinMember(memberDto);
 	}
 
