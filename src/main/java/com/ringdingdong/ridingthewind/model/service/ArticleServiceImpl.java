@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class ArticleServiceImpl implements ArticleService {
 
-	private ArticleMapper articleMapper;
+	private final ArticleMapper articleMapper;
 
 	@Override
 	public boolean writeArticle(ArticleDto articleDto) throws Exception {
