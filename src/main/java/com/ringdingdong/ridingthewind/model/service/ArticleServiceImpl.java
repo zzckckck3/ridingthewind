@@ -1,16 +1,13 @@
 package com.ringdingdong.ridingthewind.model.service;
 
+import com.ringdingdong.ridingthewind.enumerate.Constant;
 import com.ringdingdong.ridingthewind.model.ArticleDto;
 import com.ringdingdong.ridingthewind.model.ArticleParameterDto;
+import com.ringdingdong.ridingthewind.model.NoticeListResponseDto;
 import com.ringdingdong.ridingthewind.model.mapper.ArticleMapper;
-import com.ringdingdong.ridingthewind.util.PageNavigation;
-import com.ringdingdong.ridingthewind.util.SizeConstant;
+import com.ringdingdong.ridingthewind.model.PageNavigationResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -24,47 +21,25 @@ public class ArticleServiceImpl implements ArticleService {
 	}
 
 	@Override
-	public List<ArticleDto> listArticle(ArticleParameterDto articleParameterDto) throws Exception {
-		Map<String, Object> param = new HashMap<String, Object>();
-		String key = articleParameterDto.getKey();
-		param.put("key", key == null ? "" : key);
-		param.put("word", articleParameterDto.getWord() == null ? "" : articleParameterDto.getWord());
-		int pgNo = articleParameterDto.getPg();
-		int start = (pgNo - 1) * articleParameterDto.getSpp();
-		param.put("start", start);
-		param.put("listsize", articleParameterDto.getSpp());
-
-		return articleMapper.listArticle(param);
+	public NoticeListResponseDto listArticle(ArticleParameterDto articleParameterDto) throws Exception {
+		return NoticeListResponseDto.builder()
+				.articles(articleMapper.listArticle(articleParameterDto))
+				.pageNavigation(makePageNavigation(articleParameterDto))
+				.build();
 	}
 
 	@Override
-	// 변경 예정
-	public PageNavigation makePageNavigation(Map<String, String> map) throws Exception {
-		PageNavigation pageNavigation = new PageNavigation();
+	public PageNavigationResponseDto makePageNavigation(ArticleParameterDto articleParameterDto) throws Exception {
+		int spp = articleParameterDto.getSpp();
+		int totalCount = articleMapper.getTotalArticleCount(articleParameterDto);
+		int maxPage = (totalCount - 1) / spp + 1;
 
-		int naviSize = SizeConstant.NAVIGATION_SIZE;
-		int sizePerPage = SizeConstant.LIST_SIZE;
-		int currentPage = Integer.parseInt(map.get("pgno"));
-
-		pageNavigation.setCurrentPage(currentPage);
-		pageNavigation.setNaviSize(naviSize);
-		Map<String, Object> param = new HashMap<String, Object>();
-		String key = map.get("key");
-//		if ("memberid".equals(key))
-//			key = "member_id";
-		param.put("key",  key == null ? "" : key);
-		param.put("word", map.get("word") == null ? "" : map.get("word"));
-		int totalCount = articleMapper.getTotalArticleCount(param);
-		pageNavigation.setTotalCount(totalCount);
-		int totalPageCount = (totalCount - 1) / sizePerPage + 1;
-		pageNavigation.setTotalPageCount(totalPageCount);
-		boolean startRange = currentPage <= naviSize;
-		pageNavigation.setStartRange(startRange);
-		boolean endRange = (totalPageCount - 1) / naviSize * naviSize < currentPage;
-		pageNavigation.setEndRange(endRange);
-		pageNavigation.makeNavigator();
-
-		return pageNavigation;
+		return PageNavigationResponseDto.builder()
+				.naviSize(Constant.BASIC.getNavigationSize())
+				.spp(spp)
+				.curPage(articleParameterDto.getCurPage())
+				.maxPage(maxPage)
+				.build();
 	}
 
 	@Override

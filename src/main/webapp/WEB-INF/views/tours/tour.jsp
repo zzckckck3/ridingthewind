@@ -93,7 +93,7 @@
 							<label class="row justify-content-center">음식점</label></div>
 						</form>
 					</div>
-		
+		12
 				</div>
 			</div>
 		</div>
