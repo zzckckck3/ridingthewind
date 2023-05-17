@@ -1,6 +1,7 @@
 package com.ringdingdong.ridingthewind.model.mapper;
 
 import com.ringdingdong.ridingthewind.model.ArticleDto;
+import com.ringdingdong.ridingthewind.model.ArticleParameterDto;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.sql.SQLException;
@@ -13,8 +14,8 @@ public interface ArticleMapper {
 	int writeArticle(ArticleDto articleDto) throws SQLException;
 
 	// Select
-	List<ArticleDto> listArticle(Map<String, Object> param) throws SQLException;
-	int getTotalArticleCount(Map<String, Object> param) throws SQLException;
+	List<ArticleDto> listArticle(ArticleParameterDto articleParameterDto) throws SQLException;
+	int getTotalArticleCount(ArticleParameterDto articleParameterDto) throws SQLException;
 	ArticleDto getArticle(int articleNo) throws SQLException;
 
 	// Update

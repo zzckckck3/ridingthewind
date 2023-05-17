@@ -41,7 +41,7 @@
 		where a.member_id = m.member_id
 		<include refid="search"></include>
 		order by a.article_no desc
-		limit #{start}, #{listsize}
+		limit #{start}, #{spp}
 	</select>
 	
 	<select id="getTotalArticleCount" parameterType="map" resultType="int">
