@@ -35,6 +35,7 @@
                 outlined
             ></v-select>
             <v-btn
+                @click="markList"
                 class="ma-2"
                 outlined
                 large
@@ -79,6 +80,7 @@ export default {
             selectedGugun: null,
             selectedContentById: [],
             positions: [],
+            markers: [],
             contentByType: [{id: 12, value: "관광지"},
                             { id: 14, value: "문화시설" },
                             { id: 15, value: "축제공연행사" },
@@ -148,57 +150,82 @@ export default {
                     this.gugun = response.data;
                 });
         },
-        // marklist() {
-        //     http.get(`/tour/attraction-info?search-area=${this.selectedSido}&search-area-gu=${this.selectedGugun}`)
-        //         .then((response) => {
-        //             let mark
-        //         });
-        // },
-        // displayMarker() {
-        //     var imageSrc = "";
-        //     let index = 0;
-        //     // 마커 이미지
-        //     for (var i = 0; i < positions.length; i++) {
-        //         if(selectedContentById.includes){
-        //             continue;
-        //         }
-        //         mark_position.push(i);
+        markList() {
+            http.get(`/tour/attraction-info?search-area=${this.selectedSido}&search-area-gu=${this.selectedGugun}`)
+                .then((response) => {
+                    // console.log(response.data);
+                    response.data.forEach((area) => {
+                        let markerInfo = {
+                            id: area.contentId,
+                            img: area.firstImage,
+                            title: area.title,
+                            addr_1: area.addr1,
+                            addr_2: area.addr2,
+                            zip: area.zipcode,
+                            tel: area.tel,
+                            contenttypeid: area.contentTypeId,
+                            latlng: new window.kakao.maps.LatLng(area.latitude, area.longitude),
+                        };
+                        this.positions.push(markerInfo);
+                    });
+                })
+                .then(() => { 
+                    this.removeMarker();
+                    this.displayMarker();
+                });
+        },
+        displayMarker() {
+            var imageSrc = "";
+            let index = 0;
+            // 마커 이미지
+            for (var i = 0; i < this.positions.length; i++) {
+                if(!this.selectedContentById.includes(this.positions[i].contenttypeid)){
+                    continue;
+                }
 
-        //         if (contentTypeIds[i] == 12) {
-        //             imageSrc = "/assets/img/mark/mark1.png";
-        //         }else if(contentTypeIds[i] == 14){
-        //             imageSrc = "/assets/img/mark/mark2.png";
-        //         }else if(contentTypeIds[i] == 15){
-        //             imageSrc = "/assets/img/mark/mark3.png";
-        //         }else if(contentTypeIds[i] == 25){
-        //             imageSrc = "/assets/img/mark/mark4.png";
-        //         }else if(contentTypeIds[i] == 28){
-        //             imageSrc = "/assets/img/mark/mark5.png";
-        //         }else if(contentTypeIds[i] == 32){
-        //             imageSrc = "/assets/img/mark/mark6.png";
-        //         }else if(contentTypeIds[i] == 38){
-        //             imageSrc = "/assets/img/mark/mark7.png";
-        //         }else if(contentTypeIds[i] == 39){
-        //             imageSrc = "/assets/img/mark/mark8.png";
-        //         }
+                if (this.positions[i].contenttypeid == 12) {
+                    imageSrc = require("@/assets/mark/mark1.png");
+                }else if(this.positions[i].contenttypeid == 14){
+                    imageSrc = require("@/assets/mark/mark2.png");
+                }else if(this.positions[i].contenttypeid == 15){
+                    imageSrc = require("@/assets/mark/mark3.png");
+                }else if(this.positions[i].contenttypeid == 25){
+                    imageSrc = require("@/assets/mark/mark4.png");
+                }else if(this.positions[i].contenttypeid == 28){
+                    imageSrc = require("@/assets/mark/mark5.png");
+                }else if(this.positions[i].contenttypeid == 32){
+                    imageSrc = require("@/assets/mark/mark6.png");
+                }else if(this.positions[i].contenttypeid == 38){
+                    imageSrc = require("@/assets/mark/mark7.png");
+                }else if(this.positions[i].contenttypeid == 39){
+                    imageSrc = require("@/assets/mark/mark8.png");
+                }
         
 
-        //         // 마커 이미지의 이미지 크기 입니다
-        //         /*var imageSize = new kakao.maps.Size(100, 80);*/
-        //         var imageSize = new kakao.maps.Size(100, 69); // 마커이미지의 크기입니다
+                // 마커 이미지의 이미지 크기 입니다
+                /*var imageSize = new kakao.maps.Size(100, 80);*/
+                var imageSize = new window.kakao.maps.Size(100, 69); // 마커이미지의 크기입니다
             
-        //         // 마커 이미지를 생성합니다
-        //         var markerImage = new kakao.maps.MarkerImage(imageSrc, imageSize);
+                // 마커 이미지를 생성합니다
+                var markerImage = new window.kakao.maps.MarkerImage(imageSrc, imageSize);
 
-        //         // 마커를 생성합니다
-        //         markers[index++] = new kakao.maps.Marker({
-        //             map: map, // 마커를 표시할 지도
-        //             position: positions[i].latlng, // 마커를 표시할 위치
-        //             title: positions[i].title, // 마커의 타이틀, 마커에 마우스를 올리면 타이틀이 표시됩니다
-        //             image: markerImage, // 마커 이미지
-        //         });
-        //     }
-        // }
+                // 마커를 생성합니다
+                this.markers[index++] = new window.kakao.maps.Marker({
+                    map: this.map, // 마커를 표시할 지도
+                    position: this.positions[i].latlng, // 마커를 표시할 위치
+                    title: this.positions[i].title, // 마커의 타이틀, 마커에 마우스를 올리면 타이틀이 표시됩니다
+                    image: markerImage, // 마커 이미지
+                });
+            }
+            // 첫번째 검색 정보를 이용하여 지도 중심을 이동 시킵니다
+            this.map.setCenter(this.positions[0].latlng);
+        },
+        removeMarker() {
+            for ( var i = 0; i < this.markers.length; i++ ) {
+                this.markers[i].setMap(null);
+            }   
+            this.markers = [];
+        }
         
 
     },
