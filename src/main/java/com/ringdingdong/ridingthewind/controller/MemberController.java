@@ -1,6 +1,8 @@
 package com.ringdingdong.ridingthewind.controller;
 
+import com.ringdingdong.ridingthewind.enumerate.ResponseResult;
 import com.ringdingdong.ridingthewind.model.MemberDto;
+import com.ringdingdong.ridingthewind.model.service.JwtServiceImpl;
 import com.ringdingdong.ridingthewind.model.service.MemberService;
 import com.ringdingdong.ridingthewind.model.service.MemberServiceImpl;
 import io.jsonwebtoken.*;
@@ -23,6 +25,7 @@ import javax.servlet.http.HttpSession;
 import javax.xml.bind.DatatypeConverter;
 import java.util.Base64;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 
 import static sun.security.x509.CertificateX509Key.KEY;
@@ -33,7 +36,11 @@ public class MemberController {
 
 	private final Logger logger = LoggerFactory.getLogger(MemberController.class);
 
+	@Autowired
 	private MemberService memberService;
+
+	@Autowired
+	private JwtServiceImpl jwtService;
 
 	@Autowired
 	public MemberController(MemberService memberService) {
@@ -42,8 +49,6 @@ public class MemberController {
 	}
 
 
-	@Value("${ridingthewind.jwt.secretKey}")
-	private String secretKey;
 
 	@GetMapping("/join")
 	public String join() {
@@ -108,34 +113,36 @@ public class MemberController {
 	@PostMapping("/login")
 	public ResponseEntity<?> login(@RequestBody Map<String, String> map, @RequestParam(name = "saveid", required = false) String saveid, HttpSession session, HttpServletResponse response) {
 		logger.debug("login map : {}", map);
+		Map<String, Object>  resultMap = new HashMap<>();
+		HttpStatus status = null;
 		try {
 			MemberDto memberDto = memberService.loginMember(map);
 			if(memberDto != null) {
-				final String headerString = "X-JWT";
-				byte[] apiKeySecretBytes = Base64.getDecoder().decode(secretKey);
-				SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
-				final Key KEY = new SecretKeySpec(apiKeySecretBytes, signatureAlgorithm.getJcaName());
+				String accessToken = jwtService.createAccessToken("memberId", memberDto.getMemberId());
+				String refreshToken = jwtService.createRefreshToken("memberId", memberDto.getMemberId());
 
-				//----------------------------------------------
-				// 토큰만들기
-				String jwt = Jwts.builder()
-						.setHeaderParam("typ", "JWT")
-						.claim("uid", map.get("memberId"))
-						.setExpiration(new Date(System.currentTimeMillis()  +  (60 * 60 * 24) ) )
-						.signWith(signatureAlgorithm, KEY)
-						.compact();
+				memberService.saveRefreshToken(memberDto.getMemberId(), refreshToken);
 
-				System.out.println(isTokenValid(jwt, KEY));
+				logger.debug("로그인 accessToken 정보 : {}", accessToken);
+				logger.debug("로그인 refreshToken 정보 : {}", refreshToken);
 
-				//----------------------------------------------
-				return new ResponseEntity<>(jwt, HttpStatus.OK);
+				resultMap.put("access-token", accessToken);
+				resultMap.put("refresh-token", refreshToken);
+				resultMap.put("message", ResponseResult.SUCCESS.name());
+
+				status = HttpStatus.ACCEPTED;
+
 			} else {
-				return ResponseEntity.status(201).body(null);
+				resultMap.put("message", ResponseResult.FAIL.name());
+				status = HttpStatus.ACCEPTED;
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
-			return ResponseEntity.status(201).body(null);
+			logger.error("로그인 실패 : {}", e);
+			resultMap.put("message", e.getMessage());
+			status = HttpStatus.INTERNAL_SERVER_ERROR;
 		}
+		return new ResponseEntity<Map<String, Object>>(resultMap, status);
+
 	}
 
 	// 토큰 만료 확인
