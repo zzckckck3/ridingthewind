@@ -16,7 +16,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class ArticleServiceImpl implements ArticleService {
 
-	private final ArticleMapper articleMapper;
+	private ArticleMapper articleMapper;
 
 	@Override
 	public boolean writeArticle(ArticleDto articleDto) throws Exception {
