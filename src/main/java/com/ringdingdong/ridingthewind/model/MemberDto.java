@@ -8,6 +8,8 @@ public class MemberDto {
 	private String emailId;
 	private String emailDomain;
 	private String joinDate;
+	private String birthday;
+	private String nickname;
 	
 	public String getMemberId() {
 		return memberId;
@@ -51,13 +53,35 @@ public class MemberDto {
 	public void setJoinDate(String joinDate) {
 		this.joinDate = joinDate;
 	}
+
+	public String getBirthday() {
+		return birthday;
+	}
+
+	public void setBirthday(String birthday) {
+		this.birthday = birthday;
+	}
+
+	public String getNickname() {
+		return nickname;
+	}
+
+	public void setNickname(String nickname) {
+		this.nickname = nickname;
+	}
+
 	@Override
 	public String toString() {
-		return "MemberDto [memberId=" + memberId + ", memberName=" + memberName + ", memberPassword=" + memberPassword
-				+ ", memberPhone=" + memberPhone + ", emailId=" + emailId + ", emailDomain=" + emailDomain
-				+ ", joinDate=" + joinDate + "]";
+		return "MemberDto{" +
+				"memberId='" + memberId + '\'' +
+				", memberName='" + memberName + '\'' +
+				", memberPassword='" + memberPassword + '\'' +
+				", memberPhone='" + memberPhone + '\'' +
+				", emailId='" + emailId + '\'' +
+				", emailDomain='" + emailDomain + '\'' +
+				", joinDate='" + joinDate + '\'' +
+				", birthday='" + birthday + '\'' +
+				", nickname='" + nickname + '\'' +
+				'}';
 	}
-	
-	
-	
 }

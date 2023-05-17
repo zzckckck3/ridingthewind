@@ -83,35 +83,42 @@ public class MemberController {
 
 
 	@PostMapping("/join")
-	public ResponseEntity<Void> join(MemberDto memberDto, String mobile1, String mobile2, String mobile3, Model model) {
-		logger.debug("memberDto info : {}", memberDto);
-//        try {
-//            String phone = mobile1 + "-" + mobile2 + "-" + mobile3;
-//            memberDto.setMemberPhone(phone);
-//            memberService.joinMember(memberDto);
-//            return "redirect:/member/login";
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            model.addAttribute("msg", "회원 가입 중 문제 발생!!!");
-//            return "error/error";
-//        }
-		try{
-			String phone = mobile1 + "-" + mobile2 + "-" + mobile3;
-			memberDto.setMemberPhone(phone);
-			memberService.joinMember(memberDto);
-			return ResponseEntity.ok().build();
-		} catch (Exception e){
-			e.printStackTrace();
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
-		}
-
+	public ResponseEntity<Void> join(@RequestBody Map<String, String> map) {
+		logger.debug("memberDto info : {}", map);
+		HttpStatus status = null;
+        MemberDto memberDto = new MemberDto();
+		memberDto.setMemberId(map.get("id"));
+		memberDto.setMemberPassword(map.get("password"));
+		memberDto.setMemberName(map.get("name"));
+		memberDto.setMemberPhone(map.get("phoneNumber"));
+		memberDto.setEmailId(map.get("emailId"));
+		memberDto.setEmailDomain(map.get("emailDomain"));
+		memberDto.setBirthday(map.get("birthday"));
+		memberDto.setNickname(map.get("nickname"));
+		try {
+            memberService.joinMember(memberDto);
+			status = HttpStatus.ACCEPTED;
+        } catch (Exception e) {
+            e.printStackTrace();
+			status = HttpStatus.INTERNAL_SERVER_ERROR;
+        }
+//		try{
+//			String phone = mobile1 + "-" + mobile2 + "-" + mobile3;
+//			memberDto.setMemberPhone(phone);
+//			memberService.joinMember(memberDto);
+//			return ResponseEntity.ok().build();
+//		} catch (Exception e){
+//			e.printStackTrace();
+//			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+//		}
+		return new ResponseEntity<>(status);
 	}
 
 
 
 
 	@PostMapping("/login")
-	public ResponseEntity<?> login(@RequestBody Map<String, String> map, @RequestParam(name = "saveid", required = false) String saveid, HttpSession session, HttpServletResponse response) {
+	public ResponseEntity<?> login(@RequestBody Map<String, String> map) {
 		logger.debug("login map : {}", map);
 		Map<String, Object>  resultMap = new HashMap<>();
 		HttpStatus status = null;
