@@ -85,7 +85,7 @@
                 <v-container fluid>
                 <v-row dense>
                 <v-col
-                    v-for="card in cards"
+                    v-for="(card, index) in cards"
                     :key="card.title"
                     :cols="card.flex"
                 >
@@ -98,12 +98,12 @@
                     >
                         <v-card-title style="font-size: medium;">{{ card.title }}</v-card-title>
                     </v-img>
-                    
+                    <!-- eslint-disable-next-line -->
                     <v-card-actions >
                         <!-- 버튼 추가 할거면 여기 -->
                         <v-col>
                         <v-row>
-                            <v-btn icon @click="moveCenter(card.latitude, card.longitude)">
+                            <v-btn icon @click="moveCenter(index)" ref="click">
                             <v-icon color="black">mdi-map-search</v-icon>
                             </v-btn>
                         </v-row>
@@ -198,6 +198,7 @@ export default {
         script.type = 'text/javascript';
         script.src = "http://dapi.kakao.com/v2/maps/sdk.js?autoload=false&appkey=1b7a0eb6294cdd4b1f985683a25bd972";
         document.head.appendChild(script);
+        
     },
     watch: {
         selectedSido: "create_gugun"
@@ -312,6 +313,25 @@ export default {
             // 첫번째 검색 정보를 이용하여 지도 중심을 이동 시킵니다
             if(this.positions.length) this.map.setCenter(this.positions[0].latlng);
 
+            this.showOverlay();
+            
+
+        },
+        removeMarker() {
+            for ( var i = 0; i < this.markers.length; i++ ) {
+                this.markers[i].setMap(null);
+            }   
+            this.markers = [];
+        },
+        moveCenter(index) {
+            if(this.clickedOverlay){
+                this.clickedOverlay.setMap(null);
+            }
+            console.log(index);
+            window.kakao.maps.event.trigger(this.markers[index], 'click');
+            
+        },
+        showOverlay() {
              // 마커를 클릭하면 오버레이를 띄운다
             for (let i = 0; i < this.markers.length; i++){
                 window.kakao.maps.event.addListener(this.markers[i], 'click', () => {
@@ -321,15 +341,16 @@ export default {
                     // if(myLocationlist.includes(this.positions[i].id)){
                     //     display = "none";
                     // }
+                    const noimg = require("@/assets/mark/noimg.png");
                     var content = '<div class="wrap">' + 
                     '    <div class="info">' + 
                     '        <div class="title">' + 
                     `           ${this.positions[i].title}` + 
-                    '            <a class="close" @click="closeOverlay()" title="닫기"></a>' + 
+                    '            <div class="close" title="닫기"></div>' + 
                     '        </div>' + 
                     '        <div class="body" style="background: white;">' + 
                     '            <div class="img">' +
-                    `                <img src="${this.positions[i].img}" onerror="this.src='@/assets/mark/noimg.png'" width="73" height="70">` +
+                    `                <img class="imgtag" src="${this.positions[i].img}" onerror="this.src='${noimg}'" width="73" height="70">` +
                     '           </div>' + 
                     '            <div class="desc">' + 
                     `                <div class="ellipsis">${this.positions[i].addr_1}</div>` + 
@@ -338,10 +359,17 @@ export default {
                     '        </div>' + 
                     '    </div>' +    
                     '</div>';
-                
-                
+
+                    // 직접 div를 만들어서 처리
+                    var div = document.createElement('div');
+                    div.innerHTML = content;
+                    console.log(div);
+                    div.querySelector('.close').addEventListener('click', () => {
+                        this.overlay.setMap(null);  
+                    });          
+
                     this.overlay = new window.kakao.maps.CustomOverlay({
-                        content: content,
+                        content: div,
                         map: this.map,
                         position: this.positions[i].latlng,   
                     });
@@ -356,28 +384,8 @@ export default {
                     this.map.panTo(this.overlay.getPosition());
                 });
             }	
-
-        },
-        removeMarker() {
-            for ( var i = 0; i < this.markers.length; i++ ) {
-                this.markers[i].setMap(null);
-            }   
-            this.markers = [];
-        },
-        moveCenter(lat, lng) {
-            if(this.clickedOverlay){
-                this.clickedOverlay.setMap(null);
-            }
-            // this.overlay.setMap(this.map);
-            // this.overlay.setPosition(new window.kakao.maps.LatLng(lat, lng))
-            // this.clickedOverlay = this.overlay;
-            this.map.panTo(new window.kakao.maps.LatLng(lat, lng));
-            //this.map.setCenter(new window.kakao.maps.LatLng(lat, lng));
-        },
-        closeOverlay() {
-            console.log("!!!!")
-            this.overlay.setMap(null);     
         }
+        
 
     },
 };
