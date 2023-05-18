@@ -1,16 +1,39 @@
 <template>
     <v-container>
         <v-row>
-            <v-row class="d-flex flex-row-reverse">
+            <v-col class="d-flex" cols="5">
+                <v-col cols="3">
+                    <v-select
+                        :items="keyList"
+                        value="`${key}`"
+                        label="검색 조건"
+                        dense
+                        outlined
+                        @input="changeKey"
+                    ></v-select>
+                </v-col>
+                <v-col cols="5">
+                    <v-text-field v-model="word" outlined dense></v-text-field>
+                </v-col>
                 <v-col cols="1">
                     <v-btn
                         color=""
                         elevation="3"
                         plain
+                        @click="getArticleList"
+                    >검색</v-btn>
+                </v-col>
+            </v-col>
+            <v-col class="d-flex flex-row-reverse" offset="2" cols="5">
+                <v-col cols="1">
+                    <v-btn
+                        color="blue"
+                        elevation="3"
+                        plain
                         @click="moveToArticleWrite"
                     >등록</v-btn>
                 </v-col>
-                <v-col cols="1">
+                <v-col cols="2">
                     <v-select
                         :items="sppList"
                         value="`${spp}`"
@@ -20,7 +43,7 @@
                         @input="changeSpp"
                     ></v-select>
                 </v-col>
-            </v-row>
+            </v-col>
         </v-row>
         <v-simple-table>
             <thead>
@@ -34,6 +57,7 @@
             </thead>
             <tbody>
                 <tr v-for="article in articles" :key="article.articleNo" @click="moveToArticleDetail(article.articleNo)">
+                    <td>{{ article.articleNo }}</td>
                     <td>{{ article.subject }}</td>
                     <td>{{ article.memberName }}</td>
                     <td>{{ article.hit }}</td>
@@ -59,8 +83,13 @@ export default {
     name: "ArticleList",
     data () {
         return {
-            headers: ['제목', '작성자', '조회수', '추천수', '작성일'],
+            headers: ['글번호', '제목', '작성자', '조회수', '추천수', '작성일'],
             sppList: ['10', '20', '30', '40', '50'],
+            keyList: [
+                { value: 'subject', text: '제목' },
+                { value: 'member_id', text: '아이디' },
+                { value: 'article_no', text: '글번호' },
+            ],
             articles: [],
             curPage: 1,
             spp: 10,
@@ -87,7 +116,9 @@ export default {
                 params: {
                     curPage: this.curPage,
                     spp: this.spp,
-                    start: (this.curPage-1) * this.spp
+                    start: (this.curPage-1) * this.spp,
+                    key: this.key,
+                    word: this.word,
                 }
             })
                 .then(({ data }) => {
@@ -109,6 +140,9 @@ export default {
         },
         changeSpp(newSpp) {
             this.spp = newSpp;
+        },
+        changeKey(newKey) {
+            this.key = newKey;
         }
     }
 }

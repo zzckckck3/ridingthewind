@@ -30,7 +30,7 @@
 				and subject like concat('%', #{word}, '%')
 			</if>
 			<if test="key != 'subject'">
-				and ${key} = #{word}
+				and a.${key} = #{word}
 			</if>
 		</if>
 	</sql>
@@ -46,7 +46,7 @@
 	
 	<select id="getTotalArticleCount" parameterType="map" resultType="int">
 		select count(article_no)
-		from article
+		from article a
 		<where>
 			<include refid="search"></include>
 		</where>
