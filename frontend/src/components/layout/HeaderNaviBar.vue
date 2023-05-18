@@ -9,7 +9,7 @@
 
         <!-- 중앙 메뉴 탭 -->
         <v-tabs centered class="ml-n9" color="black darken-1">
-            <v-tab :to="{ name: 'signin' }">로그인</v-tab>
+            <v-tab :to="{ name: 'user' }">로그인</v-tab>
             <v-tab :to="{ name: 'notice' }">Q&A</v-tab>
             <v-tab :to="{ name: 'tour' }">여행정보</v-tab>
             <v-tab :to="{ name: 'mypage' }">여행계획</v-tab>
@@ -74,10 +74,10 @@
                         :key="i"
                         >
                         <v-list-item-icon>
-                            <v-icon v-text="item.icon"></v-icon>
+                            <v-icon>{{item.icon}}</v-icon>
                         </v-list-item-icon>
                         <v-list-item-content>
-                            <v-list-item-title v-text="item.text"></v-list-item-title>
+                            <v-list-item-title>{{ item.text }}</v-list-item-title>
                         </v-list-item-content>
                         </v-list-item>
                     </v-list-item-group>
@@ -111,11 +111,11 @@ export default {
     data: () => ({
         links: ["공지사항", "로그인", "회원가입", "마이페이지", "로그아웃", "FAQS"],
         selectedItem: 1,
-      items: [
-        { text: 'Real-Time', icon: 'mdi-clock' },
-        { text: 'Audience', icon: 'mdi-account' },
-        { text: 'Conversions', icon: 'mdi-flag' },
-      ],
+        items: [
+            { text: 'Real-Time', icon: 'mdi-clock' },
+            { text: 'Audience', icon: 'mdi-account' },
+            { text: 'Conversions', icon: 'mdi-flag' },
+        ],
     }),
 };
 </script>
