@@ -9,7 +9,7 @@ import java.util.List;
 @AllArgsConstructor
 @Getter
 @Builder
-public class NoticeListResponseDto {
+public class ArticleListResponseDto {
 
     private List<ArticleDto> articles;
     private PageNavigationResponseDto pageNavigation;
