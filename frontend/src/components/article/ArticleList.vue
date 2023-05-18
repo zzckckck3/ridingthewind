@@ -7,7 +7,7 @@
                         color=""
                         elevation="3"
                         plain
-                        @click="moveToNoticeWrite"
+                        @click="moveToArticleWrite"
                     >등록</v-btn>
                 </v-col>
                 <v-col cols="1">
@@ -33,7 +33,7 @@
                 </tr>
             </thead>
             <tbody>
-                <tr v-for="article in articles" :key="article.articleNo" @click="moveToNoticeDetail(article.articleNo)">
+                <tr v-for="article in articles" :key="article.articleNo" @click="moveToArticleDetail(article.articleNo)">
                     <td>{{ article.subject }}</td>
                     <td>{{ article.memberName }}</td>
                     <td>{{ article.hit }}</td>
@@ -56,7 +56,7 @@
 import http from "@/axios/http.js";
 
 export default {
-    name: "NoticeList",
+    name: "ArticleList",
     data () {
         return {
             headers: ['제목', '작성자', '조회수', '추천수', '작성일'],
@@ -71,18 +71,18 @@ export default {
         }
     },
     created() {
-        this.getNoticeList();
+        this.getArticleList();
     },
     watch: {
         curPage() {
-            this.getNoticeList();
+            this.getArticleList();
         },
         spp() {
-            this.getNoticeList();
+            this.getArticleList();
         }
     },
     methods: {
-        getNoticeList() {
+        getArticleList() {
             http.get(`/article`, {
                 params: {
                     curPage: this.curPage,
@@ -101,11 +101,11 @@ export default {
                     this.$router.push('error/error', error);
                 });
         },
-        moveToNoticeWrite() {
-            this.$router.push({ name: 'noticeWrite'});
+        moveToArticleWrite() {
+            this.$router.push({ name: 'articleWrite'});
         },
-        moveToNoticeDetail(articleNo) {
-            this.$router.push({ name: 'noticeDetail', params: { articleNo: articleNo } });
+        moveToArticleDetail(articleNo) {
+            this.$router.push({ name: 'articleDetail', params: { articleNo: articleNo } });
         },
         changeSpp(newSpp) {
             this.spp = newSpp;

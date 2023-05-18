@@ -44,7 +44,7 @@
 import WriteConfirmDialog from "@/components/layout/WriteConfirmDialog.vue";
 
 export default {
-    name: "NoticeWrite",
+    name: "ArticleWrite",
     data() {
         return {
             subject: "",
@@ -57,7 +57,7 @@ export default {
     // },
     methods: {
         moveToList() {
-            this.$router.push({name: "notice"});
+            this.$router.push({name: "article"});
         },
     },
     components: {
