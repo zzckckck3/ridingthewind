@@ -23,7 +23,8 @@ const routes = [
       {
         path: "signup",
         name: "signup",
-        component: () => import(/* webpackChunkName: "user" */ "@/components/user/MemberSignup.vue"),
+        component: () =>
+          import(/* webpackChunkName: "user" */ "@/components/user/MemberSignup.vue"),
       },
     ],
   },
@@ -43,20 +44,20 @@ const routes = [
         path: "detail",
         name: "noticeDetail",
         component: () =>
-            import(/* webpackChunkName: "notice" */ "@/components/notice/NoticeDetail.vue"),
+          import(/* webpackChunkName: "notice" */ "@/components/notice/NoticeDetail.vue"),
       },
       {
         path: "modify",
         name: "noticeModify",
         component: () =>
-            import(/* webpackChunkName: "notice" */ "@/components/notice/NoticeModify.vue"),
+          import(/* webpackChunkName: "notice" */ "@/components/notice/NoticeModify.vue"),
       },
       {
         path: "write",
         name: "noticeWrite",
         component: () =>
-            import(/* webpackChunkName: "notice" */ "@/components/notice/NoticeWrite.vue"),
-      }
+          import(/* webpackChunkName: "notice" */ "@/components/notice/NoticeWrite.vue"),
+      },
     ],
   },
   {
