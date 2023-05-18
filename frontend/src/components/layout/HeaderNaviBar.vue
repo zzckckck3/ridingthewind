@@ -9,12 +9,13 @@
 
         <!-- 중앙 메뉴 탭 -->
         <v-tabs centered class="ml-n9" color="black darken-1">
-            <v-tab :to="{ name: 'signin' }">로그인</v-tab>
+            <v-tab v-if="!isLogin" :to="{ name: 'signin' }">로그인</v-tab>
+            <v-tab v-else :to="{ name: 'signin' }">로그아웃</v-tab>
+
             <v-tab :to="{ name: 'notice' }">Q&A</v-tab>
             <v-tab :to="{ name: 'tour' }">여행정보</v-tab>
             <v-tab :to="{ name: 'mypage' }">여행계획</v-tab>
         </v-tabs>
-
 
         <!-- 우측 회원 관리 창 -->
         <v-avatar
@@ -107,6 +108,9 @@
 </template> 
 
 <script>
+import { mapState } from "vuex";
+const memberStore = "memberStore";
+
 export default {
     data: () => ({
         links: ["공지사항", "로그인", "회원가입", "마이페이지", "로그아웃", "FAQS"],
@@ -117,6 +121,9 @@ export default {
             { text: 'Conversions', icon: 'mdi-flag' },
         ],
     }),
+    computed: {
+        ...mapState(memberStore, ["isLogin", "userInfo"]),
+    },
 };
 </script>
 

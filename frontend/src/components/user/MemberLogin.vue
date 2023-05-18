@@ -11,14 +11,14 @@
                 <v-text-field
                   label="ID"
                   prepend-inner-icon="mdi-account"
-                  v-model="userId"
+                  v-model="user.userId"
                   required
                 ></v-text-field>
                 <v-text-field
                   prepend-inner-icon="mdi-lock"
                   type="password"
                   label="Password"
-                  v-model="userPwd"
+                  v-model="user.userPwd"
                   required
                 >
                 </v-text-field>
@@ -54,39 +54,34 @@
 
 <script>
 
-import http from "@/axios/http";
+// import http from "@/axios/http";
+import { mapState, mapActions } from "vuex";
+const memberStore = "memberStore";
 export const loginurl = "/member/login";
 export default {
   data() {
     return {
-      userId : '',
-      userPwd : '',
+        user:{
+            userId : '',
+            userPwd : '',
+        }
     };
   },
   components: {},
-  computed: {},
+  computed: {
+      ...mapState(memberStore, ["isLogin", "isLoginError", "userInfo"]),
+  },
   methods: {
-    loginSubmit(){
-        let saveData = {};
-        saveData.memberId = this.userId;
-        saveData.memberPw = this.userPwd;
-        try{
-            http.post(loginurl, saveData).then(response => {
-                if(response.status === 202) {
-                    alert("로그인에 성공하였습니다.");
-                    // 로그인 성공시 처리
-                    this.$router.push({name:'home'});
-                }else{
-                    // this.$router.push({name:'signin'});
-                    alert("로그인 실패");
-                }
-            });
-        }catch(error){
-            this.$router.push({name:'signin'});
+      ...mapActions(memberStore, ['userConfirm', "getUserInfo"]),
+      async loginSubmit(){
+          await this.userConfirm(this.user);
+          let token = sessionStorage.getItem("access-token");
+          if(this.isLogin){
+              await this.getUserInfo(token);
+              this.$router.push({name:'home'});
+          }
+      },
 
-        }
-
-    },
       addUserShow(){
         this.$router.push({name:'signup'});
       }
