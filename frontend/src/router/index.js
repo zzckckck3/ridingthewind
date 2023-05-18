@@ -24,7 +24,8 @@ const routes = [
       {
         path: "signup",
         name: "signup",
-        component: () => import(/* webpackChunkName: "user" */ "@/components/user/MemberSignup.vue"),
+        component: () =>
+          import(/* webpackChunkName: "user" */ "@/components/user/MemberSignup.vue"),
       },
     ],
   },
@@ -44,6 +45,7 @@ const routes = [
         path: "detail",
         name: "articleDetail",
         component: () =>
+
             import(/* webpackChunkName: "article" */ "@/components/article/ArticleDetail.vue"),
       },
       {
