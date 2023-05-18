@@ -38,7 +38,7 @@
 	</resultMap>
 	
 	<select id="listPersonalTrip" parameterType="String" resultMap="personalTrip">
-		SELECT p.member_id, a.* , p.`select`
+		SELECT p.member_id, a.*
 		FROM personal_trip p
 		JOIN attraction_info a ON p.content_id = a.content_id;
 	</select>
