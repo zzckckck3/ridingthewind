@@ -13,6 +13,7 @@ const routes = [
   {
     path: "/user",
     name: "user",
+    redirect: "/user/signin",
     component: () => import(/* webpackChunkName: "user" */ "@/views/MemberView.vue"),
     children: [
       {
