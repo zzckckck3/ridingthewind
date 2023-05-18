@@ -1,52 +1,74 @@
 <template>
-<div ref="overlay">
-    <div class="wrap">
-    <div class="info">
-        <div class="title">
-        카카오 스페이스닷원
-        <div class="close" @click="closeOverlay" title="닫기"></div>
-        </div>
-        <div class="body">
-        <div class="img">
-            <img :src="imageSrc" width="73" height="70">
-        </div>
-        <div class="desc">
-            <div class="ellipsis">{{ address }}</div>
-            <div class="jibun ellipsis">{{ jibunAddress }}</div>
-            <div><a :href="website" target="_blank" class="link">홈페이지</a></div>
-        </div>
-        </div>
-    </div>
-    </div>
-</div>
-</template>
+<v-row justify="center">
+    <v-btn
+    color="primary"
+    dark
+    @click.stop="changeDialog"
+    >
+    Open Dialog
+    </v-btn>
 
+    <v-dialog
+    v-model="interDialog"
+    max-width="290"
+    >
+    <v-card>
+        <v-card-title class="text-h5">
+        Use Google's location service?
+        </v-card-title>
+
+        <v-card-text>
+        Let Google help apps determine location. This means sending anonymous location data to Google, even when no apps are running.
+        </v-card-text>
+
+        <v-card-actions>
+        <v-spacer></v-spacer>
+
+        <v-btn
+            color="green darken-1"
+            text
+            @click="changeDialog"
+        >
+            Disagree
+        </v-btn>
+
+        <v-btn
+            color="green darken-1"
+            text
+            @click="changeDialog"
+        >
+            Agree
+        </v-btn>
+        </v-card-actions>
+    </v-card>
+    </v-dialog>
+</v-row>
+</template>
 
 <script>
 export default {
-data() {
-    return {
-    map: null,
-    marker: null,
-    overlay: null,
-    imageSrc: "https://cfile181.uf.daum.net/image/250649365602043421936D",
-    address: "제주특별자치도 제주시 첨단로 242",
-    jibunAddress: "(우) 63309 (지번) 영평동 2181",
-    website: "https://www.kakaocorp.com/main"
-    };
-},
-methods: {
-    closeOverlay() {
-        this.overlay.setMap(null);
+    name: "TourOverlayInfo",
+    props: {
+        dialog: Boolean,
+    },
+    computed: {
+        interDialog: {
+            get() {
+                return this.dialog;
+            },
+            set(value) {
+                this.$emit("update:dialog", !value);
+            }
+        }
+    },
+    methods: {
+        changeDialog() {
+            this.interDialog = !this.interDialog;
+        }
     }
-}
-};
+    };
 </script>
 
 
 <style>
-#map {
-width: 100%;
-height: 300px;
-}
 </style>
