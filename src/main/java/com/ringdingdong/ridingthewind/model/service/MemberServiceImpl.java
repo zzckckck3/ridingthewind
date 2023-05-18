@@ -23,6 +23,7 @@ public class MemberServiceImpl implements MemberService {
 		this.memberMapper = memberMapper;
 	}
 
+
 	@Override
 	public int idCheck(String memberId) throws Exception {
 		return memberMapper.idCheck(memberId);
@@ -67,6 +68,11 @@ public class MemberServiceImpl implements MemberService {
 		map.put("memberId", memberId);
 		map.put("token", refreshToken);
 		memberMapper.saveRefreshToken(map);
+	}
+
+	@Override
+	public MemberDto findMemberId(String memberId) {
+		return memberMapper.findMemberId(memberId);
 	}
 
 

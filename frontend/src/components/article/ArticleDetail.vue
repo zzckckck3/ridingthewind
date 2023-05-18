@@ -41,7 +41,7 @@ import http from "@/axios/http.js";
 import DeleteConfirmDialog from "@/components/layout/DeleteConfirmDialog.vue";
 
 export default {
-    name: "NoticeDetail",
+    name: "ArticleDetail",
     data() {
         return {
             article: {},
@@ -60,10 +60,10 @@ export default {
     },
     methods: {
         moveToList() {
-            this.$router.push({ name: "notice" });
+            this.$router.push({ name: "article" });
         },
         moveToModify() {
-            this.$router.push({ name: "noticeModify", params: { 'article': JSON.stringify(this.article) } });
+            this.$router.push({ name: "articleModify", params: { 'article': JSON.stringify(this.article) } });
         },
     },
     components: {
