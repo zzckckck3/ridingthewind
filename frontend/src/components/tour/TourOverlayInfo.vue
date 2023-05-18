@@ -1,5 +1,5 @@
 <template>
-<div>
+<div ref="overlay">
     <div class="wrap">
     <div class="info">
         <div class="title">
