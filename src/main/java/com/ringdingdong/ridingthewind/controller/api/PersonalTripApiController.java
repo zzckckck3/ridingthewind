@@ -24,8 +24,8 @@ public class PersonalTripApiController {
 		this.personalTripService = personalTripService;
 	}
 	
-	@GetMapping("/list")
-	public ResponseEntity<?> tripList(@RequestBody String userId){
+	@GetMapping("/list/{memberid}")
+	public ResponseEntity<?> tripList(@PathVariable("memberid") String userId){
 		logger.debug("mypage tripList called");
 		try {
 			List<PersonalTripDto> list = personalTripService.listPersonalTrip(userId);

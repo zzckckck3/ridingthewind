@@ -51,41 +51,51 @@
               <v-container fluid>
                 <v-row dense class="card-list">
                   <v-col
-                    v-for="card in cards"
+                    v-for="(card, index) in cards"
                     :key="card.title"
                     :cols="card.flex"
-                  >
-                  
-                    <v-card >
-                      <v-img
+                    :id="card.id"
+                >
+                    <v-card>
+                    <v-img
                         :src="card.src"
                         class="white--text align-end"
                         gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)"
                         height="200px"
-                      >
-                        <v-card-title v-text="card.title" style="font-size: medium;"></v-card-title>
-                      </v-img>
-                      <v-card-actions>
-                        <v-spacer></v-spacer>
+                    >
+                        <v-card-title style="font-size: medium;">{{ card.title }}</v-card-title>
+                    </v-img>
+                    <!-- eslint-disable-next-line -->
+                    <v-card-actions >
                         <!-- 버튼 추가 할거면 여기 -->
-                        <v-btn icon>
-                          <v-icon>mdi-bookmark</v-icon>
-                        </v-btn>
+                        <v-col>
+                        <v-row>
+                            <v-btn icon @click="moveCenter(index)" ref="click">
+                            <v-icon color="black">mdi-map-search</v-icon>
+                            </v-btn>
+                        </v-row>
+                        <v-row>
+                            <v-btn icon @click="tripDelete(card.id)">
+                            <v-icon :color="card.like ? 'red' : '' ">mdi-heart</v-icon>
+                            </v-btn>
+                        </v-row>
+                        </v-col>
+                        <v-spacer style="font-size: small;">{{ card.addr_1 }}</v-spacer>
                         <v-btn
-                          icon
-                          @click="card.show = !card.show"
+                        icon
+                        @click="card.show = !card.show"
                         >
-                          <v-icon>{{ card.show ? 'mdi-chevron-up' : 'mdi-chevron-down' }}</v-icon>
+                        <v-icon>{{ card.show ? 'mdi-chevron-up' : 'mdi-chevron-down' }}</v-icon>
                         </v-btn>
-                      </v-card-actions>
-                      <v-expand-transition>
+                    </v-card-actions>
+                    <v-expand-transition>
                         <div v-show="card.show">
-                          <v-divider></v-divider>
-                          <v-card-text v-text="card.text"></v-card-text>
+                        <v-divider></v-divider>
+                        <v-card-text>{{ card.overview }}</v-card-text>
                         </div>
-                      </v-expand-transition>
+                    </v-expand-transition>
                     </v-card>
-                  </v-col>
+                </v-col>
                 </v-row>
               </v-container>
             </v-sheet>
@@ -97,39 +107,50 @@
 </template>
 
 <script>
-import Sortable from 'sortablejs';
 import http from "@/axios/http";
+import Sortable from 'sortablejs';
 
 export default {
-
-  data: () => ({
-    name: 'PersonalTrip',
-    components: {},
-    map: null,
-    selectedContentById: [],
-    positions: [],
-    markers: [],
-    cards: [
-      { title: 'Pre-fab homes', src: 'https://cdn.vuetifyjs.com/images/cards/house.jpg', flex: 6 },
-        { title: 'Favorite road trips', src: 'https://cdn.vuetifyjs.com/images/cards/road.jpg', flex: 6 },
-        { title: 'Best airlines', src: 'https://cdn.vuetifyjs.com/images/cards/plane.jpg', flex: 6 },
-    ],
-    overlay: [],
-    clickedOverlay: null
-  }),
-  created() {
-        this.create_sido();
+    name: 'TourSearchInfo',
+    components: {
     },
+    data() {
+        return {
+            map: null,
+            sido: [],
+            gugun: [],
+            selectedSido: null,
+            selectedGugun: null,
+            selectedContentById: [],
+            positions: [],
+            markers: [],
+            contentByType: [
+                    { id: 12, value: "관광지" },
+                    { id: 14, value: "문화시설" },
+                    { id: 15, value: "축제공연행사" },
+                    { id: 25, value: "여행코스" },
+                    { id: 28, value: "레포츠" },
+                    { id: 32, value: "숙박" },
+                    { id: 38, value: "쇼핑" },
+                    { id: 39, value: "음식점" }
+                ],
+          cards: [],
+            overlay: [],
+            clickedOverlay: null
+        };
+  },
+  created(){},
   mounted() {
-    const columns = document.querySelectorAll(".card-list");
+      
+        const columns = document.querySelectorAll(".card-list");
 
-    columns.forEach((column) => {
-      new Sortable(column, {
-        group: "shared",
-        animation: 150,
-        ghostClass: "blue-background-class"
-      });
-    });
+        columns.forEach((column) => {
+          new Sortable(column, {
+            group: "shared",
+            animation: 150,
+            ghostClass: "blue-background-class"
+          });
+        });
         const script = document.createElement('script');
         script.onload = () => {
             if (window.kakao && window.kakao.maps) {
@@ -144,38 +165,50 @@ export default {
                     this.map = new window.kakao.maps.Map(mapContainer, mapOption);
                     this.createRightBar();
                 });
-            }  
+                
+          }
+            this.makeList();
         };
         script.async = true;
         script.type = 'text/javascript';
         script.src = "http://dapi.kakao.com/v2/maps/sdk.js?autoload=false&appkey=1b7a0eb6294cdd4b1f985683a25bd972";
         document.head.appendChild(script);
-    },
-    watch: {
         
     },
     methods: {
-        createRightBar() {
-            //일반 지도와 스카이뷰로 지도 타입을 전환할 수 있는 지도타입 컨트롤을 생성합니다
-            this.mapTypeControl = new window.kakao.maps.MapTypeControl();
+      createRightBar() {
+        //일반 지도와 스카이뷰로 지도 타입을 전환할 수 있는 지도타입 컨트롤을 생성합니다
+        this.mapTypeControl = new window.kakao.maps.MapTypeControl();
 
-            // 지도에 컨트롤을 추가해야 지도위에 표시됩니다
-            // kakao.maps.ControlPosition은 컨트롤이 표시될 위치를 정의하는데 TOPRIGHT는 오른쪽 위를 의미합니다
-            this.map.addControl(this.mapTypeControl, window.kakao.maps.ControlPosition.TOPRIGHT);
+        // 지도에 컨트롤을 추가해야 지도위에 표시됩니다
+        // kakao.maps.ControlPosition은 컨트롤이 표시될 위치를 정의하는데 TOPRIGHT는 오른쪽 위를 의미합니다
+        this.map.addControl(this.mapTypeControl, window.kakao.maps.ControlPosition.TOPRIGHT);
 
-            // 지도 확대 축소를 제어할 수 있는  줌 컨트롤을 생성합니다
-            var zoomControl = new window.kakao.maps.ZoomControl();
-            this.map.addControl(zoomControl, window.kakao.maps.ControlPosition.RIGHT);
-        },
-        markList() {
-            http.get(`/tour/attraction-info?search-area=${this.selectedSido}&search-area-gu=${this.selectedGugun}`)
-                .then((response) => {
+        // 지도 확대 축소를 제어할 수 있는  줌 컨트롤을 생성합니다
+        var zoomControl = new window.kakao.maps.ZoomControl();
+        this.map.addControl(zoomControl, window.kakao.maps.ControlPosition.RIGHT);
+      },
+      tripDelete(id) {
+        if (confirm("여행지를 삭제하시겠습니까?")) {
+          http.delete(`/mypage/delete/ssafy/${id}`)
+            .then(() => {
+              return this.makeList();
+            })
+            .catch((error) => {
+              console.error(error);
+          });
+        }
+      },
+      makeList() {
+        //======================================
+          // 꼭 ssafy를 memberId로 바꿔야 함!!!!!
+        //======================================
+            http.get(`/mypage/list/ssafy`)
+              .then((response) => {
                     this.positions.length = 0;
                     this.cards.length = 0;
                     // console.log(response.data);
                     response.data.forEach((area) => {
-                        // 체크된것만!
-                        if (this.selectedContentById.includes(area.contentTypeId)){
                             let markerInfo = {
                                 id: area.contentId,
                                 img: area.firstImage,
@@ -193,13 +226,14 @@ export default {
                                 title: area.title,
                                 addr_1: area.addr1,
                                 overview: area.overView,
-                                flex: 3,
+                                latitude: area.latitude,
+                                longitude: area.longitude,
+                                flex: 6,
                                 show: false,
-                                like: false
-                            }
-                            this.positions.push(markerInfo);
-                            this.cards.push(card);
-                        }
+                                like: true
+                          }
+                          this.positions.push(markerInfo);
+                          this.cards.push(card);
                     });
                 })
                 .then(() => { 
@@ -248,6 +282,25 @@ export default {
             // 첫번째 검색 정보를 이용하여 지도 중심을 이동 시킵니다
             if(this.positions.length) this.map.setCenter(this.positions[0].latlng);
 
+            this.showOverlay();
+            
+
+        },
+        removeMarker() {
+            for ( var i = 0; i < this.markers.length; i++ ) {
+                this.markers[i].setMap(null);
+            }   
+            this.markers = [];
+        },
+        moveCenter(index) {
+            if(this.clickedOverlay){
+                this.clickedOverlay.setMap(null);
+            }
+            console.log(index);
+            window.kakao.maps.event.trigger(this.markers[index], 'click');
+            
+        },
+        showOverlay() {
              // 마커를 클릭하면 오버레이를 띄운다
             for (let i = 0; i < this.markers.length; i++){
                 window.kakao.maps.event.addListener(this.markers[i], 'click', () => {
@@ -257,25 +310,35 @@ export default {
                     // if(myLocationlist.includes(this.positions[i].id)){
                     //     display = "none";
                     // }
-                    var content = '<v-hover>' + 
-                    '      <v-card color="grey lighten-4" flat height="200px" tile>' + 
+                    const noimg = require("@/assets/mark/noimg.png");
+                    var content = '<div class="wrap">' + 
+                    '    <div class="info">' + 
+                    '        <div class="title">' + 
                     `           ${this.positions[i].title}` + 
-                    '            <div class="close" onclick="closeOverlay()" title="닫기"></div>' + 
-                    '        </v-card>' + 
-                    '        <v-col class="body">' + 
+                    '            <div class="close" title="닫기"></div>' + 
+                    '        </div>' + 
+                    '        <div class="body" style="background: white;">' + 
                     '            <div class="img">' +
-                    `                <img src="${this.positions[i].img}" onerror="this.src='/assets/img/mark/noimg.png'" width="73" height="70">` +
+                    `                <img class="imgtag" src="${this.positions[i].img}" onerror="this.src='${noimg}'" width="73" height="70">` +
                     '           </div>' + 
                     '            <div class="desc">' + 
                     `                <div class="ellipsis">${this.positions[i].addr_1}</div>` + 
                     `                <div class="jibun ellipsis">(우) ${this.positions[i].zip}</br>(전화번호) ${this.positions[i].tel}</div>` + 
                     '            </div>' + 
-                    '        </v-col>' +   
-                    '</v-hover>';
-                
-                
+                    '        </div>' + 
+                    '    </div>' +    
+                    '</div>';
+
+                    // 직접 div를 만들어서 처리
+                    var div = document.createElement('div');
+                    div.innerHTML = content;
+                    console.log(div);
+                    div.querySelector('.close').addEventListener('click', () => {
+                        this.overlay.setMap(null);  
+                    });          
+
                     this.overlay = new window.kakao.maps.CustomOverlay({
-                        content: content,
+                        content: div,
                         map: this.map,
                         position: this.positions[i].latlng,   
                     });
@@ -290,13 +353,6 @@ export default {
                     this.map.panTo(this.overlay.getPosition());
                 });
             }	
-
-        },
-        removeMarker() {
-            for ( var i = 0; i < this.markers.length; i++ ) {
-                this.markers[i].setMap(null);
-            }   
-            this.markers = [];
         }
         
 
@@ -304,3 +360,18 @@ export default {
 };
 </script>
 
+<style>
+.wrap {position: absolute;left: 0;bottom: 40px;width: 288px;height: 132px;margin-left: -144px;text-align: left;overflow: hidden;font-size: 12px;font-family: 'Malgun Gothic', dotum, '돋움', sans-serif;line-height: 1.5;}
+.wrap * {padding: 0;margin: 0;}
+.wrap .info {width: 286px;height: 120px;border-radius: 5px;border-bottom: 2px solid #ccc;border-right: 1px solid #ccc;overflow: hidden;background: #fff;}
+.wrap .info:nth-child(1) {border: 0;box-shadow: 0px 1px 2px #888;}
+.info .title {padding: 5px 0 0 10px;height: 30px;background: #eee;border-bottom: 1px solid #ddd;font-size: 18px;font-weight: bold;}
+.info .close {position: absolute;top: 10px;right: 10px;color: #888;width: 17px;height: 17px;background: url('https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/overlay_close.png');}
+.info .close:hover {cursor: pointer;}
+.info .body {position: relative;overflow: hidden;}
+.info .desc {position: relative;margin: 13px 0 0 90px;height: 75px;}
+.desc .ellipsis {overflow: hidden;text-overflow: ellipsis;white-space: nowrap;}
+.desc .jibun {font-size: 11px;color: #888;margin-top: -2px;}
+.info .img {position: absolute;top: 6px;left: 5px;width: 73px;height: 71px;border: 1px solid #ddd;color: #888;overflow: hidden;}
+.info:after {content: '';position: absolute;margin-left: -12px;left: 50%;bottom: 0;width: 22px;height: 12px;background: url('https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/vertex_white.png')}
+</style>
