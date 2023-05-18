@@ -59,7 +59,7 @@ export default {
                     } else {
                         alert("삭제 실패");
                     }
-                    this.$router.push({ name: "notice" });
+                    this.$router.push({ name: "article" });
                 })
                 .catch(( error ) => {
                     this.$router.push('error/error', error);

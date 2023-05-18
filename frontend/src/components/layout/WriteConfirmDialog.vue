@@ -7,9 +7,9 @@
             <v-card-actions>
                 <v-spacer></v-spacer>
                 <v-btn
-                    color="red darken-1"
+                    color="blue darken-1"
                     text
-                    @click.stop="writeNotice">
+                    @click.stop="writeArticle">
                     등록
                 </v-btn>
                 <v-btn
@@ -53,10 +53,9 @@ export default {
         },
     },
     methods: {
-        writeNotice() {
+        writeArticle() {
             this.dialog = false;
             let articleInfo = {
-                articleNo: 1238712043,
                 memberId: "byh9811",
                 subject: this.subject,
                 content: this.content
@@ -69,7 +68,7 @@ export default {
                     } else {
                         alert("등록 실패");
                     }
-                    this.$router.push({ name: "notice" });
+                    this.$router.push({ name: "article" });
                 })
                 .catch(( error ) => {
                     this.$router.push('error/error', error);
