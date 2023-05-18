@@ -21,4 +21,6 @@ public interface MemberMapper {
 
 
 	void saveRefreshToken(Map<String, String> map);
+
+    MemberDto findMemberId(String memberId);
 }
