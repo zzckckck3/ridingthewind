@@ -3,12 +3,11 @@ package com.ringdingdong.ridingthewind.model.service;
 import com.ringdingdong.ridingthewind.enumerate.Constant;
 import com.ringdingdong.ridingthewind.model.ArticleDto;
 import com.ringdingdong.ridingthewind.model.ArticleParameterDto;
-import com.ringdingdong.ridingthewind.model.NoticeListResponseDto;
+import com.ringdingdong.ridingthewind.model.ArticleListResponseDto;
 import com.ringdingdong.ridingthewind.model.mapper.ArticleMapper;
 import com.ringdingdong.ridingthewind.model.PageNavigationResponseDto;
 import lombok.RequiredArgsConstructor;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -23,8 +22,8 @@ public class ArticleServiceImpl implements ArticleService {
 	}
 
 	@Override
-	public NoticeListResponseDto listArticle(ArticleParameterDto articleParameterDto) throws Exception {
-		return NoticeListResponseDto.builder()
+	public ArticleListResponseDto listArticle(ArticleParameterDto articleParameterDto) throws Exception {
+		return ArticleListResponseDto.builder()
 				.articles(articleMapper.listArticle(articleParameterDto))
 				.pageNavigation(makePageNavigation(articleParameterDto))
 				.build();
