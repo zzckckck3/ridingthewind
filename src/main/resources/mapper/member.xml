@@ -32,7 +32,7 @@
 	<select id="loginMember" parameterType="map" resultMap="member">
 		select member_id, member_name
 		from member
-		where member_id = #{memberId} and member_password = #{memberPw}
+		where member_id = #{userId} and member_password = #{userPwd}
 	</select>
 	
 	<!-- ADMIN -->
@@ -68,5 +68,12 @@
 		set token = #{token}
 		where member_id = #{memberId}
 	</update>
+
+	<select id="findMemberId" parameterType="String" resultMap="memberAll">
+		select *
+		from member
+		where member_id = #{memberId}
+	</select>
+
 	
 </mapper>

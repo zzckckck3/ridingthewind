@@ -66,7 +66,6 @@
                 </div>
                 <div class="mt-3 me-3">
                     <div id="map" class="" style="width: 100%; height: 700px;"></div>
-                    <kakao-overlay></kakao-overlay>
                 </div>
 
             </v-sheet>
@@ -114,19 +113,50 @@
                         </v-row>
                         </v-col>
                         <v-spacer>{{ card.addr_1 }}</v-spacer>
-                        <v-btn
-                        icon
-                        @click="card.show = !card.show"
-                        >
-                        <v-icon>{{ card.show ? 'mdi-chevron-up' : 'mdi-chevron-down' }}</v-icon>
-                        </v-btn>
+                        
+                        <v-col class="d-flex align-end">
+                        <v-row><v-spacer></v-spacer></v-row>
+                        <v-row>
+                            <v-btn
+                            icon
+                            @click="card.show = !card.show"
+                            >
+                            <!-- <v-icon>{{ card.show ? 'mdi-chevron-up' : 'mdi-chevron-down' }}</v-icon> -->
+                            <v-icon>mdi-book-information-variant</v-icon>
+                            </v-btn>
+                        </v-row>
+                        </v-col>
                     </v-card-actions>
-                    <v-expand-transition>
-                        <div v-show="card.show">
-                        <v-divider></v-divider>
-                        <v-card-text>{{ card.overview }}</v-card-text>
-                        </div>
-                    </v-expand-transition>
+                    <v-bottom-sheet
+                        v-model="card.show"
+                        inset: width=30%
+                        >
+                        <v-sheet class="custom-sheet text-center" >
+                            <div>
+                                <div weight="100px">
+                                    <v-img 
+                                    :src="card.src"
+                                    height="200px"
+                                    ></v-img>
+                                </div>
+                                <div class="pe-5 ps-5">
+                                    <div><h4>{{ card.title }}</h4></div>
+                                    <div>{{ card.addr_1 }}</div>
+                                    <div class="my-3">
+                                        {{ card.overview }}
+                                    </div>
+                                </div>
+                                <v-btn
+                                class="mt-6 mb-2"
+                                text
+                                color="error"
+                                @click="card.show = !card.show"
+                                >
+                                닫기
+                                </v-btn>
+                            </div>
+                        </v-sheet>
+                    </v-bottom-sheet>
                     </v-card>
                 </v-col>
                 </v-row>
@@ -419,4 +449,9 @@ export default {
 .desc .jibun {font-size: 11px;color: #888;margin-top: -2px;}
 .info .img {position: absolute;top: 6px;left: 5px;width: 73px;height: 71px;border: 1px solid #ddd;color: #888;overflow: hidden;}
 .info:after {content: '';position: absolute;margin-left: -12px;left: 50%;bottom: 0;width: 22px;height: 12px;background: url('https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/vertex_white.png')}
+.custom-sheet{
+    height: auto;
+    max-height: calc(100vh - 200px); /* 원하는 높이 조정 */
+    overflow-y: auto;
+}
 </style>
