@@ -9,13 +9,17 @@ import java.util.List;
 @Getter
 @Setter
 @ToString
-public class ArticleDto {
+public class ArticleDetailDto {
 
 	private int articleNo;
+	private String memberId;
 	private String subject;
+	private String content;
 	private int hit;
 	private int like;
 	private String registerTime;
-	private String nickname;
+	private String modifyTime;
+	private String memberName;
+	private List<CommentDto> commentList;
 
 }

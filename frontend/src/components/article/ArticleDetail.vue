@@ -2,7 +2,9 @@
   <v-container class="col-8 offset-2">
       <v-card min-height="500" class="pt-4">
           <v-card class="mb-2 col-10 offset-1 font-weight-bold">
-              {{ article.subject }}
+              <v-row class="my-0 px-8 d-flex">
+                  {{ article.subject }}
+              </v-row>
           </v-card>
           <v-card class="my-auto col-10 offset-1 font-weight-bold">
               <v-row class="my-0 px-2 d-flex align-center">

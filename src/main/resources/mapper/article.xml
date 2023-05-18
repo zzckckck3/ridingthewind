@@ -6,14 +6,17 @@
 
 	<resultMap type="articleDto" id="articleDto">
 		<result column="article_no" property="articleNo"/>
-		<result column="member_id" property="memberId"/>
 		<result column="subject" property="subject"/>
-		<result column="content" property="content"/>
 		<result column="hit" property="hit"/>
 		<result column="like" property="like"/>
 		<result column="register_time" property="registerTime"/>
+		<result column="nickname" property="nickname"/>
+	</resultMap>
+
+	<resultMap type="articleDto" id="articleDetailDto" extends="articleDto">
+		<result column="content" property="content"/>
 		<result column="modify_time" property="modifyTime"/>
-		<result column="member_name" property="memberName"/>
+		<result column="nickname" property="nickname"/>
 	</resultMap>
 
 	<insert id="writeArticle" parameterType="articleDto">
@@ -36,7 +39,7 @@
 	</sql>
 
 	<select id="listArticle" parameterType="map" resultMap="articleDto">
-		select a.article_no, a.subject, a.content, a.hit, a.register_time, m.member_name
+		select a.article_no, a.subject, a.content, a.hit, a.register_time, m.nickname
 		from article a, member m
 		where a.member_id = m.member_id
 		<include refid="search"></include>

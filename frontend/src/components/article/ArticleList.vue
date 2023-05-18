@@ -57,9 +57,9 @@
             </thead>
             <tbody>
                 <tr v-for="article in articles" :key="article.articleNo" @click="moveToArticleDetail(article.articleNo)">
-                    <td>{{ article.articleNo }}</td>
+                    <td>{{ article.like }}</td>
                     <td>{{ article.subject }}</td>
-                    <td>{{ article.memberName }}</td>
+                    <td>{{ article.nickname }}</td>
                     <td>{{ article.hit }}</td>
                     <td>{{ article.like }}</td>
                     <td>{{ article.registerTime }}</td>
@@ -83,7 +83,7 @@ export default {
     name: "ArticleList",
     data () {
         return {
-            headers: ['글번호', '제목', '작성자', '조회수', '추천수', '작성일'],
+            headers: ['추천수', '제목', '작성자', '조회수', '추천수', '작성일'],
             sppList: ['10', '20', '30', '40', '50'],
             keyList: [
                 { value: 'subject', text: '제목' },
