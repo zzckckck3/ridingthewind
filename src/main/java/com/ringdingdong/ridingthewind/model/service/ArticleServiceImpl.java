@@ -7,6 +7,8 @@ import com.ringdingdong.ridingthewind.model.NoticeListResponseDto;
 import com.ringdingdong.ridingthewind.model.mapper.ArticleMapper;
 import com.ringdingdong.ridingthewind.model.PageNavigationResponseDto;
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
