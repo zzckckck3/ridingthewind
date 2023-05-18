@@ -115,11 +115,11 @@ export default {
     data: () => ({
         links: ["공지사항", "로그인", "회원가입", "마이페이지", "로그아웃", "FAQS"],
         selectedItem: 1,
-      items: [
-        { text: 'Real-Time', icon: 'mdi-clock' },
-        { text: 'Audience', icon: 'mdi-account' },
-        { text: 'Conversions', icon: 'mdi-flag' },
-      ],
+        items: [
+            { text: 'Real-Time', icon: 'mdi-clock' },
+            { text: 'Audience', icon: 'mdi-account' },
+            { text: 'Conversions', icon: 'mdi-flag' },
+        ],
     }),
     computed: {
         ...mapState(memberStore, ["isLogin", "userInfo"]),

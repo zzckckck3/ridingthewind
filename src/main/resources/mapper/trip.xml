@@ -51,7 +51,7 @@
 	</select>
 	
 	<insert id="addtour">
-		insert into personal_trip (member_id, content_id, `select`)
-		values (#{memberId}, #{contentId}, 1);
+		insert into personal_trip (member_id, content_id)
+		values (#{memberId}, #{contentId});
 	</insert>
 </mapper>

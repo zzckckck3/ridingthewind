@@ -108,7 +108,7 @@
                             </v-btn>
                         </v-row>
                         <v-row>
-                            <v-btn icon @click="card.like = !card.like">
+                            <v-btn icon @click="addTour(card.id)">
                             <v-icon :color="card.like ? 'red' : '' ">mdi-heart</v-icon>
                             </v-btn>
                         </v-row>
@@ -215,6 +215,20 @@ export default {
             // 지도 확대 축소를 제어할 수 있는  줌 컨트롤을 생성합니다
             var zoomControl = new window.kakao.maps.ZoomControl();
             this.map.addControl(zoomControl, window.kakao.maps.ControlPosition.RIGHT);
+        },
+        addTour(id) {
+            http.post(`/tour/addtour/ssafy/${id}`).then(response => {
+                if (response.status === 200) {
+                    alert("마이페이지에 여행지가 추가되었습니다.");
+                    return response.data;
+                } else if (response.status === 500) {
+                    alert("추가 중 에러 발생. 이미 추가된 여행지입니다.");
+                    throw new Error('Network response was not ok.');
+                }
+            })
+            .catch(error => {
+                console.error(error);
+            });    
         },
         create_sido() {
             http.get(`/tour/sido`)

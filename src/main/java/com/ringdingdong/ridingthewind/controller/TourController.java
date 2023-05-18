@@ -52,11 +52,22 @@ public class TourController {
 		return ResponseEntity.ok(list);
 	}
 	
-	@PostMapping("/addtour/{contentid}")
-	public ResponseEntity<String> addtour(@PathVariable("contentid") int contentId, HttpServletRequest request, HttpServletResponse response) throws Exception{
+//	@PostMapping("/addtour/{contentid}")
+//	public ResponseEntity<String> addtour(@PathVariable("contentid") int contentId, HttpServletRequest request, HttpServletResponse response) throws Exception{
+//		HttpSession session = request.getSession();
+//		MemberDto memberDto = (MemberDto) session.getAttribute("memberinfo");
+//		String memberId = memberDto.getMemberId();
+//		if(tourService.addtour(contentId, memberId)) {
+//			return new ResponseEntity<String>(SUCCESS, HttpStatus.OK);			
+//		}
+//		return new ResponseEntity<String>(FAIL, HttpStatus.NO_CONTENT);
+//	}
+	
+	@PostMapping("/addtour/{memberid}/{contentid}")
+	public ResponseEntity<String> addtour(@PathVariable("contentid") int contentId, @PathVariable("memberid") String memberId, HttpServletRequest request, HttpServletResponse response) throws Exception{
 		HttpSession session = request.getSession();
 		MemberDto memberDto = (MemberDto) session.getAttribute("memberinfo");
-		String memberId = memberDto.getMemberId();
+//		String memberId = memberDto.getMemberId();
 		if(tourService.addtour(contentId, memberId)) {
 			return new ResponseEntity<String>(SUCCESS, HttpStatus.OK);			
 		}
