@@ -50,7 +50,7 @@
                       <v-btn class="mx-3" small @click.stop="commentDialog = true">
                           삭제
                       </v-btn>
-                      <comment-delete-confirm-dialog v-model="commentDialog" :commentNo="commentItem.commentNo"></comment-delete-confirm-dialog>
+                      <comment-delete-confirm-dialog v-model="commentDialog" :commentNo="commentItem.commentNo" @updateCommentList="getArticle"></comment-delete-confirm-dialog>
                   </v-row>
               </v-row>
               <v-row class="col-12">

@@ -60,7 +60,7 @@ export default {
                         alert("삭제 실패");
                     }
 
-                    this.$emit("")
+                    this.$emit("updateCommentList");
                 })
                 .catch(( error ) => {
                     this.$router.push('error/error', error);
