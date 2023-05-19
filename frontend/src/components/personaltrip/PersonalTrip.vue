@@ -10,12 +10,14 @@
           <v-col cols="6">
             <v-sheet
               min-height="70vh"
-              max-height="100"
+              max-height="800px"
               rounded="lg"
               elevation="8"
               class="grey lighten-5 overflow-auto"
-              style="padding: 10px;"
+              style="padding: 0;"
             >
+              <v-btn class="ma-3" outlined color="red" @click="deleteRouteInfo()">경로선 지우기</v-btn>
+              
               <div id="map" class="" style="width: 100%; height: 650px;"></div>
             </v-sheet>
           </v-col>
@@ -24,19 +26,18 @@
           <v-col cols=3 >
             <v-sheet
               min-height="70vh"
-              max-height="100"  
+              max-height="800px"  
               rounded="lg"
               elevation="8"
               class="grey lighten-5 overflow-auto"
               style="padding: 10px;"
             >
-              <v-btn class="ma-1" outlined color="indigo">최적경로 설정</v-btn>
+              <v-btn class="ma-1" outlined color="indigo" @click="optimalButtonClicked()">최적경로 보기</v-btn>
               <v-btn class="ma-1" outlined color="indigo">공유!</v-btn>
-              <v-btn class="ma-1" outlined color="indigo" @click="showRoute()">현재경로 보기</v-btn>
-              <v-btn class="ma-1" outlined color="indigo" @click="Test()">TestBtn</v-btn>
-              <v-container fluid style="min-width: 100px;">
-                <v-row dense class="card-list">
-                  
+              <v-btn class="ma-1" outlined color="indigo">현재경로 보기</v-btn>
+              <v-container fluid style="min-height: 500px;">
+                <v-row dense class="card-list" id="card-list-custom" style="min-height: 300px; min-width: 200px;">
+
                 </v-row>
               </v-container>
             </v-sheet>
@@ -46,7 +47,7 @@
           <v-col cols=3 >
             <v-sheet
               min-height="70vh"
-              max-height="100"
+              max-height="800px"
               rounded="lg"
               elevation="8"
               class="grey lighten-5 overflow-auto"
@@ -54,8 +55,8 @@
             >
             <v-btn class="ma-1" outlined color="indigo" @click="viewSmall()">Size Down<v-icon>mdi-arrow-down</v-icon></v-btn>            
             <v-btn class="ma-1" outlined color="indigo" @click="viewBig()">Size Up<v-icon>mdi-arrow-up</v-icon></v-btn>
-              <v-container fluid>
-                <v-row dense class="card-list">
+              <v-container fluid style="min-height: 500px;">
+                <v-row dense class="card-list" style="min-height: 300px; min-width: 200px;">
                   <v-col
                     v-for="(card, index) in cards"
                     :key="card.title"
@@ -155,7 +156,18 @@ export default {
       clickLine: null, // 마우스로 클릭한 좌표로 그려질 선 객체입니다
       distanceOverlay: null, // 선의 거리정보를 표시할 커스텀오버레이 입니다
       dots: [], // 선이 그려지고 있을때 클릭할 때마다 클릭 지점과 거리를 표시하는 커스텀 오버레이 배열입니다.
+
+      graph: [],
+      visited: [],
+      arr: [],
+      anslist: [],
+      answer: 99999999,
       /*Display Route Variables End*/
+
+      /* Switching div Element Variables */
+      customCards: [],
+      customCardsShort: [],
+      /* Switching div Element Variables End */
     };
   },
   created(){},
@@ -182,25 +194,118 @@ export default {
           // 지도를 표시할 div와  지도 옵션으로  지도를 생성합니다
           this.map = new window.kakao.maps.Map(mapContainer, mapOption);
           this.createRightBar();
+
+          // window.kakao.maps.event.addListener(this.map, 'click', (mouseEvent) => {
+          //   // 마우스로 클릭한 위치입니다
+          //   var clickPosition = mouseEvent.latLng;
+          //   // 지도 클릭이벤트가 발생했는데 선을 그리고있는 상태가 아니면
+          //   if (!this.drawingFlag) {
+          //     // 상태를 true로, 선이 그리고있는 상태로 변경합니다
+          //     this.drawingFlag = true;
+          //     // 지도 위에 선이 표시되고 있다면 지도에서 제거합니다
+          //     this.deleteClickLine();
+          //     // 지도 위에 커스텀오버레이가 표시되고 있다면 지도에서 제거합니다
+          //     this.deleteDistnce();
+          //     // 지도 위에 선을 그리기 위해 클릭한 지점과 해당 지점의 거리정보가 표시되고 있다면 지도에서 제거합니다
+          //     this.deleteCircleDot();	    
+          //     // 클릭한 위치를 기준으로 선을 생성하고 지도위에 표시합니다
+          //     this.clickLine = new window.kakao.maps.Polyline({
+          //       map: this.map, // 선을 표시할 지도입니다 
+          //       path: [clickPosition], // 선을 구성하는 좌표 배열입니다 클릭한 위치를 넣어줍니다
+          //       strokeWeight: 3, // 선의 두께입니다 
+          //       strokeColor: '#db4040', // 선의 색깔입니다
+          //       strokeOpacity: 1, // 선의 불투명도입니다 0에서 1 사이값이며 0에 가까울수록 투명합니다
+          //       strokeStyle: 'solid' // 선의 스타일입니다
+          //     });
+          //     // 선이 그려지고 있을 때 마우스 움직임에 따라 선이 그려질 위치를 표시할 선을 생성합니다
+          //     this.moveLine = new window.kakao.maps.Polyline({
+          //       strokeWeight: 3, // 선의 두께입니다 
+          //       strokeColor: '#db4040', // 선의 색깔입니다
+          //       strokeOpacity: 0.5, // 선의 불투명도입니다 0에서 1 사이값이며 0에 가까울수록 투명합니다
+          //       strokeStyle: 'solid' // 선의 스타일입니다    
+          //     });
+          //     // 클릭한 지점에 대한 정보를 지도에 표시합니다
+          //     this.displayCircleDot(clickPosition, 0);
+          //   } else { // 선이 그려지고 있는 상태이면
+          //     // 그려지고 있는 선의 좌표 배열을 얻어옵니다
+          //     var path = this.clickLine.getPath();
+          //     // 좌표 배열에 클릭한 위치를 추가합니다
+          //     path.push(clickPosition);
+          //     // 다시 선에 좌표 배열을 설정하여 클릭 위치까지 선을 그리도록 설정합니다
+          //     this.clickLine.setPath(path);
+          //     var distance = Math.round(this.clickLine.getLength());
+          //     this.displayCircleDot(clickPosition, distance);
+          //   }
+          // }); 
+          // window.kakao.maps.event.addListener(this.map, 'mousemove', (mouseEvent) => {
+          // // 지도 마우스무브 이벤트가 발생했는데 선을 그리고있는 상태이면
+          //   if (this.drawingFlag){
+          //     // 마우스 커서의 현재 위치를 얻어옵니다 
+          //     var mousePosition = mouseEvent.latLng; 
+          //     // 마우스 클릭으로 그려진 선의 좌표 배열을 얻어옵니다
+          //     var path = this.clickLine.getPath();
+          //     // 마우스 클릭으로 그려진 마지막 좌표와 마우스 커서 위치의 좌표로 선을 표시합니다
+          //     var movepath = [path[path.length-1], mousePosition];
+          //     this.moveLine.setPath(movepath);    
+          //     this.moveLine.setMap(this.map);
+              
+          //     var distance = Math.round(this.clickLine.getLength() + this.moveLine.getLength()), // 선의 총 거리를 계산합니다
+          //         content = '<div class="dotOverlay distanceInfo">총거리 <span class="number">' + distance + '</span>m</div>'; // 커스텀오버레이에 추가될 내용입니다
+              
+          //     // 거리정보를 지도에 표시합니다
+          //     this.showDistance(content, mousePosition);   
+          //   }             
+          // });                 
+          // window.kakao.maps.event.addListener(this.map, 'rightclick', (/*mouseEvent*/) => {
+          //   // 지도 오른쪽 클릭 이벤트가 발생했는데 선을 그리고있는 상태이면
+          //   if (this.drawingFlag) {
+          //       // 마우스무브로 그려진 선은 지도에서 제거합니다
+          //       this.moveLine.setMap(null);
+          //       this.moveLine = null;  
+          //       // 마우스 클릭으로 그린 선의 좌표 배열을 얻어옵니다
+          //       var path = this.clickLine.getPath();
+          //       // 선을 구성하는 좌표의 개수가 2개 이상이면
+          //       if (path.length > 1) {
+          //           // 마지막 클릭 지점에 대한 거리 정보 커스텀 오버레이를 지웁니다
+          //           if (this.dots[this.dots.length-1].distance) {
+          //               this.dots[this.dots.length-1].distance.setMap(null);
+          //               this.dots[this.dots.length-1].distance = null;    
+          //           }
+          //           var distance = Math.round(this.clickLine.getLength()), // 선의 총 거리를 계산합니다
+          //               content = this.getTimeHTML(distance); // 커스텀오버레이에 추가될 내용입니다
+                        
+          //           // 그려진 선의 거리정보를 지도에 표시합니다
+          //           this.showDistance(content, path[path.length-1]);  
+          //       } else {
+          //         // 선을 구성하는 좌표의 개수가 1개 이하이면 
+          //         // 지도에 표시되고 있는 선과 정보들을 지도에서 제거합니다.
+          //         this.deleteClickLine();
+          //         this.deleteCircleDot(); 
+          //         this.deleteDistnce();
+          //       }
+          //       // 상태를 false로, 그리지 않고 있는 상태로 변경합니다
+          //       this.drawingFlag = false;          
+          //   }  
+          // });    
+
         });
       }
       this.makeList();
-
     };
     script.async = true;
     script.type = 'text/javascript';
     script.src = "http://dapi.kakao.com/v2/maps/sdk.js?autoload=false&appkey=1b7a0eb6294cdd4b1f985683a25bd972";
     document.head.appendChild(script);
-    
+
   },
   methods: {
     Test() {
-      console.log(this.latList[0].innerHTML);
-      console.log(this.lngList[0].innerHTML);
+
+      
     },
     showRoute() {
       
-      window.kakao.maps.event.addListener(this.map, 'click', function (mouseEvent) { console.log(mouseEvent) });
+      
     },
     viewSmall() {
         const cardImages = document.querySelectorAll('.card-image');
@@ -391,10 +496,279 @@ export default {
                 });
           }	
     },
-        
-        
-
+    deleteClickLine() {
+      if (this.clickLine) {
+        this.clickLine.setMap(null);    
+        this.clickLine = null;        
+      }
     },
+    showDistance(content, position) {
+      if (this.distanceOverlay) { // 커스텀오버레이가 생성된 상태이면
+
+      // 커스텀 오버레이의 위치와 표시할 내용을 설정합니다
+      this.distanceOverlay.setPosition(position);
+      this.distanceOverlay.setContent(content);
+
+      } else { // 커스텀 오버레이가 생성되지 않은 상태이면
+      // 커스텀 오버레이를 생성하고 지도에 표시합니다
+        this.distanceOverlay = new window.kakao.maps.CustomOverlay({
+          map: this.map, // 커스텀오버레이를 표시할 지도입니다
+          content: content,  // 커스텀오버레이에 표시할 내용입니다
+          position: position, // 커스텀오버레이를 표시할 위치입니다.
+          xAnchor: 0,
+          yAnchor: 0,
+          zIndex: 3  
+        });       
+      }
+    },
+    deleteDistnce () {
+      if (this.distanceOverlay) {
+        this.distanceOverlay.setMap(null);
+        this.distanceOverlay = null;
+      }
+    },
+    displayCircleDot(position, distance) {
+    // 클릭 지점을 표시할 빨간 동그라미 커스텀오버레이를 생성합니다
+      var circleOverlay = new window.kakao.maps.CustomOverlay({
+          content: '<span class="dot"></span>',
+          position: position,
+          zIndex: 1
+      });
+      // 지도에 표시합니다
+      circleOverlay.setMap(this.map);
+
+      if (distance > 0) {
+        // 클릭한 지점까지의 그려진 선의 총 거리를 표시할 커스텀 오버레이를 생성합니다
+        var distanceOverlay = new window.kakao.maps.CustomOverlay({
+          content: '<div class="dotOverlay">거리 <span class="number">' + distance + '</span>m</div>',
+          position: position,
+          yAnchor: 1,
+          zIndex: 2
+        });
+        // 지도에 표시합니다
+        distanceOverlay.setMap(this.map);
+      }
+      // 배열에 추가합니다
+      this.dots.push({circle:circleOverlay, distance: distanceOverlay});
+    },
+    deleteCircleDot() {
+      var i;
+      for ( i = 0; i < this.dots.length; i++ ){
+          if (this.dots[i].circle) { 
+              this.dots[i].circle.setMap(null);
+          }
+
+          if (this.dots[i].distance) {
+              this.dots[i].distance.setMap(null);
+          }
+      }
+      this.dots = [];
+    },
+    getTimeHTML(distance) {
+
+      // 도보의 시속은 평균 4km/h 이고 도보의 분속은 67m/min입니다
+      var walkkTime = distance / 67 | 0;
+      var walkHour = '', walkMin = '';
+
+      // 계산한 도보 시간이 60분 보다 크면 시간으로 표시합니다
+      if (walkkTime > 60) {
+          walkHour = '<span class="number">' + Math.floor(walkkTime / 60) + '</span>시간 '
+      }
+      walkMin = '<span class="number">' + walkkTime % 60 + '</span>분'
+
+      // 자전거의 평균 시속은 16km/h 이고 이것을 기준으로 자전거의 분속은 267m/min입니다
+      var bycicleTime = distance / 227 | 0;
+      var bycicleHour = '', bycicleMin = '';
+
+      // 계산한 자전거 시간이 60분 보다 크면 시간으로 표출합니다
+      if (bycicleTime > 60) {
+          bycicleHour = '<span class="number">' + Math.floor(bycicleTime / 60) + '</span>시간 '
+      }
+      bycicleMin = '<span class="number">' + bycicleTime % 60 + '</span>분'
+
+      // 거리와 도보 시간, 자전거 시간을 가지고 HTML Content를 만들어 리턴합니다
+      var content = '<ul class="dotOverlay distanceInfo">';
+      content += '    <li>';
+      content += '        <span class="label">총거리</span><span class="number">' + distance + '</span>m';
+      content += '    </li>';
+      content += '    <li>';
+      content += '        <span class="label">도보</span>' + walkHour + walkMin;
+      content += '    </li>';
+      content += '    <li>';
+      content += '        <span class="label">자전거</span>' + bycicleHour + bycicleMin;
+      content += '    </li>';
+      content += '</ul>'
+
+      return content;
+    },
+    deleteRouteInfo() {
+      this.deleteCircleDot();
+      this.deleteDistnce();
+      this.deleteClickLine();
+    },
+    distanceInKilometerByHaversine(x1, y1, x2, y2) {
+      var distance;
+      var radius = 6371; // 지구 반지름(km)
+      var toRadian = Math.PI / 180;
+
+      var deltaLatitude = Math.abs(x1 - x2) * toRadian;
+      var deltaLongitude = Math.abs(y1 - y2) * toRadian;
+
+      var sinDeltaLat = Math.sin(deltaLatitude / 2);
+      var sinDeltaLng = Math.sin(deltaLongitude / 2);
+      var squareRoot = Math.sqrt(
+          sinDeltaLat * sinDeltaLat +
+          Math.cos(x1 * toRadian) * Math.cos(x2 * toRadian) * sinDeltaLng * sinDeltaLng);
+
+      distance = 2 * radius * Math.asin(squareRoot);
+
+      return distance;
+    },
+    dfs(origin, start, sum, depth, length) {
+      if (depth === length) {
+        if (sum < this.answer) {
+          this.answer = sum;
+          for (let i = 0; i < this.arr.length; i++) {
+            this.anslist[i] = this.arr[i];
+          }
+        }
+        return;
+      }
+
+      for (let i = 0; i < length; i++) {
+        if (this.visited[i] || this.graph[start][i] == 0) continue;
+        this.visited[i] = true;
+        this.arr[depth] = i;
+        this.dfs(origin, i, sum + this.graph[start][i], depth + 1, length);
+        this.visited[i] = false;
+      }
+    },
+    optimalButtonClicked() {
+      this.latList = [];
+      this.lngList = [];
+      let latNode = [];
+      let lngNode = [];
+
+      latNode = document.querySelectorAll("#card-list-custom .latitude");
+      lngNode = document.querySelectorAll("#card-list-custom .longitude");
+      this.latList = Array.from(latNode);
+      this.lngList = Array.from(lngNode);
+
+      this.visited = [];
+      this.visited = new Array(this.latList.length).fill(false);
+
+      this.graph = [];
+      for (let i = 0; i < this.latList.length; i++) {
+        let cells = [];
+        for (let j = 0; j < this.lngList.length; j++) {
+          cells[j] = this.distanceInKilometerByHaversine(
+            this.latList[i].innerHTML,
+            this.lngList[i].innerHTML,
+            this.latList[j].innerHTML,
+            this.lngList[j].innerHTML
+          );
+        }
+        this.graph.push(cells);
+      }
+
+      this.visited.fill(false);
+      this.arr = [];
+      this.anslist = [];
+      this.answer = 9999999;
+      let length = this.latList.length;
+
+      for (let i = 0; i < length; i++) {
+        this.visited[i] = true;
+        this.arr[0] = i;
+        this.dfs(i, i, 0, 1, length);
+        this.visited[i] = false;
+      }
+
+      for (let i = 0; i < length; i++) {
+        let qa1 = new window.kakao.maps.LatLng(this.latList[this.anslist[i]].innerHTML, this.lngList[this.anslist[i]].innerHTML);
+        
+        if (!this.drawingFlag) {
+          this.drawingFlag = true;
+          this.deleteClickLine();
+          this.deleteDistnce();
+          this.deleteCircleDot();
+
+          this.clickLine = new window.kakao.maps.Polyline({
+            map: this.map,
+            path: [qa1],
+            strokeWeight: 3,
+            strokeColor: '#db4040',
+            strokeOpacity: 1,
+            strokeStyle: 'solid'
+          });
+          this.moveLine = new window.kakao.maps.Polyline({
+            strokeWeight: 3,
+            strokeColor: '#db4040',
+            strokeOpacity: 0.5,
+            strokeStyle: 'solid'
+          });
+
+          this.displayCircleDot(qa1, 0);
+
+        } else {
+          let path = this.clickLine.getPath();
+          path.push(qa1);
+          this.clickLine.setPath(path);
+          let distance = Math.round(this.clickLine.getLength());
+          this.displayCircleDot(qa1, distance);
+        }
+      }
+
+      if (this.drawingFlag) {
+        this.moveLine.setMap(null);
+        this.moveLine = null;
+        let path = this.clickLine.getPath();
+
+        if (path.length > 1) {
+          if (this.dots[this.dots.length-1].distance) {
+            this.dots[this.dots.length-1].distance.setMap(null);
+            this.dots[this.dots.length-1].distance = null;
+          }
+
+          var distance = Math.round(this.clickLine.getLength());
+          var content = this.getTimeHTML(distance);
+          this.showDistance(content, path[path.length-1]);
+        } else {
+          this.deleteClickLine();
+          this.deleteCircleDot();
+          this.deleteDistnce();
+        }
+
+        this.drawingFlag = false;
+        
+      }
+      this.map.setCenter(new window.kakao.maps.LatLng(this.latList[this.anslist[0]].innerHTML, this.lngList[this.anslist[0]].innerHTML));
+
+      this.customCards = document.querySelectorAll("#card-list-custom > div");
+      this.customCardsShort = [];
+      for (let i = 0; i < this.customCards.length; i++){
+        
+        this.customCardsShort[i] = this.customCards[this.anslist[i]];
+        this.customCardsShort[i].classList.remove('fade-in');
+        this.customCardsShort[i].classList.remove('show');
+      }
+      for (let i = 0; i < this.customCards.length; i++) {
+        this.customCards[i].remove();
+      }
+      // customCardsShorts에 있는 요소들을 순회하면서 HTML에 추가
+      const container = document.querySelector('#card-list-custom');
+
+      for (let i = 0; i < this.customCardsShort.length; i++) {
+        const card = this.customCardsShort[i];
+        card.classList.add('fade-in');
+        container.appendChild(card);
+
+        setTimeout(() => {
+          card.classList.add('show');
+        }, i * 100); // 요소의 인덱스에 따라 시간 간격 설정
+      }
+    }
+  },
 };
 </script>
 
@@ -412,4 +786,26 @@ export default {
   .desc .jibun {font-size: 11px;color: #888;margin-top: -2px;}
   .info .img {position: absolute;top: 6px;left: 5px;width: 73px;height: 71px;border: 1px solid #ddd;color: #888;overflow: hidden;}
   .info:after {content: '';position: absolute;margin-left: -12px;left: 50%;bottom: 0;width: 22px;height: 12px;background: url('https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/vertex_white.png')}
+</style>
+
+<style>
+  .dot {overflow:hidden;float:left;width:12px;height:12px;background: url('https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/mini_circle.png');}    
+  .dotOverlay {position:relative;bottom:10px;border-radius:6px;border: 1px solid #ccc;border-bottom:2px solid #ddd;float:left;font-size:12px;padding:5px;background:#fff;}
+  .dotOverlay:nth-of-type(n) {border:0; box-shadow:0px 1px 2px #888;}    
+  .number {font-weight:bold;color:#ee6152;}
+  .dotOverlay:after {content:'';position:absolute;margin-left:-6px;left:50%;bottom:-8px;width:11px;height:8px;background:url('https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/vertex_white_small.png')}
+  .distanceInfo {position:relative;top:5px;left:5px;list-style:none;margin:0;}
+  .distanceInfo .label {display:inline-block;width:50px;}
+  .distanceInfo:after {content:none;}
+</style>
+
+<style>
+.fade-in {
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+
+.fade-in.show {
+  opacity: 1;
+}
 </style>
