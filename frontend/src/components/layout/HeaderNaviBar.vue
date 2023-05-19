@@ -11,7 +11,7 @@
         <v-tabs centered class="ml-n9" color="black darken-1">
 
             <v-tab v-if="!isLogin" :to="{ name: 'signin' }">로그인</v-tab>
-            <v-tab v-else :to="{ name: 'signin' }">로그아웃</v-tab>
+            <v-tab v-else @click.prevent="onClickLogout">로그아웃</v-tab>
             <v-tab :to="{ name: 'notice' }">Q&A</v-tab>
             <v-tab :to="{ name: 'tour' }">여행정보</v-tab>
             <v-tab :to="{ name: 'mypage' }">여행계획</v-tab>
@@ -108,11 +108,12 @@
 </template> 
 
 <script>
-import { mapState } from "vuex";
+import { mapState, mapActions, mapGetters } from "vuex";
 const memberStore = "memberStore";
 
 export default {
     data: () => ({
+        menu: null,
         links: ["공지사항", "로그인", "회원가입", "마이페이지", "로그아웃", "FAQS"],
         selectedItem: 1,
         items: [
@@ -123,7 +124,18 @@ export default {
     }),
     computed: {
         ...mapState(memberStore, ["isLogin", "userInfo"]),
+        ...mapGetters(['checkUserInfo']),
     },
+    methods : {
+        ...mapActions(memberStore, ["userLogout"]),
+
+        onClickLogout() {
+            this.userLogout(this.userInfo.data.memberId);
+            sessionStorage.removeItem("access-token"); //저장된 토큰 없애기
+            sessionStorage.removeItem("refresh-token"); //저장된 토큰 없애기
+            if (this.$route.path != "/") this.$router.push({ name: "home" });
+        }
+    }
 };
 </script>
 

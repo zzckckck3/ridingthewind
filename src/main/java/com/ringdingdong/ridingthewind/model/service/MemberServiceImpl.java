@@ -75,5 +75,16 @@ public class MemberServiceImpl implements MemberService {
 		return memberMapper.findMemberId(memberId);
 	}
 
+	@Override
+	public void deleteRefreshToken(String userId) {
+
+		Map<String, String> map = new HashMap<String, String>();
+		System.out.println("mapper실행"+userId);
+		map.put("userId", userId);
+		map.put("token", null);
+
+		memberMapper.deleteRefreshToken(map);
+	}
+
 
 }

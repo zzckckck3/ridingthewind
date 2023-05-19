@@ -174,6 +174,26 @@ public class MemberController {
 		}
 	}
 
+	@GetMapping("/logout/{userid}")
+	public ResponseEntity<?> removeToken(@PathVariable("userid") String userId){
+		System.out.println("로그아웃"+ userId);
+		Map<String, Object> resultMap = new HashMap<>();
+		HttpStatus status = HttpStatus.ACCEPTED;
+
+		try {
+			memberService.deleteRefreshToken(userId);
+			resultMap.put("message",ResponseResult.SUCCESS.name());
+			status = HttpStatus.ACCEPTED;
+		} catch (Exception e) {
+			logger.error("로그아웃 실패 : {}", e);
+			resultMap.put("message", ResponseResult.FAIL.name());
+			status = HttpStatus.INTERNAL_SERVER_ERROR;
+
+		}
+		return new ResponseEntity<Map<String, Object>>(resultMap, status);
+
+	}
+
 
 
 
