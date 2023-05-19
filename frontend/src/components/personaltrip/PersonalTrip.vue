@@ -30,6 +30,10 @@
               class="grey lighten-5 overflow-auto"
               style="padding: 10px;"
             >
+              <v-btn class="ma-1" outlined color="indigo">최적경로 설정</v-btn>
+              <v-btn class="ma-1" outlined color="indigo">공유!</v-btn>
+              <v-btn class="ma-1" outlined color="indigo" @click="showRoute()">현재경로 보기</v-btn>
+              <v-btn class="ma-1" outlined color="indigo" @click="Test()">TestBtn</v-btn>
               <v-container fluid style="min-width: 100px;">
                 <v-row dense class="card-list">
                   
@@ -48,6 +52,8 @@
               class="grey lighten-5 overflow-auto"
               style="padding: 10px;"
             >
+            <v-btn class="ma-1" outlined color="indigo" @click="viewSmall()">Size Down<v-icon>mdi-arrow-down</v-icon></v-btn>            
+            <v-btn class="ma-1" outlined color="indigo" @click="viewBig()">Size Up<v-icon>mdi-arrow-up</v-icon></v-btn>
               <v-container fluid>
                 <v-row dense class="card-list">
                   <v-col
@@ -55,11 +61,11 @@
                     :key="card.title"
                     :cols="card.flex"
                     :id="card.id"
-                >
+                  >
                     <v-card>
                     <v-img
                         :src="card.src"
-                        class="white--text align-end"
+                        class="white--text align-end card-image"
                         gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)"
                         height="200px"
                     >
@@ -81,6 +87,8 @@
                         </v-row>
                         </v-col>
                         <v-spacer style="font-size: small;">{{ card.addr_1 }}</v-spacer>
+                        <div style="display: none;" class="latitude">{{ card.latitude }}</div>
+                        <div style="display: none;" class="longitude">{{ card.longitude }}</div>
                         <v-btn
                         icon
                         @click="card.show = !card.show"
@@ -111,181 +119,210 @@ import http from "@/axios/http";
 import Sortable from 'sortablejs';
 
 export default {
-    name: 'TourSearchInfo',
-    components: {
-    },
-    data() {
-        return {
-            map: null,
-            sido: [],
-            gugun: [],
-            selectedSido: null,
-            selectedGugun: null,
-            selectedContentById: [],
-            positions: [],
-            markers: [],
-            contentByType: [
-                    { id: 12, value: "관광지" },
-                    { id: 14, value: "문화시설" },
-                    { id: 15, value: "축제공연행사" },
-                    { id: 25, value: "여행코스" },
-                    { id: 28, value: "레포츠" },
-                    { id: 32, value: "숙박" },
-                    { id: 38, value: "쇼핑" },
-                    { id: 39, value: "음식점" }
-                ],
-          cards: [],
-            overlay: [],
-            clickedOverlay: null
-        };
+  name: 'TourSearchInfo',
+  components: {},
+  data() {
+    return {
+      map: null,
+      sido: [],
+      gugun: [],
+      selectedSido: null,
+      selectedGugun: null,
+      selectedContentById: [],
+      positions: [],
+      markers: [],
+      contentByType: [
+        { id: 12, value: "관광지" },
+        { id: 14, value: "문화시설" },
+        { id: 15, value: "축제공연행사" },
+        { id: 25, value: "여행코스" },
+        { id: 28, value: "레포츠" },
+        { id: 32, value: "숙박" },
+        { id: 38, value: "쇼핑" },
+        { id: 39, value: "음식점" }
+      ],
+      cards: [],
+      overlay: [],
+      clickedOverlay: null,
+
+      /*Display Route Variables*/
+      latList : [],
+      lngList : [],
+      titleClass : [document.getElementsByClassName("card-title")],
+      titleList: [],
+      drawingFlag: false, // 선이 그려지고 있는 상태를 가지고 있을 변수입니다
+      moveLine: null, // 선이 그려지고 있을때 마우스 움직임에 따라 그려질 선 객체 입니다
+      clickLine: null, // 마우스로 클릭한 좌표로 그려질 선 객체입니다
+      distanceOverlay: null, // 선의 거리정보를 표시할 커스텀오버레이 입니다
+      dots: [], // 선이 그려지고 있을때 클릭할 때마다 클릭 지점과 거리를 표시하는 커스텀 오버레이 배열입니다.
+      /*Display Route Variables End*/
+    };
   },
   created(){},
   mounted() {
-      
-        const columns = document.querySelectorAll(".card-list");
+    const columns = document.querySelectorAll(".card-list");
 
-        columns.forEach((column) => {
-          new Sortable(column, {
-            group: "shared",
-            animation: 150,
-            ghostClass: "blue-background-class"
-          });
+    columns.forEach((column) => {
+      new Sortable(column, {
+        group: "shared",
+        animation: 150,
+        ghostClass: "blue-background-class"
+      });
+    });
+    const script = document.createElement('script');
+    script.onload = () => {
+      if (window.kakao && window.kakao.maps) {
+        window.kakao.maps.load(() => {
+          const mapContainer = document.getElementById("map"); // 지도를 표시할 div
+          const mapOption = {
+            center: new window.kakao.maps.LatLng(37.500613, 127.036431), // 지도의 중심좌표
+            level: 5, // 지도의 확대 레벨
+          };
+
+          // 지도를 표시할 div와  지도 옵션으로  지도를 생성합니다
+          this.map = new window.kakao.maps.Map(mapContainer, mapOption);
+          this.createRightBar();
         });
-        const script = document.createElement('script');
-        script.onload = () => {
-            if (window.kakao && window.kakao.maps) {
-                window.kakao.maps.load(() => {
-                    const mapContainer = document.getElementById("map"); // 지도를 표시할 div
-                    const mapOption = {
-                        center: new window.kakao.maps.LatLng(37.500613, 127.036431), // 지도의 중심좌표
-                        level: 5, // 지도의 확대 레벨
-                    };
+      }
+      this.makeList();
 
-                    // 지도를 표시할 div와  지도 옵션으로  지도를 생성합니다
-                    this.map = new window.kakao.maps.Map(mapContainer, mapOption);
-                    this.createRightBar();
-                });
-                
-          }
-            this.makeList();
-        };
-        script.async = true;
-        script.type = 'text/javascript';
-        script.src = "http://dapi.kakao.com/v2/maps/sdk.js?autoload=false&appkey=1b7a0eb6294cdd4b1f985683a25bd972";
-        document.head.appendChild(script);
-        
+    };
+    script.async = true;
+    script.type = 'text/javascript';
+    script.src = "http://dapi.kakao.com/v2/maps/sdk.js?autoload=false&appkey=1b7a0eb6294cdd4b1f985683a25bd972";
+    document.head.appendChild(script);
+    
+  },
+  methods: {
+    Test() {
+      console.log(this.latList[0].innerHTML);
+      console.log(this.lngList[0].innerHTML);
     },
-    methods: {
-      createRightBar() {
-        //일반 지도와 스카이뷰로 지도 타입을 전환할 수 있는 지도타입 컨트롤을 생성합니다
-        this.mapTypeControl = new window.kakao.maps.MapTypeControl();
+    showRoute() {
+      
+      window.kakao.maps.event.addListener(this.map, 'click', function (mouseEvent) { console.log(mouseEvent) });
+    },
+    viewSmall() {
+        const cardImages = document.querySelectorAll('.card-image');
+        cardImages.forEach(cardImage => {
+          cardImage.style.height = '80px';
+        });
+    },
+    viewBig() {
+      const cardImages = document.querySelectorAll('.card-image');
+      cardImages.forEach(cardImage => {
+        cardImage.style.height = '200px';
+      });
+    },
+    createRightBar() {
+      //일반 지도와 스카이뷰로 지도 타입을 전환할 수 있는 지도타입 컨트롤을 생성합니다
+      this.mapTypeControl = new window.kakao.maps.MapTypeControl();
 
-        // 지도에 컨트롤을 추가해야 지도위에 표시됩니다
-        // kakao.maps.ControlPosition은 컨트롤이 표시될 위치를 정의하는데 TOPRIGHT는 오른쪽 위를 의미합니다
-        this.map.addControl(this.mapTypeControl, window.kakao.maps.ControlPosition.TOPRIGHT);
+      // 지도에 컨트롤을 추가해야 지도위에 표시됩니다
+      // kakao.maps.ControlPosition은 컨트롤이 표시될 위치를 정의하는데 TOPRIGHT는 오른쪽 위를 의미합니다
+      this.map.addControl(this.mapTypeControl, window.kakao.maps.ControlPosition.TOPRIGHT);
 
-        // 지도 확대 축소를 제어할 수 있는  줌 컨트롤을 생성합니다
-        var zoomControl = new window.kakao.maps.ZoomControl();
-        this.map.addControl(zoomControl, window.kakao.maps.ControlPosition.RIGHT);
+      // 지도 확대 축소를 제어할 수 있는  줌 컨트롤을 생성합니다
+      var zoomControl = new window.kakao.maps.ZoomControl();
+      this.map.addControl(zoomControl, window.kakao.maps.ControlPosition.RIGHT);
+    },
+    tripDelete(id) {
+      if (confirm("여행지를 삭제하시겠습니까?")) {
+        http.delete(`/mypage/delete/ssafy/${id}`)
+          .then(() => {
+            return this.makeList();
+          })
+          .catch((error) => {
+            console.error(error);
+        });
+      }
+    },
+    makeList() {
+      //======================================
+        // 꼭 ssafy를 memberId로 바꿔야 함!!!!!
+      //======================================
+      http.get(`/mypage/list/ssafy`)
+        .then((response) => {
+          this.positions.length = 0;
+          this.cards.length = 0;
+        // console.log(response.data);
+          response.data.forEach((area) => {
+            let markerInfo = {
+              id: area.contentId,
+              img: area.firstImage,
+              title: area.title,
+              addr_1: area.addr1,
+              addr_2: area.addr2,
+              zip: area.zipcode,
+              tel: area.tel,
+              contenttypeid: area.contentTypeId,
+              latlng: new window.kakao.maps.LatLng(area.latitude, area.longitude),
+            };
+            let card = {
+              id: area.contentId,
+              src: area.firstImage,
+              title: area.title,
+              addr_1: area.addr1,
+              overview: area.overView,
+              latitude: area.latitude,
+              longitude: area.longitude,
+              flex: 6,
+              show: false,
+              like: true
+            }
+            this.positions.push(markerInfo);
+            this.cards.push(card);
+          });
+        })
+        .then(() => { 
+          this.removeMarker();
+          this.displayMarker();
+          this.latList = Array.from(document.getElementsByClassName("latitude"));
+          this.lngList = Array.from(document.getElementsByClassName("longitude"));
+        });
       },
-      tripDelete(id) {
-        if (confirm("여행지를 삭제하시겠습니까?")) {
-          http.delete(`/mypage/delete/ssafy/${id}`)
-            .then(() => {
-              return this.makeList();
-            })
-            .catch((error) => {
-              console.error(error);
+      displayMarker() {
+        var imageSrc = "";
+        // let index = 0;
+        // 마커 이미지
+        for (var i = 0; i < this.positions.length; i++) {
+          if (this.positions[i].contenttypeid == 12) {
+              imageSrc = require("@/assets/mark/mark1.png");
+          }else if(this.positions[i].contenttypeid == 14){
+              imageSrc = require("@/assets/mark/mark2.png");
+          }else if(this.positions[i].contenttypeid == 15){
+              imageSrc = require("@/assets/mark/mark3.png");
+          }else if(this.positions[i].contenttypeid == 25){
+              imageSrc = require("@/assets/mark/mark4.png");
+          }else if(this.positions[i].contenttypeid == 28){
+              imageSrc = require("@/assets/mark/mark5.png");
+          }else if(this.positions[i].contenttypeid == 32){
+              imageSrc = require("@/assets/mark/mark6.png");
+          }else if(this.positions[i].contenttypeid == 38){
+              imageSrc = require("@/assets/mark/mark7.png");
+          }else if(this.positions[i].contenttypeid == 39){
+              imageSrc = require("@/assets/mark/mark8.png");
+          }
+      
+            // 마커 이미지의 이미지 크기 입니다
+            /*var imageSize = new kakao.maps.Size(100, 80);*/
+          var imageSize = new window.kakao.maps.Size(100, 69); // 마커이미지의 크기입니다
+      
+          // 마커 이미지를 생성합니다
+          var markerImage = new window.kakao.maps.MarkerImage(imageSrc, imageSize);
+
+          // 마커를 생성합니다
+          this.markers[i] = new window.kakao.maps.Marker({
+              map: this.map, // 마커를 표시할 지도
+              position: this.positions[i].latlng, // 마커를 표시할 위치
+              title: this.positions[i].title, // 마커의 타이틀, 마커에 마우스를 올리면 타이틀이 표시됩니다
+              image: markerImage, // 마커 이미지
           });
         }
+          // 첫번째 검색 정보를 이용하여 지도 중심을 이동 시킵니다
+        if(this.positions.length) this.map.setCenter(this.positions[0].latlng);
+        this.showOverlay();
       },
-      makeList() {
-        //======================================
-          // 꼭 ssafy를 memberId로 바꿔야 함!!!!!
-        //======================================
-            http.get(`/mypage/list/ssafy`)
-              .then((response) => {
-                    this.positions.length = 0;
-                    this.cards.length = 0;
-                    // console.log(response.data);
-                    response.data.forEach((area) => {
-                            let markerInfo = {
-                                id: area.contentId,
-                                img: area.firstImage,
-                                title: area.title,
-                                addr_1: area.addr1,
-                                addr_2: area.addr2,
-                                zip: area.zipcode,
-                                tel: area.tel,
-                                contenttypeid: area.contentTypeId,
-                                latlng: new window.kakao.maps.LatLng(area.latitude, area.longitude),
-                            };
-                            let card = {
-                                id: area.contentId,
-                                src: area.firstImage,
-                                title: area.title,
-                                addr_1: area.addr1,
-                                overview: area.overView,
-                                latitude: area.latitude,
-                                longitude: area.longitude,
-                                flex: 6,
-                                show: false,
-                                like: true
-                          }
-                          this.positions.push(markerInfo);
-                          this.cards.push(card);
-                    });
-                })
-                .then(() => { 
-                    this.removeMarker();
-                    this.displayMarker();
-                });
-        },
-        displayMarker() {
-            var imageSrc = "";
-            // let index = 0;
-            // 마커 이미지
-            for (var i = 0; i < this.positions.length; i++) {
-                if (this.positions[i].contenttypeid == 12) {
-                    imageSrc = require("@/assets/mark/mark1.png");
-                }else if(this.positions[i].contenttypeid == 14){
-                    imageSrc = require("@/assets/mark/mark2.png");
-                }else if(this.positions[i].contenttypeid == 15){
-                    imageSrc = require("@/assets/mark/mark3.png");
-                }else if(this.positions[i].contenttypeid == 25){
-                    imageSrc = require("@/assets/mark/mark4.png");
-                }else if(this.positions[i].contenttypeid == 28){
-                    imageSrc = require("@/assets/mark/mark5.png");
-                }else if(this.positions[i].contenttypeid == 32){
-                    imageSrc = require("@/assets/mark/mark6.png");
-                }else if(this.positions[i].contenttypeid == 38){
-                    imageSrc = require("@/assets/mark/mark7.png");
-                }else if(this.positions[i].contenttypeid == 39){
-                    imageSrc = require("@/assets/mark/mark8.png");
-                }
-        
-                // 마커 이미지의 이미지 크기 입니다
-                /*var imageSize = new kakao.maps.Size(100, 80);*/
-                var imageSize = new window.kakao.maps.Size(100, 69); // 마커이미지의 크기입니다
-            
-                // 마커 이미지를 생성합니다
-                var markerImage = new window.kakao.maps.MarkerImage(imageSrc, imageSize);
-
-                // 마커를 생성합니다
-                this.markers[i] = new window.kakao.maps.Marker({
-                    map: this.map, // 마커를 표시할 지도
-                    position: this.positions[i].latlng, // 마커를 표시할 위치
-                    title: this.positions[i].title, // 마커의 타이틀, 마커에 마우스를 올리면 타이틀이 표시됩니다
-                    image: markerImage, // 마커 이미지
-                });
-            }
-            // 첫번째 검색 정보를 이용하여 지도 중심을 이동 시킵니다
-            if(this.positions.length) this.map.setCenter(this.positions[0].latlng);
-
-            this.showOverlay();
-            
-
-        },
         removeMarker() {
             for ( var i = 0; i < this.markers.length; i++ ) {
                 this.markers[i].setMap(null);
@@ -352,8 +389,9 @@ export default {
                     
                     this.map.panTo(this.overlay.getPosition());
                 });
-            }	
-        }
+          }	
+    },
+        
         
 
     },
@@ -361,17 +399,17 @@ export default {
 </script>
 
 <style>
-.wrap {position: absolute;left: 0;bottom: 40px;width: 288px;height: 132px;margin-left: -144px;text-align: left;overflow: hidden;font-size: 12px;font-family: 'Malgun Gothic', dotum, '돋움', sans-serif;line-height: 1.5;}
-.wrap * {padding: 0;margin: 0;}
-.wrap .info {width: 286px;height: 120px;border-radius: 5px;border-bottom: 2px solid #ccc;border-right: 1px solid #ccc;overflow: hidden;background: #fff;}
-.wrap .info:nth-child(1) {border: 0;box-shadow: 0px 1px 2px #888;}
-.info .title {padding: 5px 0 0 10px;height: 30px;background: #eee;border-bottom: 1px solid #ddd;font-size: 18px;font-weight: bold;}
-.info .close {position: absolute;top: 10px;right: 10px;color: #888;width: 17px;height: 17px;background: url('https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/overlay_close.png');}
-.info .close:hover {cursor: pointer;}
-.info .body {position: relative;overflow: hidden;}
-.info .desc {position: relative;margin: 13px 0 0 90px;height: 75px;}
-.desc .ellipsis {overflow: hidden;text-overflow: ellipsis;white-space: nowrap;}
-.desc .jibun {font-size: 11px;color: #888;margin-top: -2px;}
-.info .img {position: absolute;top: 6px;left: 5px;width: 73px;height: 71px;border: 1px solid #ddd;color: #888;overflow: hidden;}
-.info:after {content: '';position: absolute;margin-left: -12px;left: 50%;bottom: 0;width: 22px;height: 12px;background: url('https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/vertex_white.png')}
+  .wrap {position: absolute;left: 0;bottom: 40px;width: 288px;height: 132px;margin-left: -144px;text-align: left;overflow: hidden;font-size: 12px;font-family: 'Malgun Gothic', dotum, '돋움', sans-serif;line-height: 1.5;}
+  .wrap * {padding: 0;margin: 0;}
+  .wrap .info {width: 286px;height: 120px;border-radius: 5px;border-bottom: 2px solid #ccc;border-right: 1px solid #ccc;overflow: hidden;background: #fff;}
+  .wrap .info:nth-child(1) {border: 0;box-shadow: 0px 1px 2px #888;}
+  .info .title {padding: 5px 0 0 10px;height: 30px;background: #eee;border-bottom: 1px solid #ddd;font-size: 18px;font-weight: bold;}
+  .info .close {position: absolute;top: 10px;right: 10px;color: #888;width: 17px;height: 17px;background: url('https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/overlay_close.png');}
+  .info .close:hover {cursor: pointer;}
+  .info .body {position: relative;overflow: hidden;}
+  .info .desc {position: relative;margin: 13px 0 0 90px;height: 75px;}
+  .desc .ellipsis {overflow: hidden;text-overflow: ellipsis;white-space: nowrap;}
+  .desc .jibun {font-size: 11px;color: #888;margin-top: -2px;}
+  .info .img {position: absolute;top: 6px;left: 5px;width: 73px;height: 71px;border: 1px solid #ddd;color: #888;overflow: hidden;}
+  .info:after {content: '';position: absolute;margin-left: -12px;left: 50%;bottom: 0;width: 22px;height: 12px;background: url('https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/vertex_white.png')}
 </style>

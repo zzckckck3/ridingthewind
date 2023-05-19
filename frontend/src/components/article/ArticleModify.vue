@@ -45,7 +45,7 @@
 import ModifyConfirmDialog from "@/components/layout/ModifyConfirmDialog.vue";
 
 export default {
-    name: "NoticeModify",
+    name: "ArticleModify",
     data() {
         return {
             article: {},
@@ -57,7 +57,7 @@ export default {
     },
     methods: {
         moveToList() {
-            this.$router.push({name: "notice"});
+            this.$router.push({name: "article"});
         },
     },
     components: {

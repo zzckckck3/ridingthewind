@@ -36,7 +36,7 @@
                     ></v-select>
                 </div>
                 <div style="display:flex">
-                    <v-select
+                    <v-autocomplete
                         class="me-2"
                         clearable
                         chips
@@ -47,7 +47,8 @@
                         v-model="selectedContentById"
                         multiple
                         outlined
-                    ></v-select>
+                    >
+                    </v-autocomplete>
                     <v-btn
                         @click="markList"
                         class="ma-2"
@@ -66,7 +67,6 @@
                 </div>
                 <div class="mt-3 me-3">
                     <div id="map" class="" style="width: 100%; height: 700px;"></div>
-                    <kakao-overlay></kakao-overlay>
                 </div>
 
             </v-sheet>
@@ -81,6 +81,8 @@
                 class="grey lighten-5 overflow-auto"
                 style="padding: 10px;"
             >
+            <v-btn class="ma-1" outlined color="indigo" @click="viewSmall()">Size Down<v-icon>mdi-arrow-down</v-icon></v-btn>            
+            <v-btn class="ma-1" outlined color="indigo" @click="viewBig()">Size Up<v-icon>mdi-arrow-up</v-icon></v-btn>
                 <!--여기다가 card 추가-->
                 <v-container fluid>
                 <v-row dense>
@@ -92,11 +94,23 @@
                     <v-card>
                     <v-img
                         :src="card.src"
-                        class="white--text align-end"
+                        class="white--text align-end card-image"
                         gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)"
                         height="200px"
                     >
                         <v-card-title style="font-size: medium;">{{ card.title }}</v-card-title>
+                        <v-btn
+                            icon
+                            class="icon-wrapper"
+                            @click="card.show = !card.show"
+                            style= "background-color: rgba(255,255,255,0.7);"
+                            fab
+                            small
+                            absolute
+                            >
+                            <!-- <v-icon>{{ card.show ? 'mdi-chevron-up' : 'mdi-chevron-down' }}</v-icon> -->
+                            <v-icon color="indigo">mdi-book-information-variant</v-icon>
+                        </v-btn>
                     </v-img>
                     <!-- eslint-disable-next-line -->
                     <v-card-actions >
@@ -113,20 +127,39 @@
                             </v-btn>
                         </v-row>
                         </v-col>
-                        <v-spacer>{{ card.addr_1 }}</v-spacer>
-                        <v-btn
-                        icon
-                        @click="card.show = !card.show"
-                        >
-                        <v-icon>{{ card.show ? 'mdi-chevron-up' : 'mdi-chevron-down' }}</v-icon>
-                        </v-btn>
+                        <v-spacer style="font-size: small;">{{ card.addr_1 }}</v-spacer>
+                        
                     </v-card-actions>
-                    <v-expand-transition>
-                        <div v-show="card.show">
-                        <v-divider></v-divider>
-                        <v-card-text>{{ card.overview }}</v-card-text>
-                        </div>
-                    </v-expand-transition>
+                    <v-bottom-sheet
+                        v-model="card.show"
+                        inset: width=30%
+                        >
+                        <v-sheet class="custom-sheet text-center" >
+                            <div>
+                                <div weight="100px">
+                                    <v-img 
+                                    :src="card.src"
+                                    height="200px"
+                                    ></v-img>
+                                </div>
+                                <div class="pe-5 ps-5">
+                                    <div><h3>{{ card.title }}</h3></div>
+                                    <div class="mt-2"><h4>{{ card.addr_1 }}</h4></div>
+                                    <div class="my-3">
+                                        {{ card.overview }}
+                                    </div>
+                                </div>
+                                <v-btn
+                                class="mt-6 mb-2"
+                                text
+                                color="error"
+                                @click="card.show = !card.show"
+                                >
+                                닫기
+                                </v-btn>
+                            </div>
+                        </v-sheet>
+                    </v-bottom-sheet>
                     </v-card>
                 </v-col>
                 </v-row>
@@ -137,6 +170,7 @@
         </v-row>
     </v-container>
     </v-main>
+    <tour-overlay-info :dialog="dialog" @update:dialog="dialog = $event"></tour-overlay-info>
 </v-app>
 </template>
 
@@ -144,10 +178,12 @@
 
 <script>
 import http from "@/axios/http";
+import TourOverlayInfo from '@/components/tour/TourOverlayInfo.vue';
 
 export default {
     name: 'TourSearchInfo',
     components: {
+        TourOverlayInfo
     },
     data() {
         return {
@@ -160,6 +196,7 @@ export default {
             positions: [],
             markers: [],
             contentByType: [
+                    {id: 1, value: "전체"},
                     { id: 12, value: "관광지" },
                     { id: 14, value: "문화시설" },
                     { id: 15, value: "축제공연행사" },
@@ -171,7 +208,9 @@ export default {
                 ],
             cards: [],
             overlay: [],
-            clickedOverlay: null
+            clickedOverlay: null,
+            selectAll: false,
+            dialog: false
         };
     },
     created() {
@@ -201,7 +240,32 @@ export default {
         
     },
     watch: {
-        selectedSido: "create_gugun"
+        selectedSido: "create_gugun",
+        // selectAll 감시
+        selectAll: {
+            // selectAll가 true이면 전체를 넣고
+            handler(val) {
+                if (val) {
+                    this.selectedContentById = this.contentByType.map(item => item.id);
+                // 아니면 한번더 눌렀으므로 빈거 출력
+                } else {
+                    this.selectedContentById = [];
+                }
+            }
+        },
+        // selectedContentById 감시
+        selectedContentById: {
+            // 전체 선택을 누른다면 selectAll = true;
+            handler(val) {
+                if (val.includes(1)) {
+                    this.selectAll = true;
+                } else {
+                    this.selectAll = false;
+                }
+            },
+            deep: true,
+            immediate: true
+        }
     },
     methods: {
         createRightBar() {
@@ -219,7 +283,8 @@ export default {
         addTour(id) {
             http.post(`/tour/addtour/ssafy/${id}`).then(response => {
                 if (response.status === 200) {
-                    alert("마이페이지에 여행지가 추가되었습니다.");
+                    // alert("마이페이지에 여행지가 추가되었습니다.");
+                    this.dialog = true;
                     return response.data;
                 } else if (response.status === 500) {
                     alert("추가 중 에러 발생. 이미 추가된 여행지입니다.");
@@ -252,7 +317,7 @@ export default {
                     // console.log(response.data);
                     response.data.forEach((area) => {
                         // 체크된것만!
-                        if (this.selectedContentById.includes(area.contentTypeId)){
+                        if (this.selectedContentById.includes(area.contentTypeId)) {
                             let markerInfo = {
                                 id: area.contentId,
                                 img: area.firstImage,
@@ -377,7 +442,6 @@ export default {
                     // 직접 div를 만들어서 처리
                     var div = document.createElement('div');
                     div.innerHTML = content;
-                    console.log(div);
                     div.querySelector('.close').addEventListener('click', () => {
                         this.overlay.setMap(null);  
                     });          
@@ -398,6 +462,21 @@ export default {
                     this.map.panTo(this.overlay.getPosition());
                 });
             }	
+        },
+        viewSmall() {
+            const cardImages = document.querySelectorAll('.card-image');
+            cardImages.forEach(cardImage => {
+            cardImage.style.height = '80px';
+            });
+        },
+        viewBig() {
+            const cardImages = document.querySelectorAll('.card-image');
+            cardImages.forEach(cardImage => {
+            cardImage.style.height = '200px';
+            });
+        },
+        updateDialog(value) {
+            this.dialog = value;
         }
         
 
@@ -419,4 +498,15 @@ export default {
 .desc .jibun {font-size: 11px;color: #888;margin-top: -2px;}
 .info .img {position: absolute;top: 6px;left: 5px;width: 73px;height: 71px;border: 1px solid #ddd;color: #888;overflow: hidden;}
 .info:after {content: '';position: absolute;margin-left: -12px;left: 50%;bottom: 0;width: 22px;height: 12px;background: url('https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/vertex_white.png')}
+.custom-sheet{
+    height: auto;
+    max-height: calc(100vh - 200px); /* 원하는 높이 조정 */
+    overflow-y: auto;
+}
+.icon-wrapper {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    margin:3px;
+}
 </style>

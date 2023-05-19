@@ -9,6 +9,7 @@
 
         <!-- 중앙 메뉴 탭 -->
         <v-tabs centered class="ml-n9" color="black darken-1">
+
             <v-tab v-if="!isLogin" :to="{ name: 'signin' }">로그인</v-tab>
             <v-tab v-else @click.prevent="onClickLogout">로그아웃</v-tab>
             <v-tab :to="{ name: 'notice' }">Q&A</v-tab>
@@ -74,10 +75,10 @@
                         :key="i"
                         >
                         <v-list-item-icon>
-                            <v-icon v-text="item.icon"></v-icon>
+                            <v-icon>{{item.icon}}</v-icon>
                         </v-list-item-icon>
                         <v-list-item-content>
-                            <v-list-item-title v-text="item.text"></v-list-item-title>
+                            <v-list-item-title>{{ item.text }}</v-list-item-title>
                         </v-list-item-content>
                         </v-list-item>
                     </v-list-item-group>

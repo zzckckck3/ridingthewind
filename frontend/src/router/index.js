@@ -13,6 +13,7 @@ const routes = [
   {
     path: "/user",
     name: "user",
+    redirect: "/user/signin",
     component: () => import(/* webpackChunkName: "user" */ "@/views/MemberView.vue"),
     children: [
       {
@@ -23,39 +24,41 @@ const routes = [
       {
         path: "signup",
         name: "signup",
-        component: () => import(/* webpackChunkName: "user" */ "@/components/user/MemberSignup.vue"),
+        component: () =>
+          import(/* webpackChunkName: "user" */ "@/components/user/MemberSignup.vue"),
       },
     ],
   },
   {
-    path: "/notice",
-    name: "notice",
-    component: () => import(/* webpackChunkName: "notice" */ "@/views/NoticeView.vue"),
-    redirect: "/notice/list",
+    path: "/article",
+    name: "article",
+    component: () => import(/* webpackChunkName: "article" */ "@/views/ArticleView.vue"),
+    redirect: "/article/list",
     children: [
       {
         path: "list",
-        name: "noticeList",
+        name: "articleList",
         component: () =>
-          import(/* webpackChunkName: "notice" */ "@/components/notice/NoticeList.vue"),
+          import(/* webpackChunkName: "article" */ "@/components/article/ArticleList.vue"),
       },
       {
         path: "detail",
-        name: "noticeDetail",
+        name: "articleDetail",
         component: () =>
-            import(/* webpackChunkName: "notice" */ "@/components/notice/NoticeDetail.vue"),
+
+            import(/* webpackChunkName: "article" */ "@/components/article/ArticleDetail.vue"),
       },
       {
         path: "modify",
-        name: "noticeModify",
+        name: "articleModify",
         component: () =>
-            import(/* webpackChunkName: "notice" */ "@/components/notice/NoticeModify.vue"),
+            import(/* webpackChunkName: "article" */ "@/components/article/ArticleModify.vue"),
       },
       {
         path: "write",
-        name: "noticeWrite",
+        name: "articleWrite",
         component: () =>
-            import(/* webpackChunkName: "notice" */ "@/components/notice/NoticeWrite.vue"),
+            import(/* webpackChunkName: "article" */ "@/components/article/ArticleWrite.vue"),
       }
     ],
   },
