@@ -78,6 +78,7 @@ export default {
           let token = sessionStorage.getItem("access-token");
           if(this.isLogin){
               await this.getUserInfo(token);
+              alert("로그인 성공");
               this.$router.push({name:'home'});
           }
       },

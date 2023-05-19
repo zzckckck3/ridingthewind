@@ -22,4 +22,6 @@ public interface MemberService {
 	void saveRefreshToken(String memberId, String refreshToken);
 
 	MemberDto findMemberId(String memberId);
+
+    void deleteRefreshToken(String userId);
 }

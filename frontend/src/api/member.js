@@ -10,5 +10,8 @@ async function findById(userid, success, fail) {
     api.defaults.headers["access-token"] = sessionStorage.getItem("access-token");
     await api.get(`/member/info/${userid}`).then(success).catch(fail);
 }
+async function logout(userid, success, fail) {
+    await api.get(`/member/logout/${userid}`).then(success).catch(fail);
+}
 
-export { login, findById};
+export { login, findById, logout};
