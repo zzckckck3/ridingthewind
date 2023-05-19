@@ -48,9 +48,17 @@
                         multiple
                         outlined
                     >
+                    <template v-slot:selection="{ item }">
+                        <!--추후 chips색깔 바꿀 예정-->
+                        <v-chip 
+
+                        >
+                        {{ item.value }}
+                        </v-chip>
+                    </template>
                     </v-autocomplete>
                     <v-btn
-                        @click="markList"
+                        @click="keyword.length == 0 ? markList() : markListwithSearch()"
                         class="ma-2"
                         outlined
                         large
@@ -65,8 +73,24 @@
                         </v-icon>
                     </v-btn>
                 </div>
+                <div>
+                    <v-switch
+                        class="mt-0"
+                        v-model="showKeyword"
+                        color="indigo"
+                        value="indigo"
+                        hide-details
+                    >
+                    <template v-slot:label>
+                        <span class="custom-search-label">상세 검색</span>
+                    </template>
+                    </v-switch>
+                </div>
+                <div style="display:flex" v-if="showKeyword">
+                    <v-text-field label="키워드 입력" v-model="keyword"></v-text-field>
+                </div>
                 <div class="mt-3 me-3">
-                    <div id="map" class="" style="width: 100%; height: 700px;"></div>
+                    <div id="map" class="custom-sheet" style="width: 100%; height: 600px;"></div>
                 </div>
 
             </v-sheet>
@@ -75,7 +99,7 @@
             <v-col cols=6>
             <v-sheet
                 min-height="85vh"
-                max-height="100"
+                max-height="110"
                 rounded="lg"
                 elevation="8"
                 class="grey lighten-5 overflow-auto"
@@ -83,7 +107,6 @@
             >
             <v-btn class="ma-1" outlined color="indigo" @click="viewSmall()">Size Down<v-icon>mdi-arrow-down</v-icon></v-btn>            
             <v-btn class="ma-1" outlined color="indigo" @click="viewBig()">Size Up<v-icon>mdi-arrow-up</v-icon></v-btn>
-                <!--여기다가 card 추가-->
                 <v-container fluid>
                 <v-row dense>
                 <v-col
@@ -122,7 +145,7 @@
                             </v-btn>
                         </v-row>
                         <v-row>
-                            <v-btn icon @click="addTour(card.id)">
+                            <v-btn icon @click.stop="openDialog(card.id)">
                             <v-icon :color="card.like ? 'red' : '' ">mdi-heart</v-icon>
                             </v-btn>
                         </v-row>
@@ -138,7 +161,7 @@
                             <div>
                                 <div weight="100px">
                                     <v-img 
-                                    :src="card.src"
+                                    :src="showImg(card.src)"
                                     height="200px"
                                     ></v-img>
                                 </div>
@@ -170,7 +193,7 @@
         </v-row>
     </v-container>
     </v-main>
-    <tour-overlay-info :dialog="dialog" @update:dialog="dialog = $event"></tour-overlay-info>
+    <add-tour-dialog ref="tourOverlay" @agreed="agree=true"></add-tour-dialog>
 </v-app>
 </template>
 
@@ -178,12 +201,12 @@
 
 <script>
 import http from "@/axios/http";
-import TourOverlayInfo from '@/components/tour/TourOverlayInfo.vue';
+import AddTourDialog from '@/components/tour/AddTourDialog.vue';
 
 export default {
     name: 'TourSearchInfo',
     components: {
-        TourOverlayInfo
+        AddTourDialog
     },
     data() {
         return {
@@ -192,6 +215,8 @@ export default {
             gugun: [],
             selectedSido: null,
             selectedGugun: null,
+            keyword: '',
+            showKeyword: false,
             selectedContentById: [],
             positions: [],
             markers: [],
@@ -210,7 +235,8 @@ export default {
             overlay: [],
             clickedOverlay: null,
             selectAll: false,
-            dialog: false
+            selectedId: null,
+            agree: false
         };
     },
     created() {
@@ -239,6 +265,19 @@ export default {
         document.head.appendChild(script);
         
     },
+    computed: {
+        showImg() { // 이미지 가져오기
+            return (src) => {
+                if (src) {
+                // 실제 이미지 파일이 있는 경우
+                return src;
+                } else {
+                // 이미지 파일이 없는 경우 noimg.png 사용
+                return require('@/assets/mark/noimg.png');
+                }
+            };
+        },
+    },
     watch: {
         selectedSido: "create_gugun",
         // selectAll 감시
@@ -265,6 +304,21 @@ export default {
             },
             deep: true,
             immediate: true
+        },
+        agree: {
+            handler(val) {
+            if (val) {
+                this.addTour(this.selectedId); // 예시로 this.id를 매개변수로 사용
+                this.agree = false;
+            }
+            },
+            immediate: false
+        },
+        // showKeyword가 false이면 keyword값 초기화
+        showKeyword(newValue) {
+            if (!newValue) {
+                this.keyword = '';
+            }
         }
     },
     methods: {
@@ -284,7 +338,6 @@ export default {
             http.post(`/tour/addtour/ssafy/${id}`).then(response => {
                 if (response.status === 200) {
                     // alert("마이페이지에 여행지가 추가되었습니다.");
-                    this.dialog = true;
                     return response.data;
                 } else if (response.status === 500) {
                     alert("추가 중 에러 발생. 이미 추가된 여행지입니다.");
@@ -294,6 +347,7 @@ export default {
             .catch(error => {
                 console.error(error);
             });    
+            this.agree = false;
         },
         create_sido() {
             http.get(`/tour/sido`)
@@ -345,6 +399,52 @@ export default {
                             this.cards.push(card);
                         }
                     });
+                })
+                .then(() => { 
+                    this.removeMarker();
+                    this.displayMarker();
+                });
+        },
+        markListwithSearch() {
+            http.get(`/tour/attraction-info-bykeyword?search-area=${this.selectedSido}&search-area-gu=${this.selectedGugun}&keyword=${this.keyword}`)
+            .then((response) => { 
+                    this.positions.length = 0;
+                    this.cards.length = 0;
+                    // console.log(response.data);
+                    response.data.forEach((area) => {
+                        // 체크된것만!
+                        if (this.selectedContentById.includes(area.contentTypeId)) {
+                            let markerInfo = {
+                                id: area.contentId,
+                                img: area.firstImage,
+                                title: area.title,
+                                addr_1: area.addr1,
+                                addr_2: area.addr2,
+                                zip: area.zipcode,
+                                tel: area.tel,
+                                contenttypeid: area.contentTypeId,
+                                latlng: new window.kakao.maps.LatLng(area.latitude, area.longitude),
+                            };
+                            let card = {
+                                id: area.contentId,
+                                src: area.firstImage,
+                                title: area.title,
+                                addr_1: area.addr1,
+                                overview: area.overView,
+                                latitude: area.latitude,
+                                longitude: area.longitude,
+                                flex: 3,
+                                show: false,
+                                like: false
+                            }
+                            this.positions.push(markerInfo);
+                            this.cards.push(card);
+                        }
+                    });
+                     // 체크된 항목이 없는 경우 카드를 제거
+                    if (this.cards.length === 0) {
+                        this.cards = [];
+                    }
                 })
                 .then(() => { 
                     this.removeMarker();
@@ -475,8 +575,9 @@ export default {
             cardImage.style.height = '200px';
             });
         },
-        updateDialog(value) {
-            this.dialog = value;
+        async openDialog(id) {
+            this.$refs.tourOverlay.openDialog();
+            this.selectedId = id;
         }
         
 
@@ -508,5 +609,9 @@ export default {
     bottom: 0;
     right: 0;
     margin:3px;
+}
+.custom-search-label {
+    font-size: 13px;
+    color: black;
 }
 </style>

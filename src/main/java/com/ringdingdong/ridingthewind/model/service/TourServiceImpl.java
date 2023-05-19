@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class TourServiceImpl implements TourService{
@@ -38,10 +39,16 @@ public class TourServiceImpl implements TourService{
 	public List<TourDto> getList(String memberId) throws SQLException {
 		return tourMapper.getList(memberId);
 	}
+	
+	@Override
+	public List<TourDto> getListByKeyword(Map<String, Object> map) throws SQLException {
+		return tourMapper.getListByKeyword(map);
+	}
 
 	@Override
 	public boolean addtour(int contentId, String memberId) throws Exception {
 		return tourMapper.addtour(contentId, memberId) == 1;
 	}
+
 
 }
