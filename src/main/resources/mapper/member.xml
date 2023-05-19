@@ -3,8 +3,7 @@
 	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.ringdingdong.ridingthewind.model.mapper.MemberMapper">
-	
-	
+
 	<resultMap type="memberDto" id="member">
 		<result column="member_id" property="memberId"/>
 		<result column="member_name" property="memberName"/>
@@ -26,7 +25,7 @@
 
 	<insert id="joinMember" parameterType="memberDto">
 		insert into member (member_id, member_name, member_password, member_phone, email_id, email_domain, join_date, birth, nickname)
-		values (#{memberId}, #{memberName}, #{memberPassword}, #{memberPhone}, #{emailId}, #{emailDomain}, now(), #{birthday}, #{nickname})
+		values (#{memberId}, #{memberName}, #{memberPassword}, #{memberPhone}, #{emailId}, #{emailDomain}, DATE(now()), #{birthday}, #{nickname})
 	</insert>
 
 	<select id="loginMember" parameterType="map" resultMap="member">
