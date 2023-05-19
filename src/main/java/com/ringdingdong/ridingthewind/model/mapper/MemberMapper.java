@@ -23,4 +23,6 @@ public interface MemberMapper {
 	void saveRefreshToken(Map<String, String> map);
 
     MemberDto findMemberId(String memberId);
+
+	void deleteRefreshToken(Map<String, String> map);
 }

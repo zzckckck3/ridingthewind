@@ -75,5 +75,10 @@
 		where member_id = #{memberId}
 	</select>
 
+	<update id="deleteRefreshToken" parameterType="map">
+		update member
+		set token = #{token, jdbcType=VARCHAR}
+		where member_id = #{userId}
+	</update>
 	
 </mapper>

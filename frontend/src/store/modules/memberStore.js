@@ -1,6 +1,6 @@
 import jwtDecode from "jwt-decode";
 // import router from "@/router";
-import { login, findById} from "@/api/member";
+import { login, findById, logout} from "@/api/member";
 
 const memberStore = {
     namespaced: true,
@@ -59,14 +59,9 @@ const memberStore = {
         },
         async getUserInfo({commit, dispatch}, token) {
             let decodeToken = jwtDecode(token);
-            alert(decodeToken);
-            // decodeToken["userid"] = decodeToken.memberId;
-            console.log(decodeToken);
-            alert("콘솔 확인");
             await findById(
                 decodeToken.memberId,
                 ({data}) => {
-                    console.log("콘솔에 찍는다 찍는다찍는다");
                     console.log({data});
                     data["userid"] = decodeToken.memberId;
                     console.log(data);
@@ -83,7 +78,25 @@ const memberStore = {
                     await dispatch("tokenRegeneration");
                 }
             )
-        }
+        },
+        async userLogout({ commit }, userid) {
+            await logout(
+                userid,
+                ({ data }) => {
+                    if (data.message === "SUCCESS") {
+                        commit("SET_USER_INFO", null);
+                        commit("SET_IS_LOGIN", false);
+                        commit("SET_IS_VALID_TOKEN", false);
+                        alert("로그아웃 완료");
+                    } else {
+                        console.log("유저 정보 없음!!!!");
+                    }
+                },
+                (error) => {
+                    console.log(error);
+                }
+            );
+        },
 
     }
 };
