@@ -13,13 +13,13 @@
 		<result column="nickname" property="nickname"/>
 	</resultMap>
 
-	<resultMap type="articleDto" id="articleDetailDto" extends="articleDto">
+	<resultMap type="articleDetailDto" id="articleDetailDto" extends="articleDto">
+		<result column="member_id" property="memberId"/>
 		<result column="content" property="content"/>
 		<result column="modify_time" property="modifyTime"/>
-		<result column="nickname" property="nickname"/>
 	</resultMap>
 
-	<insert id="writeArticle" parameterType="articleDto">
+	<insert id="writeArticle" parameterType="map">
 		<selectKey resultType="int" keyProperty="articleNo" order="BEFORE">
 			select max(article_no) + 1 from article
 		</selectKey>
@@ -28,18 +28,18 @@
 	</insert>
 	
 	<sql id="search">
-		<if test="word != null and word != ''">
-			<if test="key == 'subject'">
-				and subject like concat('%', #{word}, '%')
+		<if test="key != null and word != ''">
+			<if test="key == 'subject' || key == 'nickname'">
+				and ${key} like concat('%', #{word}, '%')
 			</if>
-			<if test="key != 'subject'">
+			<if test="!(key == 'subject' || key == 'nickname')">
 				and a.${key} = #{word}
 			</if>
 		</if>
 	</sql>
 
 	<select id="listArticle" parameterType="map" resultMap="articleDto">
-		select a.article_no, a.subject, a.content, a.hit, a.register_time, m.nickname
+		select a.article_no, a.subject, a.hit, a.like, a.register_time, m.nickname
 		from article a, member m
 		where a.member_id = m.member_id
 		<include refid="search"></include>
@@ -49,14 +49,13 @@
 	
 	<select id="getTotalArticleCount" parameterType="map" resultType="int">
 		select count(article_no)
-		from article a
-		<where>
-			<include refid="search"></include>
-		</where>
+		from article a, member m
+		where a.member_id = m.member_id
+		<include refid="search"></include>
 	</select>
 	
-	<select id="getArticle" parameterType="int" resultMap="articleDto">
-		select a.article_no, a.member_id, a.subject, a.content, a.hit, a.register_time, m.member_name
+	<select id="getArticle" parameterType="int" resultMap="articleDetailDto">
+		select a.article_no, a.member_id, a.subject, a.content, a.hit, a.modify_time, m.nickname
 		from article a, member m
 		where a.member_id = m.member_id
 		and a.article_no = #{articleNo}
@@ -69,7 +68,7 @@
 		where article_no = #{articleNo}
 	</update>
 	
-	<update id="modifyArticle" parameterType="articleDto">
+	<update id="modifyArticle" parameterType="map">
 		update article
 		set subject = #{subject}, content = #{content}
 		where article_no = #{articleNo}

@@ -44,7 +44,9 @@ public class ArticleServiceImpl implements ArticleService {
 
 	@Override
 	public ArticleDetailDto getArticle(int articleNo) throws Exception {
-		return articleMapper.getArticle(articleNo);
+		ArticleDetailDto articleDetailDto = articleMapper.getArticle(articleNo);
+		articleDetailDto.setCommentList(commentMapper.listComment(articleNo));
+		return articleDetailDto;
 	}
 
 	@Override

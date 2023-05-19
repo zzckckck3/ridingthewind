@@ -19,7 +19,7 @@ public class ArticleDetailDto {
 	private int like;
 	private String registerTime;
 	private String modifyTime;
-	private String memberName;
+	private String nickname;
 	private List<CommentDto> commentList;
 
 }
