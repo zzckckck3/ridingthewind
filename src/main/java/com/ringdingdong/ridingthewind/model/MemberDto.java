@@ -10,7 +10,32 @@ public class MemberDto {
 	private String joinDate;
 	private String birthday;
 	private String nickname;
-	
+	private String role;
+
+	@Override
+	public String toString() {
+		return "MemberDto{" +
+				"memberId='" + memberId + '\'' +
+				", memberName='" + memberName + '\'' +
+				", memberPassword='" + memberPassword + '\'' +
+				", memberPhone='" + memberPhone + '\'' +
+				", emailId='" + emailId + '\'' +
+				", emailDomain='" + emailDomain + '\'' +
+				", joinDate='" + joinDate + '\'' +
+				", birthday='" + birthday + '\'' +
+				", nickname='" + nickname + '\'' +
+				", role='" + role + '\'' +
+				'}';
+	}
+
+	public String getRole() {
+		return role;
+	}
+
+	public void setRole(String role) {
+		this.role = role;
+	}
+
 	public String getMemberId() {
 		return memberId;
 	}
@@ -70,18 +95,4 @@ public class MemberDto {
 		this.nickname = nickname;
 	}
 
-	@Override
-	public String toString() {
-		return "MemberDto{" +
-				"memberId='" + memberId + '\'' +
-				", memberName='" + memberName + '\'' +
-				", memberPassword='" + memberPassword + '\'' +
-				", memberPhone='" + memberPhone + '\'' +
-				", emailId='" + emailId + '\'' +
-				", emailDomain='" + emailDomain + '\'' +
-				", joinDate='" + joinDate + '\'' +
-				", birthday='" + birthday + '\'' +
-				", nickname='" + nickname + '\'' +
-				'}';
-	}
 }
