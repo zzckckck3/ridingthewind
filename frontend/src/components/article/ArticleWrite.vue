@@ -41,9 +41,6 @@ export default {
             dialog: false,
         }
     },
-    // created() {
-    //     this.article = JSON.parse(this.$route.params.article);
-    // },
     methods: {
         moveToList() {
             this.$router.push({name: "article"});
