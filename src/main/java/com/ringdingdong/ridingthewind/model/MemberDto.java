@@ -8,7 +8,34 @@ public class MemberDto {
 	private String emailId;
 	private String emailDomain;
 	private String joinDate;
-	
+	private String birthday;
+	private String nickname;
+	private String role;
+
+	@Override
+	public String toString() {
+		return "MemberDto{" +
+				"memberId='" + memberId + '\'' +
+				", memberName='" + memberName + '\'' +
+				", memberPassword='" + memberPassword + '\'' +
+				", memberPhone='" + memberPhone + '\'' +
+				", emailId='" + emailId + '\'' +
+				", emailDomain='" + emailDomain + '\'' +
+				", joinDate='" + joinDate + '\'' +
+				", birthday='" + birthday + '\'' +
+				", nickname='" + nickname + '\'' +
+				", role='" + role + '\'' +
+				'}';
+	}
+
+	public String getRole() {
+		return role;
+	}
+
+	public void setRole(String role) {
+		this.role = role;
+	}
+
 	public String getMemberId() {
 		return memberId;
 	}
@@ -51,13 +78,21 @@ public class MemberDto {
 	public void setJoinDate(String joinDate) {
 		this.joinDate = joinDate;
 	}
-	@Override
-	public String toString() {
-		return "MemberDto [memberId=" + memberId + ", memberName=" + memberName + ", memberPassword=" + memberPassword
-				+ ", memberPhone=" + memberPhone + ", emailId=" + emailId + ", emailDomain=" + emailDomain
-				+ ", joinDate=" + joinDate + "]";
+
+	public String getBirthday() {
+		return birthday;
 	}
-	
-	
-	
+
+	public void setBirthday(String birthday) {
+		this.birthday = birthday;
+	}
+
+	public String getNickname() {
+		return nickname;
+	}
+
+	public void setNickname(String nickname) {
+		this.nickname = nickname;
+	}
+
 }

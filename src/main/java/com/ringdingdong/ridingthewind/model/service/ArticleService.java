@@ -1,16 +1,13 @@
 package com.ringdingdong.ridingthewind.model.service;
 
-import com.ringdingdong.ridingthewind.model.ArticleDto;
-import com.ringdingdong.ridingthewind.model.ArticleParameterDto;
-import com.ringdingdong.ridingthewind.model.NoticeListResponseDto;
-import com.ringdingdong.ridingthewind.model.PageNavigationResponseDto;
+import com.ringdingdong.ridingthewind.model.*;
 
 public interface ArticleService {
 
 	boolean writeArticle(ArticleDto articleDto) throws Exception;
-	NoticeListResponseDto listArticle(ArticleParameterDto articleParameterDto) throws Exception;
+	ArticleListResponseDto listArticle(ArticleParameterDto articleParameterDto) throws Exception;
 	PageNavigationResponseDto makePageNavigation(ArticleParameterDto articleParameterDto) throws Exception;
-	ArticleDto getArticle(int articleNo) throws Exception;
+	ArticleDetailDto getArticle(int articleNo) throws Exception;
 	boolean updateHit(int articleNo) throws Exception;
 	
 	boolean modifyArticle(ArticleDto articleDto) throws Exception;

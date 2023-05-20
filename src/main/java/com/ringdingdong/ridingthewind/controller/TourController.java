@@ -1,21 +1,29 @@
 package com.ringdingdong.ridingthewind.controller;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.ringdingdong.ridingthewind.model.MemberDto;
 import com.ringdingdong.ridingthewind.model.TourDto;
 import com.ringdingdong.ridingthewind.model.TourGugunDto;
 import com.ringdingdong.ridingthewind.model.TourSidoDto;
 import com.ringdingdong.ridingthewind.model.service.TourService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import java.util.List;
 
 @RestController
 @RequestMapping(value = "/tour")
@@ -52,11 +60,36 @@ public class TourController {
 		return ResponseEntity.ok(list);
 	}
 	
-	@PostMapping("/addtour/{contentid}")
-	public ResponseEntity<String> addtour(@PathVariable("contentid") int contentId, HttpServletRequest request, HttpServletResponse response) throws Exception{
+	@GetMapping("/attraction-info-bykeyword")
+	public ResponseEntity<List<TourDto>> getListByKeyword(
+			@RequestParam("keyword") String keyword,
+			@RequestParam("search-area") int sidoCode,
+			@RequestParam("search-area-gu") int gugunCode) throws Exception {
+		Map<String, Object> paramMap = new HashMap<>();
+		paramMap.put("sidoCode", sidoCode);
+		paramMap.put("gugunCode", gugunCode);
+		paramMap.put("keyword", keyword);
+		List<TourDto> list = tourService.getListByKeyword(paramMap);
+		logger.debug("attraction info by keyword : {}", list); 
+		return ResponseEntity.ok(list);
+	}
+	
+//	@PostMapping("/addtour/{contentid}")
+//	public ResponseEntity<String> addtour(@PathVariable("contentid") int contentId, HttpServletRequest request, HttpServletResponse response) throws Exception{
+//		HttpSession session = request.getSession();
+//		MemberDto memberDto = (MemberDto) session.getAttribute("memberinfo");
+//		String memberId = memberDto.getMemberId();
+//		if(tourService.addtour(contentId, memberId)) {
+//			return new ResponseEntity<String>(SUCCESS, HttpStatus.OK);			
+//		}
+//		return new ResponseEntity<String>(FAIL, HttpStatus.NO_CONTENT);
+//	}
+	
+	@PostMapping("/addtour/{memberid}/{contentid}")
+	public ResponseEntity<String> addtour(@PathVariable("contentid") int contentId, @PathVariable("memberid") String memberId, HttpServletRequest request, HttpServletResponse response) throws Exception{
 		HttpSession session = request.getSession();
 		MemberDto memberDto = (MemberDto) session.getAttribute("memberinfo");
-		String memberId = memberDto.getMemberId();
+//		String memberId = memberDto.getMemberId();
 		if(tourService.addtour(contentId, memberId)) {
 			return new ResponseEntity<String>(SUCCESS, HttpStatus.OK);			
 		}

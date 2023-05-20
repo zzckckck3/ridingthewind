@@ -23,6 +23,7 @@ public class MemberServiceImpl implements MemberService {
 		this.memberMapper = memberMapper;
 	}
 
+
 	@Override
 	public int idCheck(String memberId) throws Exception {
 		return memberMapper.idCheck(memberId);
@@ -30,7 +31,7 @@ public class MemberServiceImpl implements MemberService {
 
 	@Override
 	public void joinMember(MemberDto memberDto) throws Exception {
-		memberDto.setMemberPassword(PasswordEncryptor.encrypt(memberDto.getMemberPassword()));
+//		memberDto.setMemberPassword(PasswordEncryptor.encrypt(memberDto.getMemberPassword()));
 		memberMapper.joinMember(memberDto);
 	}
 
@@ -67,6 +68,22 @@ public class MemberServiceImpl implements MemberService {
 		map.put("memberId", memberId);
 		map.put("token", refreshToken);
 		memberMapper.saveRefreshToken(map);
+	}
+
+	@Override
+	public MemberDto findMemberId(String memberId) {
+		return memberMapper.findMemberId(memberId);
+	}
+
+	@Override
+	public void deleteRefreshToken(String userId) {
+
+		Map<String, String> map = new HashMap<String, String>();
+		System.out.println("mapper실행"+userId);
+		map.put("userId", userId);
+		map.put("token", null);
+
+		memberMapper.deleteRefreshToken(map);
 	}
 
 

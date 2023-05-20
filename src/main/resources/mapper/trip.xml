@@ -50,8 +50,16 @@
 		where i.sido_code = #{sidoCode} and i.gugun_code = #{gugunCode}
 	</select>
 	
+	<select id="getListByKeyword" parameterType="map" resultMap="tourinfo">
+       	select * from attraction_info i join attraction_description d
+        on i.content_id = d.content_id
+        where i.sido_code = #{sidoCode}
+        and i.gugun_code = #{gugunCode}
+        and i.title like CONCAT('%', #{keyword}, '%')
+    </select>
+	
 	<insert id="addtour">
-		insert into personal_trip (member_id, content_id, `select`)
-		values (#{memberId}, #{contentId}, 1);
+		insert into personal_trip (member_id, content_id)
+		values (#{memberId}, #{contentId});
 	</insert>
 </mapper>

@@ -8,6 +8,7 @@ import java.util.Map;
 
 public interface MemberService {
 
+
 	int idCheck(String memberId) throws Exception;
 	void joinMember(MemberDto memberDto) throws Exception;
 	MemberDto loginMember(Map<String, String> map) throws Exception;
@@ -19,4 +20,8 @@ public interface MemberService {
 	void deleteMember(String memberId) throws Exception;
 
 	void saveRefreshToken(String memberId, String refreshToken);
+
+	MemberDto findMemberId(String memberId);
+
+    void deleteRefreshToken(String userId);
 }

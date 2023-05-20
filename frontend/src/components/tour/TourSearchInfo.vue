@@ -36,7 +36,7 @@
                     ></v-select>
                 </div>
                 <div style="display:flex">
-                    <v-select
+                    <v-autocomplete
                         class="me-2"
                         clearable
                         chips
@@ -47,9 +47,18 @@
                         v-model="selectedContentById"
                         multiple
                         outlined
-                    ></v-select>
+                    >
+                    <template v-slot:selection="{ item }">
+                        <!--추후 chips색깔 바꿀 예정-->
+                        <v-chip 
+
+                        >
+                        {{ item.value }}
+                        </v-chip>
+                    </template>
+                    </v-autocomplete>
                     <v-btn
-                        @click="markList"
+                        @click="keyword.length == 0 ? markList() : markListwithSearch()"
                         class="ma-2"
                         outlined
                         large
@@ -64,9 +73,24 @@
                         </v-icon>
                     </v-btn>
                 </div>
+                <div>
+                    <v-switch
+                        class="mt-0"
+                        v-model="showKeyword"
+                        color="indigo"
+                        value="indigo"
+                        hide-details
+                    >
+                    <template v-slot:label>
+                        <span class="custom-search-label">상세 검색</span>
+                    </template>
+                    </v-switch>
+                </div>
+                <div style="display:flex" v-if="showKeyword">
+                    <v-text-field label="키워드 입력" v-model="keyword"></v-text-field>
+                </div>
                 <div class="mt-3 me-3">
-                    <div id="map" class="" style="width: 100%; height: 700px;"></div>
-                    <kakao-overlay></kakao-overlay>
+                    <div id="map" class="custom-sheet" style="width: 100%; height: 600px;"></div>
                 </div>
 
             </v-sheet>
@@ -75,58 +99,90 @@
             <v-col cols=6>
             <v-sheet
                 min-height="85vh"
-                max-height="100"
+                max-height="110"
                 rounded="lg"
                 elevation="8"
                 class="grey lighten-5 overflow-auto"
                 style="padding: 10px;"
             >
-                <!--여기다가 card 추가-->
+            <v-btn class="ma-1" outlined color="indigo" @click="viewSmall()">Size Down<v-icon>mdi-arrow-down</v-icon></v-btn>            
+            <v-btn class="ma-1" outlined color="indigo" @click="viewBig()">Size Up<v-icon>mdi-arrow-up</v-icon></v-btn>
                 <v-container fluid>
                 <v-row dense>
                 <v-col
-                    v-for="card in cards"
+                    v-for="(card, index) in cards"
                     :key="card.title"
                     :cols="card.flex"
                 >
                     <v-card>
                     <v-img
                         :src="card.src"
-                        class="white--text align-end"
+                        class="white--text align-end card-image"
                         gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)"
                         height="200px"
                     >
                         <v-card-title style="font-size: medium;">{{ card.title }}</v-card-title>
+                        <v-btn
+                            icon
+                            class="icon-wrapper"
+                            @click="card.show = !card.show"
+                            style= "background-color: rgba(255,255,255,0.7);"
+                            fab
+                            small
+                            absolute
+                            >
+                            <!-- <v-icon>{{ card.show ? 'mdi-chevron-up' : 'mdi-chevron-down' }}</v-icon> -->
+                            <v-icon color="indigo">mdi-book-information-variant</v-icon>
+                        </v-btn>
                     </v-img>
-                    
+                    <!-- eslint-disable-next-line -->
                     <v-card-actions >
                         <!-- 버튼 추가 할거면 여기 -->
                         <v-col>
                         <v-row>
-                            <v-btn icon @click="moveCenter(card.latitude, card.longitude)">
+                            <v-btn icon @click="moveCenter(index)" ref="click">
                             <v-icon color="black">mdi-map-search</v-icon>
                             </v-btn>
                         </v-row>
                         <v-row>
-                            <v-btn icon @click="card.like = !card.like">
+                            <v-btn icon @click.stop="openDialog(card.id)">
                             <v-icon :color="card.like ? 'red' : '' ">mdi-heart</v-icon>
                             </v-btn>
                         </v-row>
                         </v-col>
-                        <v-spacer>{{ card.addr_1 }}</v-spacer>
-                        <v-btn
-                        icon
-                        @click="card.show = !card.show"
-                        >
-                        <v-icon>{{ card.show ? 'mdi-chevron-up' : 'mdi-chevron-down' }}</v-icon>
-                        </v-btn>
+                        <v-spacer style="font-size: small;">{{ card.addr_1 }}</v-spacer>
+                        
                     </v-card-actions>
-                    <v-expand-transition>
-                        <div v-show="card.show">
-                        <v-divider></v-divider>
-                        <v-card-text>{{ card.overview }}</v-card-text>
-                        </div>
-                    </v-expand-transition>
+                    <v-bottom-sheet
+                        v-model="card.show"
+                        inset: width=30%
+                        >
+                        <v-sheet class="custom-sheet text-center" >
+                            <div>
+                                <div weight="100px">
+                                    <v-img 
+                                    :src="showImg(card.src)"
+                                    height="200px"
+                                    ></v-img>
+                                </div>
+                                <div class="pe-5 ps-5">
+                                    <div><h3>{{ card.title }}</h3></div>
+                                    <div class="mt-2"><h4>{{ card.addr_1 }}</h4></div>
+                                    <div class="my-3">
+                                        {{ card.overview }}
+                                    </div>
+                                </div>
+                                <v-btn
+                                class="mt-6 mb-2"
+                                text
+                                color="error"
+                                @click="card.show = !card.show"
+                                >
+                                닫기
+                                </v-btn>
+                            </div>
+                        </v-sheet>
+                    </v-bottom-sheet>
                     </v-card>
                 </v-col>
                 </v-row>
@@ -137,6 +193,7 @@
         </v-row>
     </v-container>
     </v-main>
+    <add-tour-dialog ref="tourOverlay" @agreed="agree=true"></add-tour-dialog>
 </v-app>
 </template>
 
@@ -144,10 +201,12 @@
 
 <script>
 import http from "@/axios/http";
+import AddTourDialog from '@/components/tour/AddTourDialog.vue';
 
 export default {
     name: 'TourSearchInfo',
     components: {
+        AddTourDialog
     },
     data() {
         return {
@@ -156,10 +215,13 @@ export default {
             gugun: [],
             selectedSido: null,
             selectedGugun: null,
+            keyword: '',
+            showKeyword: false,
             selectedContentById: [],
             positions: [],
             markers: [],
             contentByType: [
+                    {id: 1, value: "전체"},
                     { id: 12, value: "관광지" },
                     { id: 14, value: "문화시설" },
                     { id: 15, value: "축제공연행사" },
@@ -171,7 +233,10 @@ export default {
                 ],
             cards: [],
             overlay: [],
-            clickedOverlay: null
+            clickedOverlay: null,
+            selectAll: false,
+            selectedId: null,
+            agree: false
         };
     },
     created() {
@@ -198,9 +263,63 @@ export default {
         script.type = 'text/javascript';
         script.src = "http://dapi.kakao.com/v2/maps/sdk.js?autoload=false&appkey=1b7a0eb6294cdd4b1f985683a25bd972";
         document.head.appendChild(script);
+        
+    },
+    computed: {
+        showImg() { // 이미지 가져오기
+            return (src) => {
+                if (src) {
+                // 실제 이미지 파일이 있는 경우
+                return src;
+                } else {
+                // 이미지 파일이 없는 경우 noimg.png 사용
+                return require('@/assets/mark/noimg.png');
+                }
+            };
+        },
     },
     watch: {
-        selectedSido: "create_gugun"
+        selectedSido: "create_gugun",
+        // selectAll 감시
+        selectAll: {
+            // selectAll가 true이면 전체를 넣고
+            handler(val) {
+                if (val) {
+                    this.selectedContentById = this.contentByType.map(item => item.id);
+                // 아니면 한번더 눌렀으므로 빈거 출력
+                } else {
+                    this.selectedContentById = [];
+                }
+            }
+        },
+        // selectedContentById 감시
+        selectedContentById: {
+            // 전체 선택을 누른다면 selectAll = true;
+            handler(val) {
+                if (val.includes(1)) {
+                    this.selectAll = true;
+                } else {
+                    this.selectAll = false;
+                }
+            },
+            deep: true,
+            immediate: true
+        },
+        agree: {
+            handler(val) {
+            if (val) {
+                this.addTour(this.selectedId); // 예시로 this.id를 매개변수로 사용
+                this.agree = false;
+            }
+            },
+            immediate: false
+        },
+        // showKeyword가 false이면 keyword값 초기화
+        showKeyword(newValue) {
+            if (!newValue) {
+                this.keyword = '';
+            }
+        }
     },
     methods: {
         createRightBar() {
@@ -214,6 +333,21 @@ export default {
             // 지도 확대 축소를 제어할 수 있는  줌 컨트롤을 생성합니다
             var zoomControl = new window.kakao.maps.ZoomControl();
             this.map.addControl(zoomControl, window.kakao.maps.ControlPosition.RIGHT);
+        },
+        addTour(id) {
+            http.post(`/tour/addtour/ssafy/${id}`).then(response => {
+                if (response.status === 200) {
+                    // alert("마이페이지에 여행지가 추가되었습니다.");
+                    return response.data;
+                } else if (response.status === 500) {
+                    alert("추가 중 에러 발생. 이미 추가된 여행지입니다.");
+                    throw new Error('Network response was not ok.');
+                }
+            })
+            .catch(error => {
+                console.error(error);
+            });    
+            this.agree = false;
         },
         create_sido() {
             http.get(`/tour/sido`)
@@ -237,7 +371,7 @@ export default {
                     // console.log(response.data);
                     response.data.forEach((area) => {
                         // 체크된것만!
-                        if (this.selectedContentById.includes(area.contentTypeId)){
+                        if (this.selectedContentById.includes(area.contentTypeId)) {
                             let markerInfo = {
                                 id: area.contentId,
                                 img: area.firstImage,
@@ -265,6 +399,52 @@ export default {
                             this.cards.push(card);
                         }
                     });
+                })
+                .then(() => { 
+                    this.removeMarker();
+                    this.displayMarker();
+                });
+        },
+        markListwithSearch() {
+            http.get(`/tour/attraction-info-bykeyword?search-area=${this.selectedSido}&search-area-gu=${this.selectedGugun}&keyword=${this.keyword}`)
+            .then((response) => { 
+                    this.positions.length = 0;
+                    this.cards.length = 0;
+                    // console.log(response.data);
+                    response.data.forEach((area) => {
+                        // 체크된것만!
+                        if (this.selectedContentById.includes(area.contentTypeId)) {
+                            let markerInfo = {
+                                id: area.contentId,
+                                img: area.firstImage,
+                                title: area.title,
+                                addr_1: area.addr1,
+                                addr_2: area.addr2,
+                                zip: area.zipcode,
+                                tel: area.tel,
+                                contenttypeid: area.contentTypeId,
+                                latlng: new window.kakao.maps.LatLng(area.latitude, area.longitude),
+                            };
+                            let card = {
+                                id: area.contentId,
+                                src: area.firstImage,
+                                title: area.title,
+                                addr_1: area.addr1,
+                                overview: area.overView,
+                                latitude: area.latitude,
+                                longitude: area.longitude,
+                                flex: 3,
+                                show: false,
+                                like: false
+                            }
+                            this.positions.push(markerInfo);
+                            this.cards.push(card);
+                        }
+                    });
+                     // 체크된 항목이 없는 경우 카드를 제거
+                    if (this.cards.length === 0) {
+                        this.cards = [];
+                    }
                 })
                 .then(() => { 
                     this.removeMarker();
@@ -312,6 +492,25 @@ export default {
             // 첫번째 검색 정보를 이용하여 지도 중심을 이동 시킵니다
             if(this.positions.length) this.map.setCenter(this.positions[0].latlng);
 
+            this.showOverlay();
+            
+
+        },
+        removeMarker() {
+            for ( var i = 0; i < this.markers.length; i++ ) {
+                this.markers[i].setMap(null);
+            }   
+            this.markers = [];
+        },
+        moveCenter(index) {
+            if(this.clickedOverlay){
+                this.clickedOverlay.setMap(null);
+            }
+            console.log(index);
+            window.kakao.maps.event.trigger(this.markers[index], 'click');
+            
+        },
+        showOverlay() {
              // 마커를 클릭하면 오버레이를 띄운다
             for (let i = 0; i < this.markers.length; i++){
                 window.kakao.maps.event.addListener(this.markers[i], 'click', () => {
@@ -321,15 +520,16 @@ export default {
                     // if(myLocationlist.includes(this.positions[i].id)){
                     //     display = "none";
                     // }
+                    const noimg = require("@/assets/mark/noimg.png");
                     var content = '<div class="wrap">' + 
                     '    <div class="info">' + 
                     '        <div class="title">' + 
                     `           ${this.positions[i].title}` + 
-                    '            <a class="close" @click="closeOverlay()" title="닫기"></a>' + 
+                    '            <div class="close" title="닫기"></div>' + 
                     '        </div>' + 
                     '        <div class="body" style="background: white;">' + 
                     '            <div class="img">' +
-                    `                <img src="${this.positions[i].img}" onerror="this.src='@/assets/mark/noimg.png'" width="73" height="70">` +
+                    `                <img class="imgtag" src="${this.positions[i].img}" onerror="this.src='${noimg}'" width="73" height="70">` +
                     '           </div>' + 
                     '            <div class="desc">' + 
                     `                <div class="ellipsis">${this.positions[i].addr_1}</div>` + 
@@ -338,10 +538,16 @@ export default {
                     '        </div>' + 
                     '    </div>' +    
                     '</div>';
-                
-                
+
+                    // 직접 div를 만들어서 처리
+                    var div = document.createElement('div');
+                    div.innerHTML = content;
+                    div.querySelector('.close').addEventListener('click', () => {
+                        this.overlay.setMap(null);  
+                    });          
+
                     this.overlay = new window.kakao.maps.CustomOverlay({
-                        content: content,
+                        content: div,
                         map: this.map,
                         position: this.positions[i].latlng,   
                     });
@@ -356,28 +562,24 @@ export default {
                     this.map.panTo(this.overlay.getPosition());
                 });
             }	
-
         },
-        removeMarker() {
-            for ( var i = 0; i < this.markers.length; i++ ) {
-                this.markers[i].setMap(null);
-            }   
-            this.markers = [];
+        viewSmall() {
+            const cardImages = document.querySelectorAll('.card-image');
+            cardImages.forEach(cardImage => {
+            cardImage.style.height = '80px';
+            });
         },
-        moveCenter(lat, lng) {
-            if(this.clickedOverlay){
-                this.clickedOverlay.setMap(null);
-            }
-            // this.overlay.setMap(this.map);
-            // this.overlay.setPosition(new window.kakao.maps.LatLng(lat, lng))
-            // this.clickedOverlay = this.overlay;
-            this.map.panTo(new window.kakao.maps.LatLng(lat, lng));
-            //this.map.setCenter(new window.kakao.maps.LatLng(lat, lng));
+        viewBig() {
+            const cardImages = document.querySelectorAll('.card-image');
+            cardImages.forEach(cardImage => {
+            cardImage.style.height = '200px';
+            });
         },
-        closeOverlay() {
-            console.log("!!!!")
-            this.overlay.setMap(null);     
+        async openDialog(id) {
+            this.$refs.tourOverlay.openDialog();
+            this.selectedId = id;
         }
+        
 
     },
 };
@@ -397,4 +599,19 @@ export default {
 .desc .jibun {font-size: 11px;color: #888;margin-top: -2px;}
 .info .img {position: absolute;top: 6px;left: 5px;width: 73px;height: 71px;border: 1px solid #ddd;color: #888;overflow: hidden;}
 .info:after {content: '';position: absolute;margin-left: -12px;left: 50%;bottom: 0;width: 22px;height: 12px;background: url('https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/vertex_white.png')}
+.custom-sheet{
+    height: auto;
+    max-height: calc(100vh - 200px); /* 원하는 높이 조정 */
+    overflow-y: auto;
+}
+.icon-wrapper {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    margin:3px;
+}
+.custom-search-label {
+    font-size: 13px;
+    color: black;
+}
 </style>

@@ -1,21 +1,21 @@
 <template>
-    <v-dialog v-model="dialog" max-width="300">
+    <v-dialog v-model="commentDialog" max-width="300">
         <v-card>
             <v-card-title class="text-h6">
-                게시글을 정말<br />수정하시겠습니까?
+                댓글을 정말<br />삭제하시겠습니까?
             </v-card-title>
             <v-card-actions>
                 <v-spacer></v-spacer>
                 <v-btn
-                    color="green darken-1"
+                    color="red darken-1"
                     text
-                    @click.stop="modifyArticle">
-                    수정
+                    @click.stop="deleteComment">
+                    삭제
                 </v-btn>
                 <v-btn
                     color="grey darken-1"
                     text
-                    @click.stop="dialog = false">
+                    @click.stop="commentDialog = false">
                     취소
                 </v-btn>
             </v-card-actions>
@@ -27,19 +27,19 @@
 import http from "@/axios/http.js";
 
 export default {
-    name: "ModifyConfirmDialog",
+    name: "CommentDeleteConfirmDialog",
     props: {
         value: {
             type: Boolean,
             required: true,
         },
-        article: {
-            type: Object,
+        commentNo: {
+            type: Number,
             required: true,
         }
     },
     computed: {
-        dialog: {
+        commentDialog: {
             get() {
                 return this.value;
             },
@@ -49,16 +49,18 @@ export default {
         },
     },
     methods: {
-        modifyArticle() {
-            this.dialog = false;
-            http.put(`/article`, JSON.stringify(this.article))
+        deleteComment() {
+            this.commentDialog = false;
+            let commentNo = this.commentNo;
+            http.delete(`/comment/${commentNo}`)
                 .then(({ data }) => {
                     if (data == "SUCCESS") {
-                        alert("수정 성공");
+                        alert("삭제 성공");
                     } else {
-                        alert("수정 실패");
+                        alert("삭제 실패");
                     }
-                    this.$router.push({ name: "article" });
+
+                    this.$emit("updateCommentList");
                 })
                 .catch(( error ) => {
                     this.$router.push('error/error', error);

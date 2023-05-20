@@ -2,9 +2,9 @@ use riding_the_wind;
 
 SELECT * FROM article;
 
-insert into member(member_id, member_password, member_name, member_phone, birth, nickname)
-values ('byh9811', '1234', '배용현', '01011112222', '1998-11-28', 'null사랑하지않아'),
-('ho0214', '1234', '유호재', '01029292929', '1998-02-14', '짱귀요미유호재');
+insert into member(member_id, member_password, member_name, member_phone, email_id, email_domain, birth, nickname)
+values ('byh9811', '1234', '배용현', '01011112222', 'byh9811', '@naver.com', '1998-11-28', 'null사랑하지않아'),
+('ho0214', '1234', '유호재', '01029292929', 'ho0214', '@naver.com', '1998-02-14', '짱귀요미유호재');
 
 insert into article(member_id, subject, content) 
 values ('byh9811', '제목1', '내용1'),

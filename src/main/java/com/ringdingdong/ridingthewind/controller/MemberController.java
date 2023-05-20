@@ -80,41 +80,52 @@ public class MemberController {
 
 
 	@PostMapping("/join")
-	public ResponseEntity<Void> join(MemberDto memberDto, String mobile1, String mobile2, String mobile3, Model model) {
-		logger.debug("memberDto info : {}", memberDto);
-//        try {
-//            String phone = mobile1 + "-" + mobile2 + "-" + mobile3;
-//            memberDto.setMemberPhone(phone);
-//            memberService.joinMember(memberDto);
-//            return "redirect:/member/login";
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            model.addAttribute("msg", "회원 가입 중 문제 발생!!!");
-//            return "error/error";
-//        }
-		try{
-			String phone = mobile1 + "-" + mobile2 + "-" + mobile3;
-			memberDto.setMemberPhone(phone);
-			memberService.joinMember(memberDto);
-			return ResponseEntity.ok().build();
-		} catch (Exception e){
-			e.printStackTrace();
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
-		}
-
+	public ResponseEntity<Void> join(@RequestBody Map<String, String> map) {
+		logger.debug("memberDto info : {}", map);
+		HttpStatus status = null;
+        MemberDto memberDto = new MemberDto();
+		memberDto.setMemberId(map.get("id"));
+		memberDto.setMemberPassword(map.get("password"));
+		memberDto.setMemberName(map.get("name"));
+		memberDto.setMemberPhone(map.get("phoneNumber"));
+		memberDto.setEmailId(map.get("emailId"));
+		memberDto.setEmailDomain(map.get("emailDomain"));
+		memberDto.setBirthday(map.get("birthday"));
+		memberDto.setNickname(map.get("nickname"));
+		memberDto.setRole(map.get("role"));
+		try {
+            memberService.joinMember(memberDto);
+			status = HttpStatus.ACCEPTED;
+        } catch (Exception e) {
+            e.printStackTrace();
+			status = HttpStatus.INTERNAL_SERVER_ERROR;
+        }
+//		try{
+//			String phone = mobile1 + "-" + mobile2 + "-" + mobile3;
+//			memberDto.setMemberPhone(phone);
+//			memberService.joinMember(memberDto);
+//			return ResponseEntity.ok().build();
+//		} catch (Exception e){
+//			e.printStackTrace();
+//			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+//		}
+		return new ResponseEntity<>(status);
 	}
 
 
 
 
 	@PostMapping("/login")
-	public ResponseEntity<?> login(@RequestBody Map<String, String> map, @RequestParam(name = "saveid", required = false) String saveid, HttpSession session, HttpServletResponse response) {
+	public ResponseEntity<?> login(@RequestBody Map<String, String> map) {
+		System.out.println(map.toString());
+		System.out.println("로그인 접속");
 		logger.debug("login map : {}", map);
 		Map<String, Object>  resultMap = new HashMap<>();
 		HttpStatus status = null;
 		try {
 			MemberDto memberDto = memberService.loginMember(map);
 			if(memberDto != null) {
+				System.out.println("로그인성공");
 				String accessToken = jwtService.createAccessToken("memberId", memberDto.getMemberId());
 				String refreshToken = jwtService.createRefreshToken("memberId", memberDto.getMemberId());
 
@@ -130,6 +141,7 @@ public class MemberController {
 				status = HttpStatus.ACCEPTED;
 
 			} else {
+				System.out.println("로그인실패");
 				resultMap.put("message", ResponseResult.FAIL.name());
 				status = HttpStatus.ACCEPTED;
 			}
@@ -141,6 +153,48 @@ public class MemberController {
 		return new ResponseEntity<Map<String, Object>>(resultMap, status);
 
 	}
+
+	@GetMapping("/info/{userid}")
+	public ResponseEntity<?> info(@PathVariable("userid") String memberId){
+		System.out.println("아이디출력"+memberId);
+		Map<String, Object>  resultMap = new HashMap<>();
+
+		resultMap.put("message", ResponseResult.FAIL.name());
+
+		try{
+			MemberDto result = memberService.findMemberId(memberId);
+			if(result != null){
+				System.out.println(result.toString());
+				resultMap.put("message", ResponseResult.SUCCESS.name());
+				resultMap.put("data", result); // MemberDto를 'data'라는 키로 추가
+
+			}
+		}finally {
+			System.out.println("finally도착");
+			return ResponseEntity.ok().body(resultMap);
+		}
+	}
+
+	@GetMapping("/logout/{userid}")
+	public ResponseEntity<?> removeToken(@PathVariable("userid") String userId){
+		System.out.println("로그아웃"+ userId);
+		Map<String, Object> resultMap = new HashMap<>();
+		HttpStatus status = HttpStatus.ACCEPTED;
+
+		try {
+			memberService.deleteRefreshToken(userId);
+			resultMap.put("message",ResponseResult.SUCCESS.name());
+			status = HttpStatus.ACCEPTED;
+		} catch (Exception e) {
+			logger.error("로그아웃 실패 : {}", e);
+			resultMap.put("message", ResponseResult.FAIL.name());
+			status = HttpStatus.INTERNAL_SERVER_ERROR;
+
+		}
+		return new ResponseEntity<Map<String, Object>>(resultMap, status);
+
+	}
+
 
 
 
