@@ -92,6 +92,7 @@ public class MemberController {
 		memberDto.setEmailDomain(map.get("emailDomain"));
 		memberDto.setBirthday(map.get("birthday"));
 		memberDto.setNickname(map.get("nickname"));
+		memberDto.setRole(map.get("role"));
 		try {
             memberService.joinMember(memberDto);
 			status = HttpStatus.ACCEPTED;
