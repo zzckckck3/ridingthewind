@@ -33,6 +33,10 @@
 		<result column="overview" property="overView"/>
 	</resultMap>
 	
+	<resultMap type="PersonalTripDto" id="personalTrip">
+		<result column="member_id" property="memberId"/>
+		<result column="content_id" property="contentId"/>
+	</resultMap>
 	
 	<select id="getSido" resultType="TourSidoDto" resultMap="sido">
 		select sido_code, sido_name 
@@ -57,6 +61,12 @@
         and i.gugun_code = #{gugunCode}
         and i.title like CONCAT('%', #{keyword}, '%')
     </select>
+	
+	<select id="getLikeList" parameterType="String" resultMap="personalTrip" >
+		select *
+		from personal_trip
+		where member_id = #{memberId}
+	</select>
 	
 	<insert id="addtour">
 		insert into personal_trip (member_id, content_id)
