@@ -12,11 +12,8 @@
 	</resultMap>
 
 	<insert id="writeComment" parameterType="map">
-		<selectKey resultType="int" keyProperty="commentNo" order="BEFORE">
-			select max(comment_no) + 1 from comment
-		</selectKey>
-		insert into comment (comment_no, article_no, member_id, content)
-		values (#{commentNo}, #{articleNo}, #{memberId}, #{content})
+		insert into comment (article_no, member_id, content)
+		values (#{articleNo}, #{memberId}, #{content})
 	</insert>
 
 	<select id="listComment" parameterType="int" resultMap="commentDto">

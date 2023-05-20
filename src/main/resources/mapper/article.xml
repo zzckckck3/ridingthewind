@@ -20,11 +20,8 @@
 	</resultMap>
 
 	<insert id="writeArticle" parameterType="map">
-		<selectKey resultType="int" keyProperty="articleNo" order="BEFORE">
-			select max(article_no) + 1 from article
-		</selectKey>
-		insert into article (article_no, member_id, subject, content)
-		values (#{articleNo}, #{memberId}, #{subject}, #{content})
+		insert into article (member_id, subject, content)
+		values (#{memberId}, #{subject}, #{content})
 	</insert>
 	
 	<sql id="search">

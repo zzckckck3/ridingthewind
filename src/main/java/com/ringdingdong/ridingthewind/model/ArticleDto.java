@@ -12,7 +12,9 @@ import java.util.List;
 public class ArticleDto {
 
 	private int articleNo;
+	private String memberId;
 	private String subject;
+	private String content;
 	private int hit;
 	private int like;
 	private String registerTime;
