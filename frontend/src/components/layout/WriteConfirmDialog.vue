@@ -25,6 +25,8 @@
 
 <script>
 import http from "@/axios/http.js";
+import {mapState} from "vuex";
+const memberStore = "memberStore";
 
 export default {
     name: "WriteConfirmDialog",
@@ -43,6 +45,7 @@ export default {
         }
     },
     computed: {
+        ...mapState(memberStore, ["userInfo"]),
         dialog: {
             get() {
                 return this.value;
@@ -56,7 +59,7 @@ export default {
         writeArticle() {
             this.dialog = false;
             let articleInfo = {
-                memberId: "byh9811",
+                memberId: this.userInfo.data.memberId,
                 subject: this.subject,
                 content: this.content
             };

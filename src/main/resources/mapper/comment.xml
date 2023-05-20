@@ -6,6 +6,7 @@
 
 	<resultMap type="commentDto" id="commentDto">
 		<result column="comment_no" property="commentNo"/>
+		<result column="member_id" property="memberId"/>
 		<result column="nickname" property="nickname"/>
 		<result column="content" property="content"/>
 		<result column="register_time" property="registerTime"/>
@@ -17,7 +18,7 @@
 	</insert>
 
 	<select id="listComment" parameterType="int" resultMap="commentDto">
-		select c.comment_no, m.nickname, c.content, c.register_time
+		select c.comment_no, m.member_id, m.nickname, c.content, c.register_time
 		from article a
 		join comment c on a.article_no = c.article_no
 		join member m on c.member_id = m.member_id

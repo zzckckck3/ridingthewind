@@ -5,10 +5,10 @@
               <v-btn class="my-auto mx-1 d-flex flex-row-reverse" @click="moveToList">
                   목록
               </v-btn>
-              <v-btn class="my-auto mx-1 d-flex flex-row-reverse" @click="moveToModify">
+              <v-btn v-if="userInfo.data.role == 'ADMIN' || userInfo.data.memberId == article.memberId" class="my-auto mx-1 d-flex flex-row-reverse" @click="moveToModify">
                   수정
               </v-btn>
-              <v-btn class="my-auto mx-1 d-flex flex-row-reverse" @click.stop="dialog = true">
+              <v-btn v-if="userInfo.data.role == 'ADMIN' || userInfo.data.memberId == article.memberId" class="my-auto mx-1 d-flex flex-row-reverse" @click.stop="dialog = true">
                   삭제
               </v-btn>
               <delete-confirm-dialog v-model="dialog" :articleNo="article.articleNo"></delete-confirm-dialog>
@@ -47,11 +47,11 @@
               <v-row class="col-12 pa-6">
                   <v-row v-for="commentItem in article.commentList" :key="commentItem.commentNo" class="col-12 pa-3">
                       {{ commentItem.nickname }} : {{ commentItem.content }} ({{ commentItem.registerTime }})
-                      <v-btn class="mx-3" small @click.stop="commentDialog = true">
+                      <v-btn v-if="userInfo.data.role == 'ADMIN' || userInfo.data.memberId == commentItem.memberId" class="mx-3" small @click.stop="deleteComment(commentItem.commentNo, $event)">
                           삭제
                       </v-btn>
-                      <comment-delete-confirm-dialog v-model="commentDialog" :commentNo="commentItem.commentNo" @updateCommentList="getArticle"></comment-delete-confirm-dialog>
                   </v-row>
+                  <comment-delete-confirm-dialog v-model="commentDialog" :commentNo=deleteCommentNo @updateCommentList="getArticle"></comment-delete-confirm-dialog>
               </v-row>
               <v-row class="col-12">
                   <v-text-field placeholder="댓글을 입력하세요" v-model="comment"></v-text-field>
@@ -66,6 +66,8 @@
 
 <script>
 import http from "@/axios/http.js";
+import {mapState} from "vuex";
+const memberStore = "memberStore";
 import DeleteConfirmDialog from "@/components/layout/DeleteConfirmDialog.vue";
 import CommentDeleteConfirmDialog from "@/components/layout/CommentDeleteConfirmDialog.vue";
 
@@ -76,11 +78,15 @@ export default {
             article: {},
             comment: "",
             dialog: false,
-            commentDialog: false
+            commentDialog: false,
+            deleteCommentNo: 0,
         }
     },
     created() {
         this.getArticle();
+    },
+    computed: {
+        ...mapState(memberStore, ["userInfo"]),
     },
     methods: {
         getArticle() {
@@ -103,19 +109,22 @@ export default {
         addComment() {
             let newComment = {
                 articleNo: this.article.articleNo,
-                memberId: "byh9811",
+                memberId: this.userInfo.data.memberId,
                 content: this.comment,
             }
 
             http.post(`/comment`, JSON.stringify(newComment))
                 .then(({ data }) => {
                     this.article = data;
+                    this.getArticle();
                 })
                 .catch(( error ) => {
-                    this.$router.push('error/error', error);
+                    this.$router.push('/error/error', error);
                 });
-
-            this.getArticle();
+        },
+        deleteComment(key) {
+            this.commentDialog = true;
+            this.deleteCommentNo = key;
         }
     },
     components: {
