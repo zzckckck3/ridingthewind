@@ -2,11 +2,12 @@ package com.ringdingdong.ridingthewind.model.service;
 
 import com.ringdingdong.ridingthewind.enumerate.Constant;
 import com.ringdingdong.ridingthewind.model.*;
-import com.ringdingdong.ridingthewind.model.mapper.ArticleMapper;
-import com.ringdingdong.ridingthewind.model.mapper.CommentMapper;
+import com.ringdingdong.ridingthewind.model.mapper.*;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -14,6 +15,8 @@ public class ArticleServiceImpl implements ArticleService {
 
 	private final ArticleMapper articleMapper;
 	private final CommentMapper commentMapper;
+	private final ArticleAttractionMapper articleAttractionMapper;
+	private final TourMapper tourMapper;
 
 	@Override
 	public boolean writeArticle(ArticleDto articleDto) throws Exception {
@@ -46,6 +49,7 @@ public class ArticleServiceImpl implements ArticleService {
 	public ArticleDetailDto getArticle(int articleNo) throws Exception {
 		ArticleDetailDto articleDetailDto = articleMapper.getArticle(articleNo);
 		articleDetailDto.setCommentList(commentMapper.listComment(articleNo));
+		articleDetailDto.setTourList(tourMapper.getListByContentIds(articleAttractionMapper.listArticleAttraction(articleNo)));
 		return articleDetailDto;
 	}
 

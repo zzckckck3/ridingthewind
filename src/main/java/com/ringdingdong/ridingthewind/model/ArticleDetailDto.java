@@ -21,5 +21,6 @@ public class ArticleDetailDto {
 	private String modifyTime;
 	private String nickname;
 	private List<CommentDto> commentList;
+	private List<TourDto> tourList;
 
 }
