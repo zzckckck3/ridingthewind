@@ -87,7 +87,6 @@ const memberStore = {
                         commit("SET_USER_INFO", null);
                         commit("SET_IS_LOGIN", false);
                         commit("SET_IS_VALID_TOKEN", false);
-                        alert("로그아웃 완료");
                     } else {
                         console.log("유저 정보 없음!!!!");
                     }

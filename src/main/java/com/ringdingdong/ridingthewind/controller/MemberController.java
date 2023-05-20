@@ -90,7 +90,7 @@ public class MemberController {
 		memberDto.setMemberPhone(map.get("phoneNumber"));
 		memberDto.setEmailId(map.get("emailId"));
 		memberDto.setEmailDomain(map.get("emailDomain"));
-		memberDto.setBirthday(map.get("birthday"));
+		memberDto.setBirth(map.get("birth"));
 		memberDto.setNickname(map.get("nickname"));
 		memberDto.setRole(map.get("role"));
 		try {
@@ -111,9 +111,39 @@ public class MemberController {
 //		}
 		return new ResponseEntity<>(status);
 	}
+	@PostMapping(value="/update")
+	public ResponseEntity<?> update(@RequestBody Map<String, String> map) throws Exception {
+		HttpStatus status = null;
+		System.out.println("업데이트 접속"+map.toString());
+		MemberDto memberDto = new MemberDto();
+		memberDto.setMemberId(map.get("id"));
+		memberDto.setMemberName(map.get("name"));
+		memberDto.setMemberPhone(map.get("phoneNumber"));
+		memberDto.setEmailId(map.get("emailId"));
+		memberDto.setEmailDomain(map.get("emailDomain"));
+		memberDto.setBirth(map.get("birth"));
+		memberDto.setNickname(map.get("nickname"));
+		try {
+			memberService.updateMember(memberDto);
+			status = HttpStatus.ACCEPTED;
+		}catch (Exception e){
+			status = HttpStatus.INTERNAL_SERVER_ERROR;
+		}
+		return new ResponseEntity<>(status);
 
-
-
+	}
+	@DeleteMapping("/delete/{memberId}")
+	public ResponseEntity<?> delete(@PathVariable String memberId) {
+		HttpStatus status = null;
+		try {
+			memberService.deleteMember(memberId);
+			System.out.println("회원삭제완료");
+			status = HttpStatus.ACCEPTED;
+		} catch (Exception e) {
+			status = HttpStatus.INTERNAL_SERVER_ERROR;
+		}
+		return new ResponseEntity<>(status);
+	}
 
 	@PostMapping("/login")
 	public ResponseEntity<?> login(@RequestBody Map<String, String> map) {
@@ -170,7 +200,6 @@ public class MemberController {
 
 			}
 		}finally {
-			System.out.println("finally도착");
 			return ResponseEntity.ok().body(resultMap);
 		}
 	}
@@ -209,21 +238,7 @@ public class MemberController {
 //		return "user/viewinfo";
 //	}
 
-	@PostMapping(value="/update")
-	public ResponseEntity<?> update(@RequestParam Map<String, String> map,@ModelAttribute MemberDto memberDto) throws Exception {
-//		System.out.println("update들어옴");
-//		MemberDto member = new MemberDto();
-//		member.setMemberId("qwerqwer");
-//		member.setMemberPassword("aaaaaaa");
-//		member.setEmailId("bbbbbbb");
-//		member.setEmailDomain("naver.com");
-//		System.out.println("memberService리턴값"+memberService.updateMember(member));
-		if(memberService.updateMember(memberDto) == 1){
-			return ResponseEntity.ok().build();
-		}else{
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
-		}
-	}
+
 
 //	@PostMapping(value="/update")
 //	public String update(@RequestParam Map<String, String> map,@ModelAttribute UserDto userDto){

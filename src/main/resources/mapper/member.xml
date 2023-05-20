@@ -11,6 +11,7 @@
 	
 	<!-- ADMIN -->
 	<resultMap type="memberDto" id="memberAll" extends="member">
+		<result column="member_phone" property="memberPhone"/>
 		<result column="member_password" property="memberPassword"/>
 		<result column="email_id" property="emailId"/>
 		<result column="email_domain" property="emailDomain"/>
@@ -25,7 +26,7 @@
 
 	<insert id="joinMember" parameterType="memberDto">
 		insert into member (member_id, member_name, member_password, member_phone, email_id, email_domain, join_date, birth, nickname)
-		values (#{memberId}, #{memberName}, #{memberPassword}, #{memberPhone}, #{emailId}, #{emailDomain}, DATE(now()), #{birthday}, #{nickname})
+		values (#{memberId}, #{memberName}, #{memberPassword}, #{memberPhone}, #{emailId}, #{emailDomain}, DATE(now()), #{birth}, #{nickname})
 	</insert>
 
 	<select id="loginMember" parameterType="map" resultMap="member">
@@ -50,9 +51,12 @@
 	<update id="updateMember" parameterType="memberDto">
 		update member
 		<trim prefix="set" suffixOverrides=",">
-			<if test="memberPassword != null">member_password = #{memberPassword},</if>
+			<if test="memberName != null">member_name = #{memberName},</if>
+		    <if test="memberPhone != null">member_phone = #{memberPhone},</if>
 			<if test="emailId != null">email_id = #{emailId},</if>
 			<if test="emailDomain != null">email_domain = #{emailDomain},</if>
+		    <if test="birth != null">birth = #{birth},</if>
+		    <if test="nickname != null">nickname = #{nickname}</if>
 		</trim>
 		where member_id = #{memberId}
 	</update>
