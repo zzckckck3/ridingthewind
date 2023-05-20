@@ -53,7 +53,20 @@
 		on i.content_id = d.content_id
 		where i.sido_code = #{sidoCode} and i.gugun_code = #{gugunCode}
 	</select>
-	
+
+	<select id="getListByContentIds" parameterType="java.util.List" resultMap="tourinfo">
+		select * from attraction_info
+		where content_id in
+		<if test="list.size==0">
+			(null)
+		</if>
+		<if test="list.size!=0">
+			<foreach collection="list" item="item" open="(" close=")" separator=",">
+				#{item.contentId}
+			</foreach>
+		</if>
+	</select>
+
 	<select id="getListByKeyword" parameterType="map" resultMap="tourinfo">
        	select * from attraction_info i join attraction_description d
         on i.content_id = d.content_id

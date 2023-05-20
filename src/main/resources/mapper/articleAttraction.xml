@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ringdingdong.ridingthewind.model.mapper.ArticleAttractionMapper">
+
+	<resultMap type="ArticleAttractionDto" id="articleAttractionDto">
+		<result column="article_no" property="articleNo"/>
+		<result column="content_id" property="contentId"/>
+		<result column="order" property="order"/>
+	</resultMap>
+
+	<insert id="writeArticleAttraction" parameterType="java.util.List" >
+		insert into article_attraction_map(article_no, content_id, order)
+		values
+		<foreach collection="list" item="item" separator=",">
+			(
+			#{item.articleNo}
+			, #{item.contentId}
+			, #{item.order}
+			)
+		</foreach>
+	</insert>
+
+	<select id="listArticleAttraction" parameterType="int" resultMap="articleAttractionDto">
+		select content_id, `order`
+		from article_attraction_map
+		where article_no = #{articleNo}
+		order by `order`
+	</select>
+
+	<delete id="deleteArticleAttraction" parameterType="java.util.List">
+		delete from article_attraction_map
+		<where>
+			<foreach collection="list" item="item" open="" close="" separator="OR">
+				(article_no = #{item.articleNo} AND content_id = #{item.contentId})
+			</foreach>
+		</where>
+	</delete>
+
+</mapper>
