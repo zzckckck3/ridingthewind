@@ -145,8 +145,8 @@
                             </v-btn>
                         </v-row>
                         <v-row>
-                            <v-btn icon @click.stop="openDialog(card.id)">
-                            <v-icon :color="card.like ? 'red' : '' ">mdi-heart</v-icon>
+                            <v-btn icon @click.stop="card.like ? tripDelete(card.id) : openDialog(card.id)">
+                            <v-icon :color="card.like ? 'red' : ''">mdi-heart</v-icon>
                             </v-btn>
                         </v-row>
                         </v-col>
@@ -202,6 +202,8 @@
 <script>
 import http from "@/axios/http";
 import AddTourDialog from '@/components/tour/AddTourDialog.vue';
+import {mapState} from "vuex";
+const memberStore = "memberStore";
 
 export default {
     name: 'TourSearchInfo',
@@ -236,11 +238,13 @@ export default {
             clickedOverlay: null,
             selectAll: false,
             selectedId: null,
-            agree: false
+            agree: false,
+            loginLikeData: []
         };
     },
     created() {
         this.create_sido();
+        this.myLikeList();
     },
     mounted() {
         const script = document.createElement('script');
@@ -266,6 +270,7 @@ export default {
         
     },
     computed: {
+        ...mapState(memberStore, ["isLogin", "userInfo"]),
         showImg() { // 이미지 가져오기
             return (src) => {
                 if (src) {
@@ -335,9 +340,15 @@ export default {
             this.map.addControl(zoomControl, window.kakao.maps.ControlPosition.RIGHT);
         },
         addTour(id) {
-            http.post(`/tour/addtour/ssafy/${id}`).then(response => {
+            http.post(`/tour/addtour/${this.userInfo.data.memberId}/${id}`).then(response => {
                 if (response.status === 200) {
                     // alert("마이페이지에 여행지가 추가되었습니다.");
+                    // 해당 ID에 해당하는 요소를 찾고, like 속성을 변경
+                    // this.loginLikeData.push(id); 해도 되구 안해도 되구???? 궁금!!
+                    const card = this.cards.find((card) => card.id === id);
+                    if (card) {
+                        card.like = true;
+                    }
                     return response.data;
                 } else if (response.status === 500) {
                     alert("추가 중 에러 발생. 이미 추가된 여행지입니다.");
@@ -348,6 +359,12 @@ export default {
                 console.error(error);
             });    
             this.agree = false;
+        },
+        myLikeList(){
+            http.get(`/tour/mylikelist/${this.userInfo.data.memberId}`)
+                .then((response) => {
+                    this.loginLikeData = response.data.map((area) => area.contentId);
+                });
         },
         create_sido() {
             http.get(`/tour/sido`)
@@ -393,7 +410,7 @@ export default {
                                 longitude: area.longitude,
                                 flex: 3,
                                 show: false,
-                                like: false
+                                like: this.loginLikeData.includes(area.contentId)
                             }
                             this.positions.push(markerInfo);
                             this.cards.push(card);
@@ -410,7 +427,6 @@ export default {
             .then((response) => { 
                     this.positions.length = 0;
                     this.cards.length = 0;
-                    // console.log(response.data);
                     response.data.forEach((area) => {
                         // 체크된것만!
                         if (this.selectedContentById.includes(area.contentTypeId)) {
@@ -574,6 +590,21 @@ export default {
             cardImages.forEach(cardImage => {
             cardImage.style.height = '200px';
             });
+        },
+        tripDelete(id) {
+            if (confirm("여행지를 삭제하시겠습니까?")) {
+                http.delete(`/mypage/delete/${this.userInfo.data.memberId}/${id}`)
+                .then(() => {
+                    // 여기서도 loginLikeData를 pop() 해야하는지 의문?? 
+                    const card = this.cards.find((card) => card.id === id);
+                    if (card) {
+                        card.like = false;
+                    }
+                })
+                .catch((error) => {
+                    console.error(error);
+                });
+            }
         },
         async openDialog(id) {
             this.$refs.tourOverlay.openDialog();
