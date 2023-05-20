@@ -1,5 +1,6 @@
 package com.ringdingdong.ridingthewind.model.service;
 
+import com.ringdingdong.ridingthewind.model.PersonalTripDto;
 import com.ringdingdong.ridingthewind.model.TourDto;
 import com.ringdingdong.ridingthewind.model.TourGugunDto;
 import com.ringdingdong.ridingthewind.model.TourSidoDto;
@@ -46,9 +47,15 @@ public class TourServiceImpl implements TourService{
 	}
 
 	@Override
+	public List<PersonalTripDto> getLikeList(String memberId) throws SQLException {
+		return tourMapper.getLikeList(memberId);
+	}
+	
+	@Override
 	public boolean addtour(int contentId, String memberId) throws Exception {
 		return tourMapper.addtour(contentId, memberId) == 1;
 	}
+
 
 
 }

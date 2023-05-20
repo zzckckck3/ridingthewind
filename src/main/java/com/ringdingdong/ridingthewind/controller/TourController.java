@@ -1,5 +1,6 @@
 package com.ringdingdong.ridingthewind.controller;
 
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ringdingdong.ridingthewind.model.MemberDto;
+import com.ringdingdong.ridingthewind.model.PersonalTripDto;
 import com.ringdingdong.ridingthewind.model.TourDto;
 import com.ringdingdong.ridingthewind.model.TourGugunDto;
 import com.ringdingdong.ridingthewind.model.TourSidoDto;
@@ -84,6 +86,11 @@ public class TourController {
 //		}
 //		return new ResponseEntity<String>(FAIL, HttpStatus.NO_CONTENT);
 //	}
+	@GetMapping("/mylikelist/{memberid}")
+	public ResponseEntity<List<PersonalTripDto>> mylikelist(@PathVariable("memberid") String memberId) throws SQLException{
+		List<PersonalTripDto> list = tourService.getLikeList(memberId);
+		return ResponseEntity.ok(list);
+	}
 	
 	@PostMapping("/addtour/{memberid}/{contentid}")
 	public ResponseEntity<String> addtour(@PathVariable("contentid") int contentId, @PathVariable("memberid") String memberId, HttpServletRequest request, HttpServletResponse response) throws Exception{

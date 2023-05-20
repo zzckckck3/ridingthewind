@@ -25,10 +25,10 @@ public class PersonalTripApiController {
 	}
 	
 	@GetMapping("/list/{memberid}")
-	public ResponseEntity<?> tripList(@PathVariable("memberid") String userId){
+	public ResponseEntity<?> tripList(@PathVariable("memberid") String memberId){
 		logger.debug("mypage tripList called");
 		try {
-			List<PersonalTripDto> list = personalTripService.listPersonalTrip(userId);
+			List<PersonalTripDto> list = personalTripService.listPersonalTrip(memberId);
 			if(list != null && !list.isEmpty()) {
 				return new ResponseEntity<List<PersonalTripDto>>(list, HttpStatus.OK);
 //				return new ResponseEntity<List<MemberDto>>(HttpStatus.NOT_FOUND);
