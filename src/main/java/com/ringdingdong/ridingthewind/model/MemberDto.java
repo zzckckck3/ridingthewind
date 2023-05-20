@@ -8,9 +8,13 @@ public class MemberDto {
 	private String emailId;
 	private String emailDomain;
 	private String joinDate;
-	private String birthday;
+	private String birth;
 	private String nickname;
 	private String role;
+
+	public String getBirth() {
+		return birth;
+	}
 
 	@Override
 	public String toString() {
@@ -22,10 +26,14 @@ public class MemberDto {
 				", emailId='" + emailId + '\'' +
 				", emailDomain='" + emailDomain + '\'' +
 				", joinDate='" + joinDate + '\'' +
-				", birthday='" + birthday + '\'' +
+				", birth='" + birth + '\'' +
 				", nickname='" + nickname + '\'' +
 				", role='" + role + '\'' +
 				'}';
+	}
+
+	public void setBirth(String birth) {
+		this.birth = birth;
 	}
 
 	public String getRole() {
@@ -79,13 +87,6 @@ public class MemberDto {
 		this.joinDate = joinDate;
 	}
 
-	public String getBirthday() {
-		return birthday;
-	}
-
-	public void setBirthday(String birthday) {
-		this.birthday = birthday;
-	}
 
 	public String getNickname() {
 		return nickname;
