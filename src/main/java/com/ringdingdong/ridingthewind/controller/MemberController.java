@@ -5,6 +5,8 @@ import com.ringdingdong.ridingthewind.model.MemberDto;
 import com.ringdingdong.ridingthewind.model.service.JwtServiceImpl;
 import com.ringdingdong.ridingthewind.model.service.MemberService;
 import com.ringdingdong.ridingthewind.model.service.MemberServiceImpl;
+//import com.ringdingdong.ridingthewind.util.MailSendUtil;
+import com.ringdingdong.ridingthewind.util.MailSendUtil;
 import io.jsonwebtoken.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,8 +35,15 @@ public class MemberController {
 
 	private final Logger logger = LoggerFactory.getLogger(MemberController.class);
 
+
+	@Autowired
+	private MailSendUtil mailSendUtil;
+
 	@Autowired
 	private MemberService memberService;
+
+//	@Autowired
+//	private MailSendUtil mailSendUtil;
 
 	@Autowired
 	private JwtServiceImpl jwtService;
@@ -224,6 +233,29 @@ public class MemberController {
 
 	}
 
+//	@GetMapping("/sendmail/{email}")
+//	public ResponseEntity<?> sendMail(@PathVariable("email") String email) {
+//		System.out.println(email);
+//		System.out.println("메일 들어옴");
+//		String mailcode = mailSendUtil.joinEmail("ghwo2618@naver.com");
+//
+//		return null;
+//	}
+	@GetMapping("/sendmail/{email}")
+	public ResponseEntity<?> sendMail(@PathVariable("email") String email) {
+		System.out.println(email);
+		System.out.println("메일 들어옴");
+		HttpStatus status = null;
+		String mailcode = null;
+		try {
+			mailcode = mailSendUtil.joinEmail(email);
+			status = HttpStatus.ACCEPTED;
+		} catch (Exception e) {
+			status = HttpStatus.INTERNAL_SERVER_ERROR;
+		}
+
+		return ResponseEntity.status(status).body(mailcode);
+	}
 
 
 

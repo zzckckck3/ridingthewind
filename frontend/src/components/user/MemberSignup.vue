@@ -33,6 +33,19 @@
                 </v-col>
             </v-row>
             <v-row>
+                <v-col cols="12" md="12">
+                    <v-text-field label="인증번호 입력" v-model="inputMailCode" required></v-text-field>
+                </v-col>
+            </v-row>
+            <v-row>
+                <v-btn class="mr-5" @click="sendMail">
+                    인증번호 발송
+                </v-btn>
+                <v-btn @click="checkMail">
+                    인증번호 확인
+                </v-btn>
+            </v-row>
+            <v-row>
                 <v-col cols="12" md="6">
                     <v-text-field label="생일" v-model="birthday" type="date" required></v-text-field>
                 </v-col>
@@ -48,6 +61,7 @@
 <script>
 import http from "@/axios/http";
 export const signupurl = "/member/join";
+const sendmailurl = "/member/sendmail";
 export default {
     data(){
         return{
@@ -59,7 +73,9 @@ export default {
             emailId: '',
             emailDomain: '',
             birthday: '',
-            nickname: ''
+            nickname: '',
+            mailCode: null,
+            inputMailCode: ''
         }
     },
     methods: {
@@ -81,7 +97,7 @@ export default {
             signupForm.nickname = this.nickname;
 
             http.post(signupurl, signupForm).then(response => {
-                if(response.status == 202){
+                if(response.status === 202){
                     alert("성공");
                     this.$router.push({name:'signin'});
                 }else{
@@ -90,6 +106,34 @@ export default {
                 }
             })
         },
+        sendMail(){
+            const email = this.emailId + "@" + this.emailDomain;
+            http.get(sendmailurl+"/"+email).then(response => {
+                console.log("메일번호 받기");
+                console.log(response);
+                console.log(response.data);
+                this.mailCode = response.data.toString();
+                // sessionStorage.setItem()
+                if(response.status === 202){
+                    alert("이메일이 전송되었습니다.");
+                }else{
+                    alert("이메일 전송에 실패하였습니다. 잠시 후 다시 시도해주세요");
+                }
+
+            })
+            alert("메일전송");
+        },
+        checkMail(){
+            if(this.mailCode !== null){
+                if(this.inputMailCode == this.mailCode){
+                    alert("회원인증이 완료되었습니다.");
+                }else{
+                    alert("인증코드가 잘못되었습니다. 다시 확인해주세요");
+                }
+            }else {
+                alert("먼저 인증코드를 발송해주세요");
+            }
+        }
     }
 }
 </script>
