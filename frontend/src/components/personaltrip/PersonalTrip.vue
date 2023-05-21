@@ -122,6 +122,8 @@
 <script>
 import http from "@/axios/http";
 import Sortable from 'sortablejs';
+import {mapState} from "vuex";
+const memberStore = "memberStore";
 
 export default {
   name: 'TourSearchInfo',
@@ -177,7 +179,7 @@ export default {
   created(){},
   mounted() {
     const columns = document.querySelectorAll(".card-list");
-
+    
     columns.forEach((column) => {
       new Sortable(column, {
         group: "shared",
@@ -207,6 +209,9 @@ export default {
     script.src = "http://dapi.kakao.com/v2/maps/sdk.js?autoload=false&appkey=1b7a0eb6294cdd4b1f985683a25bd972";
     document.head.appendChild(script);
 
+  },
+  computed: {
+    ...mapState(memberStore, ["isLogin", "userInfo"]),
   },
   methods: {
     registAll() {
@@ -357,7 +362,7 @@ export default {
     },
     tripDelete(id) {
       if (confirm("여행지를 삭제하시겠습니까?")) {
-        http.delete(`/mypage/delete/ssafy/${id}`)
+        http.delete(`/mypage/delete/${this.userInfo.data.memberId}/${id}`)
           .then(() => {
             return this.makeList();
           })
@@ -368,9 +373,9 @@ export default {
     },
     makeList() {
       //======================================
-        // 꼭 ssafy를 memberId로 바꿔야 함!!!!!
+        // 바꿈!!
       //======================================
-      http.get(`/mypage/list/ssafy`)
+      http.get(`/mypage/list/${this.userInfo.data.memberId}`)
         .then((response) => {
           this.positions.length = 0;
           this.cards.length = 0;
