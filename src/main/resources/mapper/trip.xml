@@ -55,8 +55,10 @@
 	</select>
 
 	<select id="getListByContentIds" parameterType="java.util.List" resultMap="tourinfo">
-		select * from attraction_info
-		where content_id in
+		select *
+		from attraction_info i
+		join attraction_description d on i.content_id = d.content_id
+		where i.content_id in
 		<if test="list.size==0">
 			(null)
 		</if>

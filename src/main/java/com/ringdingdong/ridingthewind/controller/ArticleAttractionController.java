@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+// 삭제 예정
 @RestController
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @RequestMapping(value = "/article-attraction")

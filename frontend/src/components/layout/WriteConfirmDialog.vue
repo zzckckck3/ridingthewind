@@ -42,6 +42,10 @@ export default {
         content: {
             type: String,
             required: true,
+        },
+        cards: {
+            type: Array,
+            required: false
         }
     },
     computed: {
@@ -58,15 +62,25 @@ export default {
     methods: {
         writeArticle() {
             this.dialog = false;
+            let cardList = Array.isArray(this.cards) ? this.cards : [];
+
+            const articleAttractionList = cardList.map((card, index) => {
+                return {
+                    content_id: card.id,
+                    order: index,
+                };
+            });
+
             let articleInfo = {
                 memberId: this.userInfo.data.memberId,
                 subject: this.subject,
-                content: this.content
+                content: this.content,
+                articleAttractionList: articleAttractionList
             };
 
             http.post(`/article`, JSON.stringify(articleInfo))
                 .then(({ data }) => {
-                    if (data == "SUCCESS") {
+                    if (data=="SUCCESS") {
                         alert("등록 성공");
                     } else {
                         alert("등록 실패");

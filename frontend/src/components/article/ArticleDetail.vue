@@ -63,10 +63,10 @@
               </v-card>
           </v-card>
           <v-card min-height="500" class="py-4 col-3">
-              <v-container fluid >
-                  <v-row dense class="card-list" id="card-list" style="min-height: 200px; min-width: 200px;">
+              <v-container fluid style="max-height: 960px; overflow-y: auto;">
+                  <v-row dense class="card-list" id="card-list" style="min-height: 300px; min-width: 200px;">
                       <v-col
-                          v-for="(card, index) in article.tourList"
+                          v-for="card in cards"
                           :key="card.title"
                           :cols="card.flex"
                           :id="card.id"
@@ -82,19 +82,6 @@
                               </v-img>
                               <!-- eslint-disable-next-line -->
                               <v-card-actions >
-                                  <!-- 버튼 추가 할거면 여기 -->
-                                  <v-col>
-                                      <v-row>
-                                          <v-btn icon @click="moveCenter(index)" ref="click">
-                                              <v-icon color="black">mdi-map-search</v-icon>
-                                          </v-btn>
-                                      </v-row>
-                                      <v-row>
-                                          <v-btn icon @click="tripDelete(card.id)">
-                                              <v-icon :color="card.like ? 'red' : '' ">mdi-heart</v-icon>
-                                          </v-btn>
-                                      </v-row>
-                                  </v-col>
                                   <v-spacer style="font-size: small;">{{ card.addr_1 }}</v-spacer>
                                   <div style="display: none;" class="latitude">{{ card.latitude }}</div>
                                   <div style="display: none;" class="longitude">{{ card.longitude }}</div>
@@ -112,6 +99,7 @@
                                   </div>
                               </v-expand-transition>
                           </v-card>
+                          <v-icon class="my-6">mdi-arrow-down-circle</v-icon>
                       </v-col>
                   </v-row>
               </v-container>
@@ -132,6 +120,7 @@ export default {
     data() {
         return {
             article: {},
+            cards: [],
             comment: "",
             dialog: false,
             commentDialog: false,
@@ -151,6 +140,21 @@ export default {
                 .then(({ data }) => {
                     this.article = data;
                     this.comment = "";
+                    data.tourList.forEach((area) => {
+                        let card = {
+                            id: area.contentId,
+                            src: area.firstImage,
+                            title: area.title,
+                            addr_1: area.addr1,
+                            overview: area.overView,
+                            latitude: area.latitude,
+                            longitude: area.longitude,
+                            flex: 12,
+                            show: false,
+                            like: true
+                        }
+                        this.cards.push(card);
+                    });
                 })
                 .catch(( error ) => {
                     this.$router.push('error/error', error);
@@ -160,7 +164,16 @@ export default {
             this.$router.push({ name: "article" });
         },
         moveToModify() {
-            this.$router.push({ name: "articleModify", params: { 'article': JSON.stringify(this.article) } });
+            // let param = {
+            //     article: this.article,
+            //     cards: this.cards
+            // };
+
+            this.$router.push({ name: "articleModify", params: {
+                    article: JSON.stringify(this.article),
+                    cards: JSON.stringify(this.cards),
+                }
+            });
         },
         addComment() {
             let newComment = {

@@ -6,11 +6,13 @@ import com.ringdingdong.ridingthewind.model.mapper.*;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class ArticleServiceImpl implements ArticleService {
 
 	private final ArticleMapper articleMapper;
@@ -20,7 +22,13 @@ public class ArticleServiceImpl implements ArticleService {
 
 	@Override
 	public boolean writeArticle(ArticleDto articleDto) throws Exception {
-		return articleMapper.writeArticle(articleDto) == 1;
+		int insertedArticleNo = articleMapper.writeArticle(articleDto);
+		if (articleDto.getArticleAttractionList().size() != 0) {
+			articleDto.getArticleAttractionList().forEach(articleAttractionDto -> articleAttractionDto.setArticleNo(insertedArticleNo));
+			return articleAttractionMapper.writeArticleAttraction(articleDto.getArticleAttractionList()) == 1;
+		}
+
+		return insertedArticleNo != 0;
 	}
 
 	@Override
@@ -60,6 +68,10 @@ public class ArticleServiceImpl implements ArticleService {
 
 	@Override
 	public boolean modifyArticle(ArticleDto articleDto) throws Exception {
+		if (articleDto.getArticleAttractionList().size() != 0) {
+			articleAttractionMapper.deleteArticleAttraction(articleDto.getArticleNo());
+			articleAttractionMapper.writeArticleAttraction(articleDto.getArticleAttractionList());
+		}
 		return articleMapper.modifyArticle(articleDto) == 1;
 	}
 

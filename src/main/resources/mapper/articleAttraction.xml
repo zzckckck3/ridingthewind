@@ -11,14 +11,10 @@
 	</resultMap>
 
 	<insert id="writeArticleAttraction" parameterType="java.util.List" >
-		insert into article_attraction_map(article_no, content_id, order)
+		insert into article_attraction_map(article_no, content_id, `order`)
 		values
 		<foreach collection="list" item="item" separator=",">
-			(
-			#{item.articleNo}
-			, #{item.contentId}
-			, #{item.order}
-			)
+			(#{item.articleNo}, #{item.contentId}, #{item.order})
 		</foreach>
 	</insert>
 
@@ -29,13 +25,9 @@
 		order by `order`
 	</select>
 
-	<delete id="deleteArticleAttraction" parameterType="java.util.List">
+	<delete id="deleteArticleAttraction" parameterType="int">
 		delete from article_attraction_map
-		<where>
-			<foreach collection="list" item="item" open="" close="" separator="OR">
-				(article_no = #{item.articleNo} AND content_id = #{item.contentId})
-			</foreach>
-		</where>
+		where article_no = #{articleNo}
 	</delete>
 
 </mapper>
