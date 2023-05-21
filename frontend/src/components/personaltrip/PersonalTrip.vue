@@ -58,11 +58,12 @@
             
             <v-btn class="ma-1" outlined color="indigo" @click="viewSmall()">Size<v-icon>mdi-arrow-down</v-icon></v-btn>          
             <v-btn class="ma-1" outlined color="indigo" @click="viewBig()">Size<v-icon>mdi-arrow-up</v-icon></v-btn>
-            
+            <v-text-field label="검색" v-model="liveKeyword"></v-text-field>
+
               <v-container fluid style="min-height: 500px;">
                 <v-row dense class="card-list" id="card-list" style="min-height: 300px; min-width: 200px;">
                   <v-col
-                    v-for="(card, index) in cards"
+                    v-for="(card, index) in displayedCards"
                     :key="card.title"
                     :cols="card.flex"
                     :id="card.id"
@@ -86,7 +87,7 @@
                             </v-btn>
                         </v-row>
                         <v-row>
-                            <v-btn icon @click="tripDelete(card.id)">
+                            <v-btn icon @click="deleteOpenDialog(card.id)">
                             <v-icon :color="card.like ? 'red' : '' ">mdi-heart</v-icon>
                             </v-btn>
                         </v-row>
@@ -116,18 +117,22 @@
         </v-row>
       </v-container>
     </v-main>
+    <delete-tour-dialog ref="deleteOverlay" @agreed="deleteAgree=true" ></delete-tour-dialog>
   </v-app>
 </template>
 
 <script>
 import http from "@/axios/http";
 import Sortable from 'sortablejs';
+import DeleteTourDialog from '@/components/tour/DeleteTourDialog.vue';
 import {mapState} from "vuex";
 const memberStore = "memberStore";
 
 export default {
   name: 'TourSearchInfo',
-  components: {},
+  components: {
+    DeleteTourDialog
+  },
   data() {
     return {
       map: null,
@@ -151,7 +156,8 @@ export default {
       cards: [],
       overlay: [],
       clickedOverlay: null,
-
+      liveKeyword: '',
+      deleteAgree: false,
       /*Display Route Variables*/
       latList : [],
       lngList : [],
@@ -212,6 +218,32 @@ export default {
   },
   computed: {
     ...mapState(memberStore, ["isLogin", "userInfo"]),
+    filteredCards(){
+        const tempKeyword = this.liveKeyword.replace(/\s/g, '').toLowerCase();
+        return this.cards.filter(card => {
+            // 검색어가 카드의 특정 속성에 포함되는지 확인 (공백 무시)
+            const tempTitle = card.title.replace(/\s/g, '').toLowerCase();
+            return tempTitle.includes(tempKeyword);
+        });
+    },
+    displayedCards(){
+        if(this.liveKeyword){
+            return this.filteredCards;
+        }else{
+            return this.cards;
+        }
+    }
+  },
+  watch:{
+    deleteAgree: {
+        handler(val) {
+        if (val) {
+            this. tripDelete(this.selectedId); // 예시로 this.id를 매개변수로 사용
+            this.deleteAgree = false;
+        }
+        },
+        immediate: false
+    },
   },
   methods: {
     registAll() {
@@ -361,15 +393,17 @@ export default {
       this.map.addControl(zoomControl, window.kakao.maps.ControlPosition.RIGHT);
     },
     tripDelete(id) {
-      if (confirm("여행지를 삭제하시겠습니까?")) {
-        http.delete(`/mypage/delete/${this.userInfo.data.memberId}/${id}`)
-          .then(() => {
-            return this.makeList();
-          })
-          .catch((error) => {
-            console.error(error);
-        });
-      }
+      http.delete(`/mypage/delete/${this.userInfo.data.memberId}/${id}`)
+        .then(() => {
+          return this.makeList();
+        })
+        .catch((error) => {
+          console.error(error);
+      });
+    },
+    async deleteOpenDialog(id){
+      this.$refs.deleteOverlay.openDialog();
+      this.selectedId = id;
     },
     makeList() {
       //======================================
