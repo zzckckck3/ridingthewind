@@ -25,4 +25,8 @@ public interface MemberMapper {
     MemberDto findMemberId(String memberId);
 
 	void deleteRefreshToken(Map<String, String> map);
+
+	int passwordCheck(Map<String, String> map);
+
+    void setPassword(Map<String, String> map);
 }

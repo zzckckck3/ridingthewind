@@ -24,6 +24,7 @@ import javax.crypto.spec.SecretKeySpec;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.xml.ws.Response;
 import java.util.Base64;
 import java.util.Date;
 import java.util.HashMap;
@@ -257,7 +258,30 @@ public class MemberController {
 		return ResponseEntity.status(status).body(mailcode);
 	}
 
+	@GetMapping("/pwdcheck")
+	public ResponseEntity<?> pwdcheck(@RequestParam Map<String, String> map){
+		String status = ResponseResult.FAIL.name();
+		try {
+			int result = memberService.passwordCheck(map);
+			if(result == 1){
+				status = ResponseResult.SUCCESS.name();
+			}
+		} catch (Exception e){
 
+		}
+		return ResponseEntity.ok().body(status);
+	}
+
+	@PostMapping("/setpwd")
+	public ResponseEntity<?> setpwd(@RequestParam Map<String, String> map){
+		String status = ResponseResult.FAIL.name();
+		try {
+			memberService.setPassword(map);
+		}catch (Exception e){
+
+		}
+		return ResponseEntity.ok().body(status);
+	}
 
 // 마이페이지 이동 메서드
 //	@GetMapping(value="/viewinfo")
