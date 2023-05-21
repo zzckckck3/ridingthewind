@@ -86,5 +86,15 @@ public class MemberServiceImpl implements MemberService {
 		memberMapper.deleteRefreshToken(map);
 	}
 
+	@Override
+	public int passwordCheck(Map<String, String> map) {
+		return memberMapper.passwordCheck(map);
+	}
+
+	@Override
+	public void setPassword(Map<String, String> map) {
+		memberMapper.setPassword(map);
+	}
+
 
 }

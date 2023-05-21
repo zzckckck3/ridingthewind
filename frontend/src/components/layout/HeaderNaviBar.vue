@@ -71,7 +71,7 @@
                                 <v-list-item-title>내 정보 수정</v-list-item-title>
                             </v-list-item-content>
                         </v-list-item>
-                        <v-list-item @click="handleItemClick('Profile')">
+                        <v-list-item :to="{ name: 'pwdupdate'}">
                             <v-list-item-content class="pl-3">
                                 <v-list-item-title>비밀번호 변경</v-list-item-title>
                             </v-list-item-content>
@@ -119,10 +119,9 @@
 </template>
 
 <script>
-import http from "@/axios/http";
+// import http from "@/axios/http";
 import { mapState, mapActions, mapGetters } from "vuex";
 const memberStore = "memberStore";
-const deleteurl = "/member/delete";
 export default {
     data: () => ({
         menu: null,
@@ -150,15 +149,7 @@ export default {
         },
         onClickDeleteMember(){
             this.showConfirmationDialog = false;
-            const memberId = this.userInfo.data.memberId.toString();
-            http.delete(deleteurl+"/"+memberId).then(response => {
-                if(response.status === 202){
-                    this.onClickLogout();
-                    alert("회원탈퇴가 완료되었습니다.");
-                }else{
-                    alert("회원탈퇴에 실패하였습니다. 잠시 후에 시도해주세요");
-                }
-            })
+            this.$router.push({ name: "delete" });
         }
     }
 };
