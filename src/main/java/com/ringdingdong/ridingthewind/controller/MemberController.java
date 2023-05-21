@@ -76,15 +76,18 @@ public class MemberController {
 
 
 	@GetMapping("/check/{memberId}")
-	public ResponseEntity<Integer> idCheck(@PathVariable("memberId") String memberId) throws Exception {
-//        logger.debug("idCheck memberId : {}", memberId);
-//        int cnt = memberService.idCheck(memberId);
-//        return cnt + "";
+	public ResponseEntity<?> idCheck(@PathVariable("memberId") String memberId) throws Exception {
+		System.out.println(memberId);
 		try {
 			int cnt = memberService.idCheck(memberId);
-			return ResponseEntity.ok(cnt);
+			System.out.println(cnt);
+			if(cnt == 0){
+				return ResponseEntity.ok().body(ResponseResult.SUCCESS.name());
+			}else{
+				return ResponseEntity.ok().body(ResponseResult.FAIL.name());
+			}
 		} catch (Exception e){
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+			return ResponseEntity.ok().body(ResponseResult.FAIL.name());
 		}
 	}
 
@@ -282,6 +285,7 @@ public class MemberController {
 		}
 		return ResponseEntity.ok().body(status);
 	}
+
 
 // 마이페이지 이동 메서드
 //	@GetMapping(value="/viewinfo")

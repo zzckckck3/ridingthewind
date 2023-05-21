@@ -1,16 +1,22 @@
 <template>
     <v-container class="signup-container">
         <h2>회원 가입</h2>
-        <v-form class="signup-form" @submit="submitForm">
+        <v-form class="signup-form">
             <v-row>
                 <v-col cols="12" md="12">
-                    <v-text-field label="아이디" v-model="id" required></v-text-field>
+                    <v-text-field
+                        label="아이디"
+                        v-model.lazy="id"
+                        @blur="idcheck"
+                        :error="iderror"
+                        :success="idsuccess"
+                        required></v-text-field>
                 </v-col>
                 <v-col cols="12" md="12">
-                    <v-text-field label="비밀번호" v-model="password" type="password" required></v-text-field>
+                    <v-text-field @blur="passwordcheckmethod" label="비밀번호" v-model="password" type="password" required></v-text-field>
                 </v-col>
                 <v-col cols="12" md="12">
-                    <v-text-field label="비밀번호확인" v-model="passwordcheck" type="password" required></v-text-field>
+                    <v-text-field @blur="passwordcheckmethod" label="비밀번호확인" v-model="passwordcheck" type="password" required></v-text-field>
                 </v-col>
             </v-row>
             <v-row>
@@ -62,6 +68,7 @@
 import http from "@/axios/http";
 export const signupurl = "/member/join";
 const sendmailurl = "/member/sendmail";
+const idcheckurl = "/member/check";
 export default {
     data(){
         return{
@@ -75,14 +82,52 @@ export default {
             birthday: '',
             nickname: '',
             mailCode: null,
-            inputMailCode: ''
+            inputMailCode: '',
+            idcheckvalue: false,
+            pwdcheckvalue: false,
+            emailcheckvalue: false,
+        }
+    },
+    computed:{
+        iderror() {
+            if(this.id.length === 0) return false;
+            else if(this.id.length<6 || !this.idcheckvalue) return true;
+            else return false;
+        },
+        idsuccess(){
+            if(this.id.length>= 6 && this.idcheckvalue) return true;
+            else return false;
         }
     },
     methods: {
+        idcheck(){
+            const memberId = this.id;
+            if(this.id.length === 0) return;
+            http.get(idcheckurl+"/"+memberId).then(response => {
+                if(response.data === "SUCCESS"){
+                    this.idcheckvalue = true;
+                }
+            })
+        },
+        passwordcheckmethod(){
+            if(this.password === this.passwordcheck) this.pwdcheckvalue = true;
+            else this.pwdcheckvalue = false;
+        },
         signup(){
             if(this.id === '' || this.password === '' || this.name === '' || this.phoneNumber === ''||
                 this.emailId === '' || this.emailDomain === '' || this.birthday === '' || this.nickname === ''){
                 alert("값을 모두 입력해주세요");
+                return;
+            }
+
+            if(!this.idcheckvalue){
+                alert("사용할 수 없는 아이디입니다.");
+                return;
+            }else if(!this.pwdcheckvalue){
+                alert("비밀번호가 일치하지 않습니다.");
+                return;
+            }else if(!this.emailcheckvalue){
+                alert("이메일 인증을 완료하지 않았습니다.");
                 return;
             }
 
@@ -126,6 +171,7 @@ export default {
         checkMail(){
             if(this.mailCode !== null){
                 if(this.inputMailCode == this.mailCode){
+                    this.emailcheckvalue = true;
                     alert("회원인증이 완료되었습니다.");
                 }else{
                     alert("인증코드가 잘못되었습니다. 다시 확인해주세요");
