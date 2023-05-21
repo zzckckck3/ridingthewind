@@ -25,13 +25,21 @@
                 </v-col>
             </v-col>
             <v-col class="d-flex flex-row-reverse" offset="2" cols="5">
+                <v-col cols="4">
+                    <v-btn
+                        color="blue"
+                        elevation="3"
+                        plain
+                        @click="$router.push({ name: 'mypage'})"
+                    >여행 경로 공유</v-btn>
+                </v-col>
                 <v-col cols="1">
                     <v-btn
                         color="blue"
                         elevation="3"
                         plain
                         @click="moveToArticleWrite"
-                    >등록</v-btn>
+                    >글 등록</v-btn>
                 </v-col>
                 <v-col cols="2">
                     <v-select

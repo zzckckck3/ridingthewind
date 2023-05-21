@@ -17,5 +17,5 @@ public interface ArticleAttractionMapper {
 	List<ArticleAttractionDto> listArticleAttraction(int articleNo) throws SQLException;
 
 	// Delete
-	int deleteArticleAttraction(List<ArticleAttractionDto> articleAttractionList) throws SQLException;
+	int deleteArticleAttraction(int articleNo) throws SQLException;
 }

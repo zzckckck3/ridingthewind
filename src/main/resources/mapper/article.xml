@@ -19,7 +19,8 @@
 		<result column="modify_time" property="modifyTime"/>
 	</resultMap>
 
-	<insert id="writeArticle" parameterType="map">
+	<insert id="writeArticle" parameterType="map" useGeneratedKeys="true"
+			keyProperty="articleNo" keyColumn="article_no">
 		insert into article (member_id, subject, content)
 		values (#{memberId}, #{subject}, #{content})
 	</insert>

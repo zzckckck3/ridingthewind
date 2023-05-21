@@ -1,8 +1,8 @@
 <template>
-  <v-container class="col-8 offset-2">
-      <v-card min-height="500" class="pt-4">
+  <v-container>
+      <v-card min-height="500" class="py-4 col-8 offset-2">
           <v-card class="mb-2 col-10 offset-1 font-weight-bold">
-              <v-col cols="12" sm="6" md="3">
+              <v-col cols="12" sm="6">
                   <v-text-field v-model="subject" label="제목" placeholder="제목"></v-text-field>
               </v-col>
           </v-card>

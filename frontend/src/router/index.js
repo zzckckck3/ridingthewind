@@ -97,6 +97,12 @@ const routes = [
         name: "articleWrite",
         component: () =>
             import(/* webpackChunkName: "article" */ "@/components/article/ArticleWrite.vue"),
+      },
+      {
+        path: "withPlanWrite",
+        name: "articleWithPlanWrite",
+        component: () =>
+            import(/* webpackChunkName: "article" */ "@/components/article/ArticleWithPlanWrite.vue"),
       }
     ],
   },
