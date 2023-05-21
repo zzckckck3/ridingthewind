@@ -53,6 +53,16 @@ const routes = [
         path: "update",
         name: "update",
         component: () => import("@/components/user/MemberInfoUpdate.vue"),
+      },
+      {
+        path: "pwdupdate",
+        name: "pwdupdate",
+        component: () => import("@/components/user/MemberPwdUpdate.vue"),
+      },
+      {
+        path: "delete",
+        name: "delete",
+        component: () => import("@/components/user/MemberDelete.vue"),
       }
     ],
   },

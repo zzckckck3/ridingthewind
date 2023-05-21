@@ -5,6 +5,8 @@ import com.ringdingdong.ridingthewind.model.MemberDto;
 import com.ringdingdong.ridingthewind.model.service.JwtServiceImpl;
 import com.ringdingdong.ridingthewind.model.service.MemberService;
 import com.ringdingdong.ridingthewind.model.service.MemberServiceImpl;
+//import com.ringdingdong.ridingthewind.util.MailSendUtil;
+import com.ringdingdong.ridingthewind.util.MailSendUtil;
 import io.jsonwebtoken.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,6 +24,7 @@ import javax.crypto.spec.SecretKeySpec;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.xml.ws.Response;
 import java.util.Base64;
 import java.util.Date;
 import java.util.HashMap;
@@ -33,8 +36,15 @@ public class MemberController {
 
 	private final Logger logger = LoggerFactory.getLogger(MemberController.class);
 
+
+	@Autowired
+	private MailSendUtil mailSendUtil;
+
 	@Autowired
 	private MemberService memberService;
+
+//	@Autowired
+//	private MailSendUtil mailSendUtil;
 
 	@Autowired
 	private JwtServiceImpl jwtService;
@@ -66,15 +76,18 @@ public class MemberController {
 
 
 	@GetMapping("/check/{memberId}")
-	public ResponseEntity<Integer> idCheck(@PathVariable("memberId") String memberId) throws Exception {
-//        logger.debug("idCheck memberId : {}", memberId);
-//        int cnt = memberService.idCheck(memberId);
-//        return cnt + "";
+	public ResponseEntity<?> idCheck(@PathVariable("memberId") String memberId) throws Exception {
+		System.out.println(memberId);
 		try {
 			int cnt = memberService.idCheck(memberId);
-			return ResponseEntity.ok(cnt);
+			System.out.println(cnt);
+			if(cnt == 0){
+				return ResponseEntity.ok().body(ResponseResult.SUCCESS.name());
+			}else{
+				return ResponseEntity.ok().body(ResponseResult.FAIL.name());
+			}
 		} catch (Exception e){
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+			return ResponseEntity.ok().body(ResponseResult.FAIL.name());
 		}
 	}
 
@@ -224,7 +237,54 @@ public class MemberController {
 
 	}
 
+//	@GetMapping("/sendmail/{email}")
+//	public ResponseEntity<?> sendMail(@PathVariable("email") String email) {
+//		System.out.println(email);
+//		System.out.println("메일 들어옴");
+//		String mailcode = mailSendUtil.joinEmail("ghwo2618@naver.com");
+//
+//		return null;
+//	}
+	@GetMapping("/sendmail/{email}")
+	public ResponseEntity<?> sendMail(@PathVariable("email") String email) {
+		System.out.println(email);
+		System.out.println("메일 들어옴");
+		HttpStatus status = null;
+		String mailcode = null;
+		try {
+			mailcode = mailSendUtil.joinEmail(email);
+			status = HttpStatus.ACCEPTED;
+		} catch (Exception e) {
+			status = HttpStatus.INTERNAL_SERVER_ERROR;
+		}
 
+		return ResponseEntity.status(status).body(mailcode);
+	}
+
+	@GetMapping("/pwdcheck")
+	public ResponseEntity<?> pwdcheck(@RequestParam Map<String, String> map){
+		String status = ResponseResult.FAIL.name();
+		try {
+			int result = memberService.passwordCheck(map);
+			if(result == 1){
+				status = ResponseResult.SUCCESS.name();
+			}
+		} catch (Exception e){
+
+		}
+		return ResponseEntity.ok().body(status);
+	}
+
+	@PostMapping("/setpwd")
+	public ResponseEntity<?> setpwd(@RequestParam Map<String, String> map){
+		String status = ResponseResult.FAIL.name();
+		try {
+			memberService.setPassword(map);
+		}catch (Exception e){
+
+		}
+		return ResponseEntity.ok().body(status);
+	}
 
 
 // 마이페이지 이동 메서드

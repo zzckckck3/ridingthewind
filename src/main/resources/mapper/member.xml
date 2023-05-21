@@ -83,5 +83,16 @@
 		set token = #{token, jdbcType=VARCHAR}
 		where member_id = #{userId}
 	</update>
-	
+
+	<select id="passwordCheck" resultType="int" parameterType="map">
+		select count(member_id)
+		from member
+		where member_id = #{userId} and member_password = #{userPassword}
+	</select>
+
+	<update id="setPassword" parameterType="map">
+		update member
+		set member_password = #{userPassword}
+		where member_id = #{userId}
+	</update>
 </mapper>
