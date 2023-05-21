@@ -58,7 +58,7 @@
                     </template>
                     </v-autocomplete>
                     <v-btn
-                        @click="keyword.length == 0 ? markList() : markListwithSearch()"
+                        @click="selectedSido !== null && selectedGugun !== null ? (keyword.length==0 ? markList() : markListwithSearch()) : sidogugunException()"
                         class="ma-2"
                         outlined
                         large
@@ -87,7 +87,7 @@
                     </v-switch>
                 </div>
                 <div style="display:flex" v-if="showKeyword">
-                    <v-text-field label="키워드 입력" v-model="keyword"></v-text-field>
+                    <v-text-field label="키워드 입력" v-model="keyword" @keyup.enter="selectedSido !== null && selectedGugun !== null ? (keyword.length==0 ? markList() : markListwithSearch()) : sidogugunException()"></v-text-field>
                 </div>
                 <div class="mt-3 me-3">
                     <div id="map" class="custom-sheet" style="width: 100%; height: 600px;"></div>
@@ -105,12 +105,18 @@
                 class="grey lighten-5 overflow-auto"
                 style="padding: 10px;"
             >
-            <v-btn class="ma-1" outlined color="indigo" @click="viewSmall()">Size Down<v-icon>mdi-arrow-down</v-icon></v-btn>            
-            <v-btn class="ma-1" outlined color="indigo" @click="viewBig()">Size Up<v-icon>mdi-arrow-up</v-icon></v-btn>
-                <v-container fluid>
+            <div v-if="rightElement">
+                <v-btn class="ma-1" outlined color="indigo" @click="viewSmall()">Size Down<v-icon>mdi-arrow-down</v-icon></v-btn>            
+                <v-btn class="ma-1" outlined color="indigo" @click="viewBig()">Size Up<v-icon>mdi-arrow-up</v-icon></v-btn>
+                <v-text-field label="검색 범위 내 결과 재검색" v-model="liveKeyword"></v-text-field>
+                <div v-if="!displayedCards.length" justify="center" align="center"  style="color: gray; opacity:0.3;">
+                    <h1>검색 결과를 찾을 수 없습니다.</h1>
+                </div>
+            </div>
+            <v-container fluid>
                 <v-row dense>
                 <v-col
-                    v-for="(card, index) in cards"
+                    v-for="(card, index) in displayedCards"
                     :key="card.title"
                     :cols="card.flex"
                 >
@@ -145,7 +151,7 @@
                             </v-btn>
                         </v-row>
                         <v-row>
-                            <v-btn icon @click.stop="card.like ? tripDelete(card.id) : openDialog(card.id)">
+                            <v-btn icon @click.stop="card.like ? deleteOpenDialog(card.id) : addOpenDialog(card.id)">
                             <v-icon :color="card.like ? 'red' : ''">mdi-heart</v-icon>
                             </v-btn>
                         </v-row>
@@ -193,7 +199,8 @@
         </v-row>
     </v-container>
     </v-main>
-    <add-tour-dialog ref="tourOverlay" @agreed="agree=true"></add-tour-dialog>
+    <add-tour-dialog ref="addOverlay" @agreed="addAgree=true"></add-tour-dialog>
+    <delete-tour-dialog ref="deleteOverlay" @agreed="deleteAgree=true" ></delete-tour-dialog>
 </v-app>
 </template>
 
@@ -202,13 +209,15 @@
 <script>
 import http from "@/axios/http";
 import AddTourDialog from '@/components/tour/AddTourDialog.vue';
+import DeleteTourDialog from '@/components/tour/DeleteTourDialog.vue';
 import {mapState} from "vuex";
 const memberStore = "memberStore";
 
 export default {
     name: 'TourSearchInfo',
     components: {
-        AddTourDialog
+        AddTourDialog,
+        DeleteTourDialog
     },
     data() {
         return {
@@ -218,6 +227,7 @@ export default {
             selectedSido: null,
             selectedGugun: null,
             keyword: '',
+            liveKeyword: '',
             showKeyword: false,
             selectedContentById: [],
             positions: [],
@@ -238,7 +248,9 @@ export default {
             clickedOverlay: null,
             selectAll: false,
             selectedId: null,
-            agree: false,
+            addAgree: false,
+            deleteAgree: false,
+            rightElement: false,
             loginLikeData: []
         };
     },
@@ -282,6 +294,21 @@ export default {
                 }
             };
         },
+        filteredCards(){
+            const tempKeyword = this.liveKeyword.replace(/\s/g, '').toLowerCase();
+            return this.cards.filter(card => {
+                // 검색어가 카드의 특정 속성에 포함되는지 확인 (공백 무시)
+                const tempTitle = card.title.replace(/\s/g, '').toLowerCase();
+                return tempTitle.includes(tempKeyword);
+            });
+        },
+        displayedCards(){
+            if(this.liveKeyword){
+                return this.filteredCards;
+            }else{
+                return this.cards;
+            }
+        }
     },
     watch: {
         selectedSido: "create_gugun",
@@ -310,11 +337,20 @@ export default {
             deep: true,
             immediate: true
         },
-        agree: {
+        addAgree: {
             handler(val) {
             if (val) {
                 this.addTour(this.selectedId); // 예시로 this.id를 매개변수로 사용
-                this.agree = false;
+                this.addAgree = false;
+            }
+            },
+            immediate: false
+        },
+        deleteAgree: {
+            handler(val) {
+            if (val) {
+                this. tripDelete(this.selectedId); // 예시로 this.id를 매개변수로 사용
+                this.deleteAgree = false;
             }
             },
             immediate: false
@@ -381,6 +417,8 @@ export default {
                 });
         },
         markList() {
+            this.rightElement = true;
+            this.liveKeyword = null;
             http.get(`/tour/attraction-info?search-area=${this.selectedSido}&search-area-gu=${this.selectedGugun}`)
                 .then((response) => {
                     this.positions.length = 0;
@@ -423,6 +461,8 @@ export default {
                 });
         },
         markListwithSearch() {
+            this.rightElement = true;
+            this.liveKeyword = null;
             http.get(`/tour/attraction-info-bykeyword?search-area=${this.selectedSido}&search-area-gu=${this.selectedGugun}&keyword=${this.keyword}`)
             .then((response) => { 
                     this.positions.length = 0;
@@ -451,7 +491,7 @@ export default {
                                 longitude: area.longitude,
                                 flex: 3,
                                 show: false,
-                                like: false
+                                like: this.loginLikeData.includes(area.contentId)
                             }
                             this.positions.push(markerInfo);
                             this.cards.push(card);
@@ -592,23 +632,28 @@ export default {
             });
         },
         tripDelete(id) {
-            if (confirm("여행지를 삭제하시겠습니까?")) {
-                http.delete(`/mypage/delete/${this.userInfo.data.memberId}/${id}`)
-                .then(() => {
-                    // 여기서도 loginLikeData를 pop() 해야하는지 의문?? 
-                    const card = this.cards.find((card) => card.id === id);
-                    if (card) {
-                        card.like = false;
-                    }
-                })
-                .catch((error) => {
-                    console.error(error);
-                });
-            }
+            http.delete(`/mypage/delete/${this.userInfo.data.memberId}/${id}`)
+            .then(() => {
+                // 여기서도 loginLikeData를 pop() 해야하는지 의문?? 
+                const card = this.cards.find((card) => card.id === id);
+                if (card) {
+                    card.like = false;
+                }
+            })
+            .catch((error) => {
+                console.error(error);
+            });
         },
-        async openDialog(id) {
-            this.$refs.tourOverlay.openDialog();
+        async addOpenDialog(id) {
+            this.$refs.addOverlay.openDialog();
             this.selectedId = id;
+        },
+        async deleteOpenDialog(id){
+            this.$refs.deleteOverlay.openDialog();
+            this.selectedId = id;
+        },
+        sidogugunException(){
+            alert("시,도 혹은 군, 구를 반드시 선택해주세요!!");
         }
         
 
