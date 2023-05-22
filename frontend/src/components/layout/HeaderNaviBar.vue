@@ -9,9 +9,7 @@
 
         <!-- 중앙 메뉴 탭 -->
         <v-tabs centered class="ml-n9" color="black darken-1">
-
-            <v-tab v-if="!isLogin" :to="{ name: 'signin' }">로그인</v-tab>
-            <v-tab v-else @click.prevent="onClickLogout">로그아웃</v-tab>
+            <v-tab :to="{ name: 'home' }" >Home</v-tab>
             <v-tab :to="{ name: 'article' }">게시판</v-tab>
             <v-tab :to="{ name: 'notice' }">공지사항</v-tab>
             <v-tab :to="{ name: 'qna' }">Q&A</v-tab>
@@ -40,13 +38,14 @@
                         dark
                         v-bind="attrs"
                         v-on="on"
+                        @click="isLogin ? (menu = true) : openLoginModal()"
                     >
                         {{ isLogin ? userInfo.data.memberId : 'Login' }}
                     </v-btn>
                 </template>
 
                 <v-card>
-                    <v-list>
+                    <v-list v-if="isLogin">
                         <v-list-item>
                             <v-list-item-avatar>
                                 <img
@@ -61,11 +60,9 @@
                             </v-list-item-content>
 
                         </v-list-item>
-                    </v-list>
 
-                    <v-divider></v-divider>
+                        <v-divider></v-divider>
 
-                    <v-list v-if="isLogin">
                         <v-list-item :to="{ name: 'update' }">
                             <v-list-item-content class="pl-3">
                                 <v-list-item-title>내 정보 수정</v-list-item-title>
@@ -81,6 +78,17 @@
                                 <v-list-item-title>회원 탈퇴하기</v-list-item-title>
                             </v-list-item-content>
                         </v-list-item>
+
+                        <v-card-actions>
+                        <v-spacer></v-spacer>
+                        <v-btn
+                            color="primary"
+                            text
+                            @click="onClickLogout"
+                        >
+                            Logout
+                        </v-btn>
+                    </v-card-actions>
                     </v-list>
                     <v-dialog v-model="showConfirmationDialog" max-width="500">
                         <v-card>
@@ -94,44 +102,30 @@
                                 <v-btn color="green darken-1" text @click="onClickDeleteMember">확인</v-btn>
                             </v-card-actions>
                         </v-card>
-                    </v-dialog>
-                    <v-card-actions>
-                        <v-spacer></v-spacer>
-
-                        <v-btn
-                            text
-                            @click="menu = false"
-                        >
-                            Cancel
-                        </v-btn>
-                        <v-btn
-                            color="primary"
-                            text
-                            @click="menu = false"
-                        >
-                            Save
-                        </v-btn>
-                    </v-card-actions>
+                    </v-dialog> 
                 </v-card>
             </v-menu>
         </div>
+        <member-login ref="loginOverlay" @showSignup="openSignupModal"></member-login>
+        <member-signup ref="signupOverlay"></member-signup>
     </v-app-bar>
 </template>
 
 <script>
 // import http from "@/axios/http";
 import { mapState, mapActions, mapGetters } from "vuex";
+import MemberLogin from '@/components/user/MemberLogin.vue';
+import MemberSignup from '@/components/user/MemberSignup.vue'
 const memberStore = "memberStore";
 export default {
+    name: 'HeaderNaviBar',
+    components: {
+        MemberLogin,
+        MemberSignup
+    },
     data: () => ({
         menu: null,
-        links: ["공지사항", "로그인", "회원가입", "마이페이지", "로그아웃", "FAQS"],
-        selectedItem: 1,
-        items: [
-            { text: 'Real-Time', icon: 'mdi-clock' },
-            { text: 'Audience', icon: 'mdi-account' },
-            { text: 'Conversions', icon: 'mdi-flag' },
-        ],
+        selectedTab: null,
         showConfirmationDialog: false,
     }),
     computed: {
@@ -142,6 +136,7 @@ export default {
         ...mapActions(memberStore, ["userLogout"]),
 
         onClickLogout() {
+            this.menu = false;
             this.userLogout(this.userInfo.data.memberId);
             sessionStorage.removeItem("access-token"); //저장된 토큰 없애기
             sessionStorage.removeItem("refresh-token"); //저장된 토큰 없애기
@@ -150,7 +145,13 @@ export default {
         onClickDeleteMember(){
             this.showConfirmationDialog = false;
             this.$router.push({ name: "delete" });
-        }
+        },
+        async openLoginModal() {
+            this.$refs.loginOverlay.openLoginModal();
+        },
+        async openSignupModal() {
+            this.$refs.signupOverlay.openSignupModal();
+        },
     }
 };
 </script>

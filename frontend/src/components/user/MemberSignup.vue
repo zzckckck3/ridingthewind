@@ -1,5 +1,10 @@
 <template>
-    <v-container class="signup-container">
+    <v-dialog
+        v-model="signupModal"
+        max-width="450"
+        persistent
+    >
+    <v-container class="signup-container" fill-height>
         <h2>회원 가입</h2>
         <v-form class="signup-form">
             <v-row>
@@ -60,8 +65,10 @@
                 </v-col>
             </v-row>
             <v-btn class="signup-btn" @click="signup" color="primary">가입하기</v-btn>
+            <v-btn class="signup-btn ms-4" @click="signupModal = false" color="primary">취소</v-btn>
         </v-form>
     </v-container>
+    </v-dialog>
 </template>
 
 <script>
@@ -86,6 +93,7 @@ export default {
             idcheckvalue: false,
             pwdcheckvalue: false,
             emailcheckvalue: false,
+            signupModal: false
         }
     },
     computed:{
@@ -179,14 +187,18 @@ export default {
             }else {
                 alert("먼저 인증코드를 발송해주세요");
             }
+        },
+        openSignupModal(){
+            this.signupModal = true;
         }
     }
 }
 </script>
 <style scoped>
 .signup-container {
-    max-width: 400px;
-    margin: 0 auto;
+    max-width: 450px;
+    background-color: white;
+    padding: 50px;
 }
 
 .signup-form {
