@@ -26,6 +26,10 @@ export default {
             followings: []
         }
     },
+    mounted() {
+        // 1초마다 refresh 메서드 호출
+        setInterval(this.refresh, 1000);
+    },
     name: 'MypageFollowing',
     props:['userId'],
     created() {
@@ -38,17 +42,11 @@ export default {
     },
     methods: {
         getUserFollowingList(){
-            console.log(this.userId);
             http.get(getfollowingurl+"/"+this.userId).then(response => {
-                console.log(response);
                 this.followings = response.data;
-                console.log("팔로윙목록 출력");
-                console.log(this.following);
             })
         },
         moveToUserInfo(userId){
-            console.log("이동할 경로");
-            console.log(userId);
             this.$router.push({name:"infopage", params: {userId : userId}});
             // window.location.reload();
 
