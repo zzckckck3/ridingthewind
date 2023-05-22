@@ -40,7 +40,6 @@ export default {
                     userPassword : this.currentPassword
                 }
             }).then(response => {
-                console.log(response);
                 if(response.data !== 'SUCCESS'){
                     alert("현재 비밀번호가 일치하지 않습니다.");
                     return;
