@@ -5,9 +5,12 @@
         <div>
             <v-list>
                 <v-list-item v-for="following in followings" :key="following">
-                    <v-list-item-content @click="moveToUserInfo(following)">
+                    <v-list-item-content>
                         {{ following }}
                     </v-list-item-content>
+                    <v-list-item-action>
+                        <v-btn @click="moveToUserInfo(following)">정보</v-btn>
+                    </v-list-item-action>
                 </v-list-item>
             </v-list>
         </div>
