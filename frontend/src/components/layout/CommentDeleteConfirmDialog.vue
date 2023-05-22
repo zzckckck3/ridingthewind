@@ -6,16 +6,14 @@
             </v-card-title>
             <v-card-actions>
                 <v-spacer></v-spacer>
-                <v-btn
-                    color="red darken-1"
-                    text
-                    @click.stop="deleteComment">
+                <v-btn color="red darken-1" text @click.stop="deleteComment">
                     삭제
                 </v-btn>
                 <v-btn
                     color="grey darken-1"
                     text
-                    @click.stop="commentDialog = false">
+                    @click.stop="commentDialog = false"
+                >
                     취소
                 </v-btn>
             </v-card-actions>
@@ -36,7 +34,7 @@ export default {
         commentNo: {
             type: Number,
             required: true,
-        }
+        },
     },
     computed: {
         commentDialog: {
@@ -44,7 +42,7 @@ export default {
                 return this.value;
             },
             set(value) {
-                this.$emit('input', value);
+                this.$emit("input", value);
             },
         },
     },
@@ -62,10 +60,10 @@ export default {
 
                     this.$emit("updateCommentList");
                 })
-                .catch(( error ) => {
-                    this.$router.push('error/error', error);
+                .catch((error) => {
+                    this.$router.push("error/error", error);
                 });
-        }
-    }
+        },
+    },
 };
 </script>

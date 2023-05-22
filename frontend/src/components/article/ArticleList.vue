@@ -16,12 +16,9 @@
                     <v-text-field v-model="word" outlined dense></v-text-field>
                 </v-col>
                 <v-col cols="1">
-                    <v-btn
-                        color=""
-                        elevation="3"
-                        plain
-                        @click="getArticleList"
-                    >검색</v-btn>
+                    <v-btn color="" elevation="3" plain @click="getArticleList"
+                        >검색</v-btn
+                    >
                 </v-col>
             </v-col>
             <v-col class="d-flex flex-row-reverse" offset="2" cols="5">
@@ -30,8 +27,9 @@
                         color="blue"
                         elevation="3"
                         plain
-                        @click="$router.push({ name: 'mypage'})"
-                    >여행 경로 공유</v-btn>
+                        @click="$router.push({ name: 'mypage' })"
+                        >여행 경로 공유</v-btn
+                    >
                 </v-col>
                 <v-col cols="1">
                     <v-btn
@@ -39,7 +37,8 @@
                         elevation="3"
                         plain
                         @click="moveToArticleWrite"
-                    >글 등록</v-btn>
+                        >글 등록</v-btn
+                    >
                 </v-col>
                 <v-col cols="2">
                     <v-select
@@ -56,15 +55,20 @@
         <v-simple-table>
             <thead>
                 <tr>
-                    <th v-for="(header, idx) in headers"
-                        :key=idx
+                    <th
+                        v-for="(header, idx) in headers"
+                        :key="idx"
                         v-text="header"
                         class="text-h6 text-center"
                     ></th>
                 </tr>
             </thead>
             <tbody>
-                <tr v-for="article in articles" :key="article.articleNo" @click="moveToArticleDetail(article.articleNo)">
+                <tr
+                    v-for="article in articles"
+                    :key="article.articleNo"
+                    @click="moveToArticleDetail(article.articleNo)"
+                >
                     <td>{{ article.articleNo }}</td>
                     <td>{{ article.like }}</td>
                     <td>{{ article.subject }}</td>
@@ -89,15 +93,15 @@ import http from "@/axios/http.js";
 
 export default {
     name: "ArticleList",
-    data () {
+    data() {
         return {
-            headers: ['글번호', '추천수', '제목', '작성자', '조회수', '작성일'],
-            sppList: ['10', '20', '30', '40', '50'],
+            headers: ["글번호", "추천수", "제목", "작성자", "조회수", "작성일"],
+            sppList: ["10", "20", "30", "40", "50"],
             keyList: [
-                { value: 'subject', text: '제목' },
-                { value: 'member_id', text: '아이디' },
-                { value: 'nickname', text: '별명' },
-                { value: 'article_no', text: '글번호' },
+                { value: "subject", text: "제목" },
+                { value: "member_id", text: "아이디" },
+                { value: "nickname", text: "별명" },
+                { value: "article_no", text: "글번호" },
             ],
             articles: [],
             curPage: 1,
@@ -105,8 +109,8 @@ export default {
             maxPage: 1,
             naviSize: 1,
             key: "",
-            word: ""
-        }
+            word: "",
+        };
     },
     created() {
         this.getArticleList();
@@ -117,7 +121,7 @@ export default {
         },
         spp() {
             this.getArticleList();
-        }
+        },
     },
     methods: {
         getArticleList() {
@@ -125,10 +129,10 @@ export default {
                 params: {
                     curPage: this.curPage,
                     spp: this.spp,
-                    start: (this.curPage-1) * this.spp,
+                    start: (this.curPage - 1) * this.spp,
                     key: this.key,
                     word: this.word,
-                }
+                },
             })
                 .then(({ data }) => {
                     this.articles = data.articles;
@@ -137,22 +141,25 @@ export default {
                     this.maxPage = data.pageNavigation.maxPage;
                     this.naviSize = data.pageNavigation.naviSize;
                 })
-                .catch(( error ) => {
-                    this.$router.push('error/error', error);
+                .catch((error) => {
+                    this.$router.push("error/error", error);
                 });
         },
         moveToArticleWrite() {
-            this.$router.push({ name: 'articleWrite'});
+            this.$router.push({ name: "articleWrite" });
         },
         moveToArticleDetail(articleNo) {
-            this.$router.push({ name: 'articleDetail', params: { articleNo: articleNo } });
+            this.$router.push({
+                name: "articleDetail",
+                params: { articleNo: articleNo },
+            });
         },
         changeSpp(newSpp) {
             this.spp = newSpp;
         },
         changeKey(newKey) {
             this.key = newKey;
-        }
-    }
-}
+        },
+    },
+};
 </script>
