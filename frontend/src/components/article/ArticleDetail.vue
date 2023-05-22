@@ -59,6 +59,9 @@
                                 </v-row>
                                 <v-row align-content="center">
                                     추천: {{ article.like }}
+                                    <span class="mx-5" @click="likeClicked">
+                                        <v-icon>mdi-thumb-up</v-icon>
+                                    </span>
                                 </v-row>
                             </v-col>
                         </v-col>
@@ -268,6 +271,24 @@ export default {
             this.commentDialog = true;
             this.deleteCommentNo = key;
         },
+        likeClicked() {
+            let articleNo = this.$route.params.articleNo;
+            http.post('/article/like', {
+                params:
+                    {
+                        articleNo: articleNo,
+                        memberId: this.userInfo.data.memberId
+                    }
+            })
+                .then(({ data }) => {
+                    if (data == "SUCCESS") {
+                        
+                    }
+                })
+                .catch((error) => {
+                    this.$router.push("error/error", error);
+                });
+        }
     },
     components: {
         CommentDeleteConfirmDialog,
