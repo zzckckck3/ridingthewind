@@ -8,6 +8,9 @@
                     <v-list-item-content>
                         {{ follower }}
                     </v-list-item-content>
+                    <v-list-item-action>
+                        <v-btn @click="moveToUserInfo(follower)">정보</v-btn>
+                    </v-list-item-action>
                 </v-list-item>
             </v-list>
         </div>
@@ -26,6 +29,7 @@ export default {
     created() {
         this.getUserFollowerList();
     },
+
     name: 'MypageFollower',
     props:['userId'],
     watch: {
@@ -40,6 +44,9 @@ export default {
                 console.log(response);
                 this.followers = response.data;
             })
+        },
+        moveToUserInfo(userId) {
+            this.$router.push({name:"infopage", params: {userId : userId}});
         }
     }
 }
