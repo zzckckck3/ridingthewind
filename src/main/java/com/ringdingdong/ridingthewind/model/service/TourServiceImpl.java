@@ -22,13 +22,23 @@ public class TourServiceImpl implements TourService{
 	}
 
 	@Override
+	public List<TourSidoDto> getSido() throws Exception {
+		return tourMapper.getSido();
+	}
+	
+	@Override
+	public boolean addSidoCount(int sidoCode) throws Exception {
+		return tourMapper.addSidoCount(sidoCode) == 1;
+	}
+	
+	@Override
 	public List<TourGugunDto> getGugun(int sidoCode) throws Exception {
 		return tourMapper.getGugun(sidoCode);
 	}
-
+	
 	@Override
-	public List<TourSidoDto> getSido() throws Exception {
-		return tourMapper.getSido();
+	public boolean addGugunCount(int sidoCode, int gugunCode) throws Exception {
+		return tourMapper.addGugunCount(sidoCode, gugunCode) == 1;
 	}
 
 	@Override
@@ -60,7 +70,6 @@ public class TourServiceImpl implements TourService{
 	public boolean addtour(int contentId, String memberId) throws Exception {
 		return tourMapper.addtour(contentId, memberId) == 1;
 	}
-
 
 
 }

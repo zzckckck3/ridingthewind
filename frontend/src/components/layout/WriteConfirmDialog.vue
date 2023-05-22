@@ -57,6 +57,7 @@ export default {
         writeArticle() {
             this.dialog = false;
             let cardList = Array.isArray(this.cards) ? this.cards : [];
+            console.log(cardList);
 
             const articleAttractionList = cardList.map((card, index) => {
                 return {
@@ -71,6 +72,23 @@ export default {
                 content: this.content,
                 articleAttractionList: articleAttractionList,
             };
+
+            for (let i = 0; i < cardList.length; i++) {
+                let sidoCode = cardList[i].sidoCode;
+                let gugunCode = cardList[i].gugunCode;
+
+                http.put(`/tour/sido/${sidoCode}`)
+                    .then(() => {})
+                    .catch((error) => {
+                        console.log(error);
+                    });
+
+                http.put(`/tour/gugun/${sidoCode}/${gugunCode}`)
+                    .then(() => {})
+                    .catch((error) => {
+                        console.log(error);
+                    });
+            }
 
             http.post(`/article`, JSON.stringify(articleInfo))
                 .then(({ data }) => {

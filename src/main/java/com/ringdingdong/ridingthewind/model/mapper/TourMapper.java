@@ -17,4 +17,6 @@ public interface TourMapper {
 	List<TourDto> getListByContentIds(List<Integer> contentIds) throws SQLException;
 	int addtour(@Param("contentId") int contentId, @Param("memberId") String memberId) throws SQLException;
 	List<PersonalTripDto> getLikeList(String memberId) throws SQLException;
+	int addSidoCount(@Param("sidoCode") int sidoCode) throws SQLException;
+	int addGugunCount(@Param("sidoCode") int sidoCode, @Param("gugunCode") int gugunCode) throws SQLException;
 }

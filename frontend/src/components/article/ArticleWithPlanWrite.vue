@@ -157,6 +157,8 @@ export default {
                         overview: area.overView,
                         latitude: area.latitude,
                         longitude: area.longitude,
+                        sidoCode: area.sidoCode,
+                        gugunCode: area.gugunCode,
                         flex: 12,
                         show: false,
                         like: true,
