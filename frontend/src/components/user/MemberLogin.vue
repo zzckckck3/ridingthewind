@@ -5,7 +5,6 @@
       max-width="550"
     >
     <v-container style="max-width: 550px" fill-height>
-      <v-layout align-center row wrap>
         <v-flex xs12>
           <v-card>
             <div class="pa-10">
@@ -50,7 +49,6 @@
             </div>
           </v-card>
         </v-flex>
-      </v-layout>
     </v-container>
   </v-dialog>
 </template>

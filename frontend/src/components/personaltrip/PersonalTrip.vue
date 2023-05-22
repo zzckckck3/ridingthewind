@@ -1,5 +1,5 @@
 <template>
-<v-app id="inspire">
+<v-app>
 
     <v-main class="white">
       <v-container class="text-center">
@@ -34,6 +34,7 @@
               class="grey lighten-5 overflow-auto"
               style="padding: 10px;"
             >
+            
               <v-btn class="ma-1" outlined color="indigo" @click="optimalButtonClicked()">최적경로 보기</v-btn>
               <v-btn class="ma-1" outlined color="indigo" @click="Test()">공유!</v-btn>
               <v-btn class="ma-1" outlined color="indigo" @click="showRoute()">현재경로 보기</v-btn>
@@ -76,6 +77,18 @@
                         height="200px"
                     >
                         <v-card-title style="font-size: medium;">{{ card.title }}</v-card-title>
+                        <v-btn
+                            icon
+                            class="icon-wrapper"
+                            @click="card.show = !card.show"
+                            style= "background-color: rgba(255,255,255,0.7);"
+                            fab
+                            small
+                            absolute
+                            >
+                            <!-- <v-icon>{{ card.show ? 'mdi-chevron-up' : 'mdi-chevron-down' }}</v-icon> -->
+                            <v-icon color="indigo">mdi-book-information-variant</v-icon>
+                        </v-btn>
                     </v-img>
                     <!-- eslint-disable-next-line -->
                     <v-card-actions >
@@ -95,19 +108,37 @@
                         <v-spacer style="font-size: small;">{{ card.addr_1 }}</v-spacer>
                         <div style="display: none;" class="latitude">{{ card.latitude }}</div>
                         <div style="display: none;" class="longitude">{{ card.longitude }}</div>
-                        <v-btn
-                        icon
-                        @click="card.show = !card.show"
-                        >
-                        <v-icon>{{ card.show ? 'mdi-chevron-up' : 'mdi-chevron-down' }}</v-icon>
-                        </v-btn>
                     </v-card-actions>
-                    <v-expand-transition>
-                        <div v-show="card.show">
-                        <v-divider></v-divider>
-                        <v-card-text>{{ card.overview }}</v-card-text>
+                    <v-bottom-sheet
+                      v-model="card.show"
+                      inset: width=30%
+                      >
+                      <v-sheet class="custom-sheet text-center" >
+                        <div>
+                          <div weight="100px">
+                            <v-img 
+                            :src="showImg(card.src)"
+                            height="200px"
+                            ></v-img>
+                          </div>
+                          <div class="pe-5 ps-5">
+                            <div><h3>{{ card.title }}</h3></div>
+                            <div class="mt-2"><h4>{{ card.addr_1 }}</h4></div>
+                            <div class="my-3">
+                              {{ card.overview }}
+                            </div>
+                          </div>
+                          <v-btn
+                          class="mt-6 mb-2"
+                          text
+                          color="error"
+                          @click="card.show = !card.show"
+                          >
+                          닫기
+                          </v-btn>
                         </div>
-                    </v-expand-transition>
+                      </v-sheet>
+                    </v-bottom-sheet>
                     </v-card>
                 </v-col>
                 </v-row>
@@ -118,6 +149,7 @@
       </v-container>
     </v-main>
     <delete-tour-dialog ref="deleteOverlay" @agreed="deleteAgree=true" ></delete-tour-dialog>
+    <cant-recommend-dialog ref="cantRecommendOverlay"></cant-recommend-dialog>
   </v-app>
 </template>
 
@@ -125,6 +157,7 @@
 import http from "@/axios/http";
 import Sortable from 'sortablejs';
 import DeleteTourDialog from '@/components/tour/DeleteTourDialog.vue';
+import CantRecommendDialog from '@/components/personaltrip/CantRecommendDialog.vue';
 import { mapState } from "vuex";
 const memberStore = "memberStore";
 
@@ -132,6 +165,7 @@ export default {
   name: 'PersonalTrip',
   components: {
     DeleteTourDialog,
+    CantRecommendDialog,
   },
   data() {
     return {
@@ -226,6 +260,17 @@ export default {
             const tempTitle = card.title.replace(/\s/g, '').toLowerCase();
             return tempTitle.includes(tempKeyword);
         });
+    },
+    showImg() { // 이미지 가져오기
+      return (src) => {
+        if (src) {
+          // 실제 이미지 파일이 있는 경우
+          return src;
+        } else {
+          // 이미지 파일이 없는 경우 noimg.png 사용
+          return require('@/assets/mark/noimg.png');
+        }
+      };
     },
     displayedCards(){
         if(this.liveKeyword){
@@ -728,7 +773,7 @@ export default {
       this.lngList = Array.from(lngNode);
 
       if (this.latList.length >= 9) {
-        alert("9개 이하 여행지만 기능이 제공됩니다. ");
+        this.addOpenDialog();
         return;
       }
 
@@ -845,7 +890,11 @@ export default {
           card.classList.add('show');
         }, i * 100); // 요소의 인덱스에 따라 시간 간격 설정
       }
-    }
+    },
+    async addOpenDialog() {
+      this.$refs.cantRecommendOverlay.openDialog();
+    },
+
   },
 };
 </script>
@@ -885,5 +934,21 @@ export default {
 
 .fade-in.show {
   opacity: 1;
+}
+
+.custom-sheet{
+    height: auto;
+    max-height: calc(100vh - 200px); /* 원하는 높이 조정 */
+    overflow-y: auto;
+}
+.icon-wrapper {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    margin:3px;
+}
+.custom-search-label {
+    font-size: 13px;
+    color: black;
 }
 </style>
