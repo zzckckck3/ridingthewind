@@ -14,7 +14,7 @@ public interface TourMapper {
 	List<TourDto> getList(int sidoCode, int gugunCode) throws SQLException;
 	List<TourDto> getList(String memberId) throws SQLException;
 	List<TourDto> getListByKeyword(Map<String, Object> map) throws SQLException;
-	List<TourDto> getListByContentIds(List<ArticleAttractionDto> articleAttractionList) throws SQLException;
+	List<TourDto> getListByContentIds(List<Integer> contentIds) throws SQLException;
 	int addtour(@Param("contentId") int contentId, @Param("memberId") String memberId) throws SQLException;
 	List<PersonalTripDto> getLikeList(String memberId) throws SQLException;
 }

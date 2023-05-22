@@ -31,7 +31,7 @@
               <v-container fluid style="max-height: 960px; overflow-y: auto;">
                   <v-row dense class="card-list" id="card-list" style="min-height: 300px; min-width: 200px;">
                       <v-col
-                          v-for="(card, index) in customCardListId"
+                          v-for="(card, index) in cards"
                           :key="index"
                           :cols="12"
                           :id="card.id"
@@ -83,7 +83,7 @@
 
 <script>
 import WriteConfirmDialog from "@/components/layout/WriteConfirmDialog.vue";
-
+import http from "@/axios/http";
 
 export default {
     name: "ArticleWithPlanWrite",
@@ -91,7 +91,6 @@ export default {
         return {
             subject: "",
             content: "",
-            customCardListId: [],
             cards: [],
             dialog: false,
         }   
@@ -99,8 +98,32 @@ export default {
 
     created() {
         this.customCardListId = this.$route.params.customCardListId;
-
-        console.log(this.customCardListId);
+        http.get("/tour/attraction-info-bycontentids", {
+            params: {
+                contentIds: this.$route.params.customCardListId.toString()
+            }
+        })
+            .then(({ data }) => {
+                console.log(data.length);
+                data.forEach((area) => {
+                    let card = {
+                        id: area.contentId,
+                        src: area.firstImage,
+                        title: area.title,
+                        addr_1: area.addr1,
+                        overview: area.overView,
+                        latitude: area.latitude,
+                        longitude: area.longitude,
+                        flex: 12,
+                        show: false,
+                        like: true
+                    }
+                    this.cards.push(card);
+                })
+            })
+            .catch(( error ) => {
+                this.$router.push('error/error', error);
+            });
     },
     mounted() {
 

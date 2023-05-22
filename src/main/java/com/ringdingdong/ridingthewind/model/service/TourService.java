@@ -16,6 +16,9 @@ public interface TourService {
 	List<TourDto> getList(int sidoCode, int gugunCode) throws SQLException;
 	List<TourDto> getList(String memberId) throws SQLException;
 	List<TourDto> getListByKeyword(Map<String, Object> map) throws SQLException;
+
+	List<TourDto> getListByContentIds(List<Integer> contentIds) throws SQLException;
+
 	List<PersonalTripDto> getLikeList(String memberId) throws SQLException;
 	boolean addtour(int contentId, String memberId) throws Exception;
 	

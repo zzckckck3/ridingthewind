@@ -5,14 +5,17 @@ import com.ringdingdong.ridingthewind.model.*;
 import com.ringdingdong.ridingthewind.model.mapper.*;
 import lombok.RequiredArgsConstructor;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 @Transactional
+@Slf4j
 public class ArticleServiceImpl implements ArticleService {
 
 	private final ArticleMapper articleMapper;
@@ -22,13 +25,13 @@ public class ArticleServiceImpl implements ArticleService {
 
 	@Override
 	public boolean writeArticle(ArticleDto articleDto) throws Exception {
-		int insertedArticleNo = articleMapper.writeArticle(articleDto);
+		int success = articleMapper.writeArticle(articleDto);
 		if (articleDto.getArticleAttractionList().size() != 0) {
-			articleDto.getArticleAttractionList().forEach(articleAttractionDto -> articleAttractionDto.setArticleNo(insertedArticleNo));
-			return articleAttractionMapper.writeArticleAttraction(articleDto.getArticleAttractionList()) == 1;
+			articleDto.getArticleAttractionList().forEach(articleAttractionDto -> articleAttractionDto.setArticleNo(articleDto.getArticleNo()));
+			return articleAttractionMapper.writeArticleAttraction(articleDto.getArticleAttractionList()) != 0;
 		}
 
-		return insertedArticleNo != 0;
+		return success == 1;
 	}
 
 	@Override
@@ -57,7 +60,7 @@ public class ArticleServiceImpl implements ArticleService {
 	public ArticleDetailDto getArticle(int articleNo) throws Exception {
 		ArticleDetailDto articleDetailDto = articleMapper.getArticle(articleNo);
 		articleDetailDto.setCommentList(commentMapper.listComment(articleNo));
-		articleDetailDto.setTourList(tourMapper.getListByContentIds(articleAttractionMapper.listArticleAttraction(articleNo)));
+		articleDetailDto.setTourList(tourMapper.getListByContentIds(articleAttractionMapper.listArticleAttraction(articleNo).stream().map(ArticleAttractionDto::getContentId).collect(Collectors.toList())));
 		return articleDetailDto;
 	}
 

@@ -66,7 +66,7 @@ export default {
 
             const articleAttractionList = cardList.map((card, index) => {
                 return {
-                    content_id: card.id,
+                    contentId: card.id,
                     order: index,
                 };
             });

@@ -1,9 +1,11 @@
 package com.ringdingdong.ridingthewind.controller;
 
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -33,35 +35,44 @@ public class TourController {
 	private final Logger logger = LoggerFactory.getLogger(TourController.class);
 	private static final String SUCCESS = "success";
 	private static final String FAIL = "fail";
-	
+
 	private TourService tourService;
 
 	public TourController(TourService tourService) {
 		super();
 		this.tourService = tourService;
 	}
-	
+
 	@GetMapping("/sido")
 	public ResponseEntity<List<TourSidoDto>> sido() throws Exception {
 		List<TourSidoDto> list = tourService.getSido();
-		logger.debug("sido info : {}", list); 
+		logger.debug("sido info : {}", list);
 		return ResponseEntity.ok(list);
 	}
-	
+
 	@GetMapping("/gugun")
 	public ResponseEntity<List<TourGugunDto>> gugun(@RequestParam("search-area") int sidoCode) throws Exception {
 		List<TourGugunDto> list = tourService.getGugun(sidoCode);
-		logger.debug("gugun info : {}", list); 
+		logger.debug("gugun info : {}", list);
 		return ResponseEntity.ok(list);
 	}
-	
+
 	@GetMapping("/attraction-info")
 	public ResponseEntity<List<TourDto>> attraction_info(@RequestParam("search-area") int sidoCode, @RequestParam("search-area-gu") int gugunCode) throws Exception {
 		List<TourDto> list = tourService.getList(sidoCode, gugunCode);
-		logger.debug("attraction info : {}", list); 
+		logger.debug("attraction info : {}", list);
 		return ResponseEntity.ok(list);
 	}
-	
+
+	@GetMapping("/attraction-info-bycontentids")
+	public ResponseEntity<List<TourDto>> getListByContentIds(@RequestParam("contentIds") String contentIds) throws Exception {
+
+		return new ResponseEntity<>(tourService.getListByContentIds(
+				Arrays.stream(contentIds.split(","))
+						.map(Integer::parseInt)
+						.collect(Collectors.toList())), HttpStatus.OK);
+	}
+
 	@GetMapping("/attraction-info-bykeyword")
 	public ResponseEntity<List<TourDto>> getListByKeyword(
 			@RequestParam("keyword") String keyword,
@@ -72,11 +83,11 @@ public class TourController {
 		paramMap.put("gugunCode", gugunCode);
 		paramMap.put("keyword", keyword);
 		List<TourDto> list = tourService.getListByKeyword(paramMap);
-		logger.debug("attraction info by keyword : {}", list); 
+		logger.debug("attraction info by keyword : {}", list);
 		return ResponseEntity.ok(list);
 	}
-	
-//	@PostMapping("/addtour/{contentid}")
+
+	//	@PostMapping("/addtour/{contentid}")
 //	public ResponseEntity<String> addtour(@PathVariable("contentid") int contentId, HttpServletRequest request, HttpServletResponse response) throws Exception{
 //		HttpSession session = request.getSession();
 //		MemberDto memberDto = (MemberDto) session.getAttribute("memberinfo");
@@ -91,14 +102,14 @@ public class TourController {
 		List<PersonalTripDto> list = tourService.getLikeList(memberId);
 		return ResponseEntity.ok(list);
 	}
-	
+
 	@PostMapping("/addtour/{memberid}/{contentid}")
 	public ResponseEntity<String> addtour(@PathVariable("contentid") int contentId, @PathVariable("memberid") String memberId, HttpServletRequest request, HttpServletResponse response) throws Exception{
 		HttpSession session = request.getSession();
 		MemberDto memberDto = (MemberDto) session.getAttribute("memberinfo");
 //		String memberId = memberDto.getMemberId();
 		if(tourService.addtour(contentId, memberId)) {
-			return new ResponseEntity<String>(SUCCESS, HttpStatus.OK);			
+			return new ResponseEntity<String>(SUCCESS, HttpStatus.OK);
 		}
 		return new ResponseEntity<String>(FAIL, HttpStatus.NO_CONTENT);
 	}

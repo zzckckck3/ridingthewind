@@ -64,7 +64,7 @@
 		</if>
 		<if test="list.size!=0">
 			<foreach collection="list" item="item" open="(" close=")" separator=",">
-				#{item.contentId}
+				#{item}
 			</foreach>
 		</if>
 	</select>
