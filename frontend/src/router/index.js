@@ -1,7 +1,6 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
 import HomeView from "../views/HomeView.vue";
-
 import store from "@/store";
 Vue.use(VueRouter);
 
@@ -16,8 +15,8 @@ const onlyAuthUser = async (to, from, next) => {
   }
   if (!checkToken || checkUserInfo === null) {
     alert("로그인이 필요한 페이지입니다..");
-    next({ name: "signin" });
-    //router.push({ name: "signin" });
+    next({ name: "home" });
+    
   } else {
     next();
   }
