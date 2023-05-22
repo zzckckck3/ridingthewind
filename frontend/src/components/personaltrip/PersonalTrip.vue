@@ -772,7 +772,7 @@ export default {
       this.latList = Array.from(latNode);
       this.lngList = Array.from(lngNode);
 
-      if (this.latList.length >= 9) {
+      if (this.latList.length > 9) {
         this.addOpenDialog();
         return;
       }
