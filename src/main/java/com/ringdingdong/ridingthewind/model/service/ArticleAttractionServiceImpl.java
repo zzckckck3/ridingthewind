@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+// 삭제 예정
 @Service
 @RequiredArgsConstructor
 public class ArticleAttractionServiceImpl implements ArticleAttractionService {
@@ -25,7 +26,7 @@ public class ArticleAttractionServiceImpl implements ArticleAttractionService {
 
 	@Override
 	public boolean deleteArticleAttraction(List<ArticleAttractionDto> articleAttractionList) throws Exception {
-		return articleAttractionMapper.deleteArticleAttraction(articleAttractionList) == 1;
+		return articleAttractionMapper.deleteArticleAttraction(1) == 1;
 	}
 
 }

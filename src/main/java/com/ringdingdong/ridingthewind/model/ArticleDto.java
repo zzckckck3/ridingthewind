@@ -19,5 +19,6 @@ public class ArticleDto {
 	private int like;
 	private String registerTime;
 	private String nickname;
+	private List<ArticleAttractionDto> articleAttractionList;
 
 }

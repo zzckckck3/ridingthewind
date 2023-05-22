@@ -1,15 +1,15 @@
 <template>
-    <personal-trip />
+    <router-view></router-view>
 </template>
 
 <script>
-import PersonalTrip from '@/components/personaltrip/PersonalTrip.vue';
+// import PersonalTrip from '@/components/personaltrip/PersonalTrip.vue';
 
 export default {
-  name: "PersonalTripView",
+    name: "PersonalTripView",
 
-  components: {
-    PersonalTrip,
-  }
+    //   components: {
+    //     PersonalTrip,
+    // }
 };
 </script>

@@ -1,5 +1,5 @@
 <template>
-<v-app id="inspire">
+<v-app>
 
     <v-main class="white">
       <v-container class="text-center">
@@ -34,8 +34,9 @@
               class="grey lighten-5 overflow-auto"
               style="padding: 10px;"
             >
+            
               <v-btn class="ma-1" outlined color="indigo" @click="optimalButtonClicked()">최적경로 보기</v-btn>
-              <v-btn class="ma-1" outlined color="indigo">공유!</v-btn>
+              <v-btn class="ma-1" outlined color="indigo" @click="Test()">공유!</v-btn>
               <v-btn class="ma-1" outlined color="indigo" @click="showRoute()">현재경로 보기</v-btn>
               <v-container fluid style="min-height: 500px;">
                 <v-row dense class="card-list" id="card-list-custom" style="min-height: 300px; min-width: 200px;">
@@ -58,11 +59,12 @@
             
             <v-btn class="ma-1" outlined color="indigo" @click="viewSmall()">Size<v-icon>mdi-arrow-down</v-icon></v-btn>          
             <v-btn class="ma-1" outlined color="indigo" @click="viewBig()">Size<v-icon>mdi-arrow-up</v-icon></v-btn>
-            
+            <v-text-field label="검색" v-model="liveKeyword"></v-text-field>
+
               <v-container fluid style="min-height: 500px;">
                 <v-row dense class="card-list" id="card-list" style="min-height: 300px; min-width: 200px;">
                   <v-col
-                    v-for="(card, index) in cards"
+                    v-for="(card, index) in displayedCards"
                     :key="card.title"
                     :cols="card.flex"
                     :id="card.id"
@@ -75,6 +77,18 @@
                         height="200px"
                     >
                         <v-card-title style="font-size: medium;">{{ card.title }}</v-card-title>
+                        <v-btn
+                            icon
+                            class="icon-wrapper"
+                            @click="card.show = !card.show"
+                            style= "background-color: rgba(255,255,255,0.7);"
+                            fab
+                            small
+                            absolute
+                            >
+                            <!-- <v-icon>{{ card.show ? 'mdi-chevron-up' : 'mdi-chevron-down' }}</v-icon> -->
+                            <v-icon color="indigo">mdi-book-information-variant</v-icon>
+                        </v-btn>
                     </v-img>
                     <!-- eslint-disable-next-line -->
                     <v-card-actions >
@@ -86,7 +100,7 @@
                             </v-btn>
                         </v-row>
                         <v-row>
-                            <v-btn icon @click="tripDelete(card.id)">
+                            <v-btn icon @click="deleteOpenDialog(card.id)">
                             <v-icon :color="card.like ? 'red' : '' ">mdi-heart</v-icon>
                             </v-btn>
                         </v-row>
@@ -94,19 +108,37 @@
                         <v-spacer style="font-size: small;">{{ card.addr_1 }}</v-spacer>
                         <div style="display: none;" class="latitude">{{ card.latitude }}</div>
                         <div style="display: none;" class="longitude">{{ card.longitude }}</div>
-                        <v-btn
-                        icon
-                        @click="card.show = !card.show"
-                        >
-                        <v-icon>{{ card.show ? 'mdi-chevron-up' : 'mdi-chevron-down' }}</v-icon>
-                        </v-btn>
                     </v-card-actions>
-                    <v-expand-transition>
-                        <div v-show="card.show">
-                        <v-divider></v-divider>
-                        <v-card-text>{{ card.overview }}</v-card-text>
+                    <v-bottom-sheet
+                      v-model="card.show"
+                      inset: width=30%
+                      >
+                      <v-sheet class="custom-sheet text-center" >
+                        <div>
+                          <div weight="100px">
+                            <v-img 
+                            :src="showImg(card.src)"
+                            height="200px"
+                            ></v-img>
+                          </div>
+                          <div class="pe-5 ps-5">
+                            <div><h3>{{ card.title }}</h3></div>
+                            <div class="mt-2"><h4>{{ card.addr_1 }}</h4></div>
+                            <div class="my-3">
+                              {{ card.overview }}
+                            </div>
+                          </div>
+                          <v-btn
+                          class="mt-6 mb-2"
+                          text
+                          color="error"
+                          @click="card.show = !card.show"
+                          >
+                          닫기
+                          </v-btn>
                         </div>
-                    </v-expand-transition>
+                      </v-sheet>
+                    </v-bottom-sheet>
                     </v-card>
                 </v-col>
                 </v-row>
@@ -116,18 +148,25 @@
         </v-row>
       </v-container>
     </v-main>
+    <delete-tour-dialog ref="deleteOverlay" @agreed="deleteAgree=true" ></delete-tour-dialog>
+    <cant-recommend-dialog ref="cantRecommendOverlay"></cant-recommend-dialog>
   </v-app>
 </template>
 
 <script>
 import http from "@/axios/http";
 import Sortable from 'sortablejs';
-import {mapState} from "vuex";
+import DeleteTourDialog from '@/components/tour/DeleteTourDialog.vue';
+import CantRecommendDialog from '@/components/personaltrip/CantRecommendDialog.vue';
+import { mapState } from "vuex";
 const memberStore = "memberStore";
 
 export default {
-  name: 'TourSearchInfo',
-  components: {},
+  name: 'PersonalTrip',
+  components: {
+    DeleteTourDialog,
+    CantRecommendDialog,
+  },
   data() {
     return {
       map: null,
@@ -151,7 +190,8 @@ export default {
       cards: [],
       overlay: [],
       clickedOverlay: null,
-
+      liveKeyword: '',
+      deleteAgree: false,
       /*Display Route Variables*/
       latList : [],
       lngList : [],
@@ -173,6 +213,7 @@ export default {
       /* Switching div Element Variables */
       customCards: [],
       customCardsShort: [],
+      customCardList: [],
       /* Switching div Element Variables End */
     };
   },
@@ -212,8 +253,57 @@ export default {
   },
   computed: {
     ...mapState(memberStore, ["isLogin", "userInfo"]),
+    filteredCards(){
+        const tempKeyword = this.liveKeyword.replace(/\s/g, '').toLowerCase();
+        return this.cards.filter(card => {
+            // 검색어가 카드의 특정 속성에 포함되는지 확인 (공백 무시)
+            const tempTitle = card.title.replace(/\s/g, '').toLowerCase();
+            return tempTitle.includes(tempKeyword);
+        });
+    },
+    showImg() { // 이미지 가져오기
+      return (src) => {
+        if (src) {
+          // 실제 이미지 파일이 있는 경우
+          return src;
+        } else {
+          // 이미지 파일이 없는 경우 noimg.png 사용
+          return require('@/assets/mark/noimg.png');
+        }
+      };
+    },
+    displayedCards(){
+        if(this.liveKeyword){
+            return this.filteredCards;
+        }else{
+            return this.cards;
+        }
+    }
+  },
+  watch:{
+    deleteAgree: {
+        handler(val) {
+        if (val) {
+            this. tripDelete(this.selectedId); // 예시로 this.id를 매개변수로 사용
+            this.deleteAgree = false;
+        }
+        },
+        immediate: false
+    },
   },
   methods: {
+    Test() {
+      const customCards = document.querySelectorAll("#card-list-custom > div");
+      const customCardList = Array.from(customCards);
+      const customCardListId = [];
+      for (let i = 0; i < customCardList.length; i++){
+        customCardListId[i] = customCardList[i].id;
+      }
+      console.log(customCardListId[0]);
+      
+      this.$router.push({ name: 'articleWithPlanWrite', params: { customCardListId: customCardListId } });
+
+    },
     registAll() {
       this.customCards = document.querySelectorAll("#card-list > div");
       this.customCardsShort = [];
@@ -248,7 +338,7 @@ export default {
         this.customCardsShort[i].classList.remove('fade-in');
         this.customCardsShort[i].classList.remove('show');
       }
-      for (let i = 0; i < this.customCards.length; i++) {
+      for (let i = 0; i < this.customCards.length; i++) { 
         this.customCards[i].remove();
       }
       // customCardsShorts에 있는 요소들을 순회하면서 HTML에 추가
@@ -361,20 +451,19 @@ export default {
       this.map.addControl(zoomControl, window.kakao.maps.ControlPosition.RIGHT);
     },
     tripDelete(id) {
-      if (confirm("여행지를 삭제하시겠습니까?")) {
-        http.delete(`/mypage/delete/${this.userInfo.data.memberId}/${id}`)
-          .then(() => {
-            return this.makeList();
-          })
-          .catch((error) => {
-            console.error(error);
-        });
-      }
+      http.delete(`/mypage/delete/${this.userInfo.data.memberId}/${id}`)
+        .then(() => {
+          return this.makeList();
+        })
+        .catch((error) => {
+          console.error(error);
+      });
+    },
+    async deleteOpenDialog(id){
+      this.$refs.deleteOverlay.openDialog();
+      this.selectedId = id;
     },
     makeList() {
-      //======================================
-        // 바꿈!!
-      //======================================
       http.get(`/mypage/list/${this.userInfo.data.memberId}`)
         .then((response) => {
           this.positions.length = 0;
@@ -683,8 +772,8 @@ export default {
       this.latList = Array.from(latNode);
       this.lngList = Array.from(lngNode);
 
-      if (this.latList.length >= 9) {
-        alert("9개 이하 여행지만 기능이 제공됩니다. ");
+      if (this.latList.length > 9) {
+        this.addOpenDialog();
         return;
       }
 
@@ -801,7 +890,11 @@ export default {
           card.classList.add('show');
         }, i * 100); // 요소의 인덱스에 따라 시간 간격 설정
       }
-    }
+    },
+    async addOpenDialog() {
+      this.$refs.cantRecommendOverlay.openDialog();
+    },
+
   },
 };
 </script>
@@ -841,5 +934,21 @@ export default {
 
 .fade-in.show {
   opacity: 1;
+}
+
+.custom-sheet{
+    height: auto;
+    max-height: calc(100vh - 200px); /* 원하는 높이 조정 */
+    overflow-y: auto;
+}
+.icon-wrapper {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    margin:3px;
+}
+.custom-search-label {
+    font-size: 13px;
+    color: black;
 }
 </style>

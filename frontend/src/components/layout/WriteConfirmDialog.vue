@@ -6,16 +6,10 @@
             </v-card-title>
             <v-card-actions>
                 <v-spacer></v-spacer>
-                <v-btn
-                    color="blue darken-1"
-                    text
-                    @click.stop="writeArticle">
+                <v-btn color="blue darken-1" text @click.stop="writeArticle">
                     등록
                 </v-btn>
-                <v-btn
-                    color="grey darken-1"
-                    text
-                    @click.stop="dialog = false">
+                <v-btn color="grey darken-1" text @click.stop="dialog = false">
                     취소
                 </v-btn>
             </v-card-actions>
@@ -25,7 +19,7 @@
 
 <script>
 import http from "@/axios/http.js";
-import {mapState} from "vuex";
+import { mapState } from "vuex";
 const memberStore = "memberStore";
 
 export default {
@@ -42,7 +36,11 @@ export default {
         content: {
             type: String,
             required: true,
-        }
+        },
+        cards: {
+            type: Array,
+            required: false,
+        },
     },
     computed: {
         ...mapState(memberStore, ["userInfo"]),
@@ -51,17 +49,27 @@ export default {
                 return this.value;
             },
             set(value) {
-                this.$emit('input', value);
+                this.$emit("input", value);
             },
         },
     },
     methods: {
         writeArticle() {
             this.dialog = false;
+            let cardList = Array.isArray(this.cards) ? this.cards : [];
+
+            const articleAttractionList = cardList.map((card, index) => {
+                return {
+                    contentId: card.id,
+                    order: index,
+                };
+            });
+
             let articleInfo = {
                 memberId: this.userInfo.data.memberId,
                 subject: this.subject,
-                content: this.content
+                content: this.content,
+                articleAttractionList: articleAttractionList,
             };
 
             http.post(`/article`, JSON.stringify(articleInfo))
@@ -73,10 +81,10 @@ export default {
                     }
                     this.$router.push({ name: "article" });
                 })
-                .catch(( error ) => {
-                    this.$router.push('error/error', error);
+                .catch((error) => {
+                    this.$router.push("error/error", error);
                 });
-        }
-    }
+        },
+    },
 };
 </script>

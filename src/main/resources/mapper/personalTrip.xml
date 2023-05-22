@@ -22,6 +22,7 @@
 		<result column="longitude" property="longitude"/>
 		<result column="mlevel" property="mlevel"/>
 		<result column="select" property="select"/>
+		<result column="overview" property="overView"/>
 	</resultMap>
 	
 	<resultMap type="memberDto" id="member">
@@ -38,10 +39,11 @@
 	</resultMap>
 	
 	<select id="listPersonalTrip" parameterType="String" resultMap="personalTrip">
-		SELECT p.member_id, a.*
+		SELECT p.member_id, a.*, d.*
 		FROM personal_trip p
 		JOIN attraction_info a ON p.content_id = a.content_id
-		where member_id = #{memberId};
+		JOIN attraction_description d ON a.content_id = d.content_id
+		WHERE p.member_id = #{memberId};
 	</select>
 
 	<delete id="deleteTrip">

@@ -10,4 +10,5 @@ import lombok.ToString;
 public class TourSidoDto {
 	private int sidoCode;
 	private String sidoName;
+	private int postCount;
 }

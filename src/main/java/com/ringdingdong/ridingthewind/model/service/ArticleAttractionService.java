@@ -4,6 +4,7 @@ import com.ringdingdong.ridingthewind.model.*;
 
 import java.util.List;
 
+// 삭제 예정
 public interface ArticleAttractionService {
 
 	boolean writeArticleAttraction(List<ArticleAttractionDto> articleAttractionList) throws Exception;

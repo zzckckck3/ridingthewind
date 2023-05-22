@@ -6,16 +6,10 @@
             </v-card-title>
             <v-card-actions>
                 <v-spacer></v-spacer>
-                <v-btn
-                    color="green darken-1"
-                    text
-                    @click.stop="modifyArticle">
+                <v-btn color="green darken-1" text @click.stop="modifyArticle">
                     수정
                 </v-btn>
-                <v-btn
-                    color="grey darken-1"
-                    text
-                    @click.stop="dialog = false">
+                <v-btn color="grey darken-1" text @click.stop="dialog = false">
                     취소
                 </v-btn>
             </v-card-actions>
@@ -25,6 +19,8 @@
 
 <script>
 import http from "@/axios/http.js";
+import { mapState } from "vuex";
+const memberStore = "memberStore";
 
 export default {
     name: "ModifyConfirmDialog",
@@ -36,22 +32,45 @@ export default {
         article: {
             type: Object,
             required: true,
-        }
+        },
+        cards: {
+            type: Array,
+            required: false,
+        },
     },
     computed: {
+        ...mapState(memberStore, ["userInfo"]),
         dialog: {
             get() {
                 return this.value;
             },
             set(value) {
-                this.$emit('input', value);
+                this.$emit("input", value);
             },
         },
     },
     methods: {
         modifyArticle() {
             this.dialog = false;
-            http.put(`/article`, JSON.stringify(this.article))
+            let cardList = Array.isArray(this.cards) ? this.cards : [];
+
+            const articleAttractionList = cardList.map((card, index) => {
+                return {
+                    articleNo: this.article.articleNo,
+                    contentId: card.id,
+                    order: index,
+                };
+            });
+
+            let articleInfo = {
+                memberId: this.userInfo.data.memberId,
+                articleNo: this.article.articleNo,
+                subject: this.article.subject,
+                content: this.article.content,
+                articleAttractionList: articleAttractionList,
+            };
+
+            http.put(`/article`, JSON.stringify(articleInfo))
                 .then(({ data }) => {
                     if (data == "SUCCESS") {
                         alert("수정 성공");
@@ -60,10 +79,10 @@ export default {
                     }
                     this.$router.push({ name: "article" });
                 })
-                .catch(( error ) => {
-                    this.$router.push('error/error', error);
+                .catch((error) => {
+                    this.$router.push("error/error", error);
                 });
-        }
-    }
+        },
+    },
 };
 </script>

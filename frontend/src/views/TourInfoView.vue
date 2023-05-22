@@ -1,14 +1,9 @@
 <template>
-    <tour-search-info/>
+    <router-view></router-view>
 </template>
 
 <script>
-import TourSearchInfo from '@/components/tour/TourSearchInfo.vue';
-
 export default {
-    name: 'TourInfoView',
-    components: {
-        TourSearchInfo,
-    }
+    name: "TourInfoView",
 };
 </script>

@@ -10,4 +10,5 @@ import lombok.ToString;
 public class TourGugunDto {
 	private int gugunCode;
 	private String gugunName;
+	private int postCount;
 }

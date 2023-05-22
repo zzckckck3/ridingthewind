@@ -3,39 +3,22 @@
         <v-row>
             <v-card min-height="500" class="py-4 col-9">
                 <v-card class="mb-2 col-10 offset-1 font-weight-bold">
-                    <v-col cols="12" sm="6" md="3">
+                    <v-col cols="12" sm="6">
                         <v-text-field
-                            v-model="article.subject"
+                            v-model="subject"
                             label="제목"
                             placeholder="제목"
-                            >{{ article.subject }}</v-text-field
-                        >
+                        ></v-text-field>
                     </v-col>
-                </v-card>
-                <v-card class="my-auto col-10 offset-1 font-weight-bold">
-                    <v-row class="my-0 px-2 d-flex align-center">
-                        <v-col class="col-1">
-                            <v-avatar color="teal" size="40"></v-avatar>
-                        </v-col>
-                        <v-col>
-                            <v-row align-content="center">
-                                {{ article.memberId }}
-                            </v-row>
-                            <v-row align-content="center">
-                                {{ article.registerTime }}
-                            </v-row>
-                        </v-col>
-                    </v-row>
                 </v-card>
                 <v-card class="my-2 offset-1 col-10" min-height="400">
                     <v-col cols="12">
                         <v-textarea
                             height="310"
                             outlined
-                            v-model="article.content"
+                            v-model="content"
                             label="내용"
                         >
-                            {{ article.content }}
                         </v-textarea>
                     </v-col>
                 </v-card>
@@ -44,7 +27,7 @@
                         class="my-auto mx-1 d-flex flex-row-reverse"
                         @click="dialog = true"
                     >
-                        수정
+                        등록
                     </v-btn>
                     <v-btn
                         class="my-auto mx-1 d-flex flex-row-reverse"
@@ -52,11 +35,12 @@
                     >
                         목록
                     </v-btn>
-                    <modify-confirm-dialog
+                    <write-confirm-dialog
                         v-model="dialog"
-                        :article="article"
+                        :subject="subject"
+                        :content="content"
                         :cards="cards"
-                    ></modify-confirm-dialog>
+                    ></write-confirm-dialog>
                 </v-row>
             </v-card>
             <v-card min-height="500" class="py-4 col-3">
@@ -69,8 +53,8 @@
                     >
                         <v-col
                             v-for="(card, index) in cards"
-                            :key="card.title"
-                            :cols="card.flex"
+                            :key="index"
+                            :cols="12"
                             :id="card.id"
                         >
                             <v-card>
@@ -91,7 +75,7 @@
                                         <v-row>
                                             <v-btn
                                                 icon
-                                                @click="tripDelete(index)"
+                                                @click="tripDelete(card.id)"
                                             >
                                                 <v-icon
                                                     :color="
@@ -141,31 +125,57 @@
 </template>
 
 <script>
-import ModifyConfirmDialog from "@/components/layout/ModifyConfirmDialog.vue";
+import WriteConfirmDialog from "@/components/layout/WriteConfirmDialog.vue";
+import http from "@/axios/http";
 
 export default {
-    name: "ArticleModify",
+    name: "ArticleWithPlanWrite",
     data() {
         return {
-            article: {},
+            subject: "",
+            content: "",
             cards: [],
             dialog: false,
         };
     },
+
     created() {
-        this.article = JSON.parse(this.$route.params.article);
-        this.cards = JSON.parse(this.$route.params.cards);
+        this.customCardListId = this.$route.params.customCardListId;
+        http.get("/tour/attraction-info-bycontentids", {
+            params: {
+                contentIds: this.$route.params.customCardListId.toString(),
+            },
+        })
+            .then(({ data }) => {
+                console.log(data.length);
+                data.forEach((area) => {
+                    let card = {
+                        id: area.contentId,
+                        src: area.firstImage,
+                        title: area.title,
+                        addr_1: area.addr1,
+                        overview: area.overView,
+                        latitude: area.latitude,
+                        longitude: area.longitude,
+                        flex: 12,
+                        show: false,
+                        like: true,
+                    };
+                    this.cards.push(card);
+                });
+            })
+            .catch((error) => {
+                this.$router.push("error/error", error);
+            });
     },
+    mounted() {},
     methods: {
         moveToList() {
             this.$router.push({ name: "article" });
         },
-        tripDelete(index) {
-            this.cards.splice(index, 1);
-        },
     },
     components: {
-        ModifyConfirmDialog,
+        WriteConfirmDialog,
     },
 };
 </script>

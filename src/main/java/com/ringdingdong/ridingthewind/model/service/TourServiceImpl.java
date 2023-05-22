@@ -47,6 +47,11 @@ public class TourServiceImpl implements TourService{
 	}
 
 	@Override
+	public List<TourDto> getListByContentIds(List<Integer> contentIds) throws SQLException {
+		return tourMapper.getListByContentIds(contentIds);
+	}
+
+	@Override
 	public List<PersonalTripDto> getLikeList(String memberId) throws SQLException {
 		return tourMapper.getLikeList(memberId);
 	}
