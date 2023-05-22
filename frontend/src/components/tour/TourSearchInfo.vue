@@ -405,14 +405,12 @@ export default {
         create_sido() {
             http.get(`/tour/sido`)
                 .then((response) => {
-                    console.log(response.data);
                     this.sido = response.data;
                 });
         },
         create_gugun() {
             http.get(`/tour/gugun?search-area=${this.selectedSido}`)
                 .then((response) => {
-                    console.log(response.data);
                     this.gugun = response.data;
                 });
         },
@@ -423,7 +421,6 @@ export default {
                 .then((response) => {
                     this.positions.length = 0;
                     this.cards.length = 0;
-                    // console.log(response.data);
                     response.data.forEach((area) => {
                         // 체크된것만!
                         if (this.selectedContentById.includes(area.contentTypeId)) {
@@ -562,7 +559,7 @@ export default {
             if(this.clickedOverlay){
                 this.clickedOverlay.setMap(null);
             }
-            console.log(index);
+            // console.log(index);
             window.kakao.maps.event.trigger(this.markers[index], 'click');
             
         },

@@ -62,9 +62,7 @@ const memberStore = {
             await findById(
                 decodeToken.memberId,
                 ({data}) => {
-                    console.log({data});
                     data["userid"] = decodeToken.memberId;
-                    console.log(data);
                     if(data.message === "SUCCESS") {
                         commit("SET_USER_INFO", data);
                         console.log("유저 완료")
