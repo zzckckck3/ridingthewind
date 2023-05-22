@@ -1,10 +1,15 @@
 <template>
-    <v-main class="white lighten-3" style="margin-bottom: 20px;">
+    <v-main class="white lighten-3" style="margin-bottom: 20px">
         <v-container>
             <v-row>
                 <!--Left Container-->
                 <v-col class="text-center" cols="12" sm="2">
-                    <v-sheet class="grey lighten-5" rounded="lg" min-height="268" elevation="8">
+                    <v-sheet
+                        class="grey lighten-5"
+                        rounded="lg"
+                        min-height="268"
+                        elevation="8"
+                    >
                         Left Container
                     </v-sheet>
                 </v-col>
@@ -26,11 +31,13 @@
                                             tile
                                         >
                                         <div class="d-flex fill-height justify-center align-center">
+
                                             <div class="text-h2">
                                                 Manager Custom {{ i + 1 }}
                                             </div>
                                         </div>
                                     </v-sheet>
+
                                     </v-carousel-item>
                                 </v-carousel>
                             </template>
@@ -67,6 +74,7 @@
                                     ></span>
                                     </v-img>
 
+
                                     <v-card-actions class="white justify-center">
                                     <v-btn
                                         v-for="(social, i) in socials"
@@ -89,7 +97,12 @@
                 
                 <!--Right Container-->
                 <v-col class="text-center" cols="12" sm="2">
-                    <v-sheet class="grey lighten-5" rounded="lg" min-height="268" elevation="8">
+                    <v-sheet
+                        class="grey lighten-5"
+                        rounded="lg"
+                        min-height="268"
+                        elevation="8"
+                    >
                         아마도 광고
                     </v-sheet>
                 </v-col>
@@ -100,7 +113,7 @@
 </template>
 
 <script>
-    export default {
+export default {
     data() {
         return {
             colors: [
@@ -111,6 +124,7 @@
                 "orange",
             ],
             model: 0,
+
             types: ["Places to Be", "Places to See"],
             cards: ["Good", "Best", "Finest"],
             socials: [

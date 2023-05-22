@@ -6,10 +6,10 @@
 // import PersonalTrip from '@/components/personaltrip/PersonalTrip.vue';
 
 export default {
-  name: "PersonalTripView",
+    name: "PersonalTripView",
 
-//   components: {
-//     PersonalTrip,
-// }
+    //   components: {
+    //     PersonalTrip,
+    // }
 };
 </script>
