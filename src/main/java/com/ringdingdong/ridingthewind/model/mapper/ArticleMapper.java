@@ -22,6 +22,8 @@ public interface ArticleMapper {
 	// Update
 	int updateHit(int articleNo) throws SQLException;
 	int modifyArticle(ArticleDto articleDto) throws SQLException;
+	int addArticleLike(int articleNo) throws SQLException;
+	int subArticleLike(int articleNo) throws SQLException;
 
 	// Delete
 	int deleteArticle(int articleNo) throws SQLException;

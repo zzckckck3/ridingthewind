@@ -9,6 +9,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,12 +20,13 @@ import java.util.List;
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @RequestMapping(value = "/like")
 @RequiredArgsConstructor
+@Slf4j
 public class LikeController {
 
 	private final LikeService likeService;
 
 	@PostMapping
-	public ResponseEntity<String> write(LikeDto likeDto) throws Exception {
+	public ResponseEntity<String> write(@RequestBody LikeDto likeDto) throws Exception {
 		if (likeService.insertLike(likeDto)) {
 			return new ResponseEntity<>(ResponseResult.SUCCESS.name(), HttpStatus.OK);
 		}

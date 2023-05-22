@@ -286,3 +286,21 @@ create table if not exists `riding_the_wind`.`follow`(
 ALTER TABLE `sido` modify `post_count` int(10) default 0;
 ALTER TABLE `gugun` modify `post_count` int(10) default 0;
 
+
+/*     -----------------------------------------------------
+    게시글과 회원을 추천 여부로 연결하기 위한 매핑 테이블
+    -----------------------------------------------------    */
+CREATE TABLE IF NOT EXISTS article_member_map (
+    article_no INT NOT NULL,
+    member_id VARCHAR(16) NOT NULL,
+    PRIMARY KEY (article_no, member_id)
+    )
+    ENGINE = InnoDB
+    DEFAULT CHARACTER SET = utf8mb4
+    COLLATE = utf8mb4_0900_ai_ci;
+
+-- 게시판-회원 매핑 테이블 article_no를 게시판 테이블 article_no의 외래키로 지정
+alter table article_member_map add constraint fk_article_amm foreign key(article_no) references article(article_no) on delete cascade;
+
+-- 게시판-회원 매핑 테이블 member_id를 관광정보 테이블 member_id의 외래키로 지정
+alter table article_member_map add constraint fk_member_amm foreign key(member_id) references member(member_id) on delete cascade;
