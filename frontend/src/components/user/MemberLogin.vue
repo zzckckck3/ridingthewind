@@ -1,13 +1,14 @@
 <template>
-  <v-main class="pa-16 ma-16">
-      <!-- Login Component -->
-    <v-container style="max-width: 550px" fill-height>
-      <v-layout align-center row wrap>
+    <!-- Login Component -->
+    <v-dialog
+      v-model="loginModal"
+      max-width="550"
+    >
+    <v-container style="max-width: 550px; padding: 0;" fill-height>
         <v-flex xs12>
           <v-card>
             <div class="pa-10">
               <h1 style="text-align: center" class="mb-10">Login</h1>
-
                 <v-text-field
                   label="ID"
                   prepend-inner-icon="mdi-account"
@@ -47,24 +48,25 @@
             </div>
           </v-card>
         </v-flex>
-      </v-layout>
     </v-container>
-  </v-main>
+  </v-dialog>
 </template>
 
 <script>
-
 // import http from "@/axios/http";
 import { mapState, mapActions } from "vuex";
+import { currentRoute } from 'vue-router';
+
 const memberStore = "memberStore";
 export const loginurl = "/member/login";
 export default {
   data() {
     return {
-        user:{
-            userId : '',
-            userPwd : '',
-        }
+      user:{
+          userId : '',
+          userPwd : '',
+      },
+      loginModal: false
     };
   },
   components: {},
@@ -77,18 +79,24 @@ export default {
           await this.userConfirm(this.user);
           let token = sessionStorage.getItem("access-token");
           if(this.isLogin){
-              await this.getUserInfo(token);
-              alert("로그인 성공");
-              this.$router.push({name:'home'});
+            await this.getUserInfo(token);
+            alert("로그인 성공");
+            this.loginModal = false;
+            const currentPath = currentRoute.value.path;
+            if (currentPath !== '/') {
+              this.$router.push({ name: 'home' });
+            }
           }else{
               alert("아이디와 비밀번호를 확인해주세요");
           }
       },
-
-      addUserShow(){
-        this.$router.push({name:'signup'});
-      }
-
+      addUserShow() {
+        this.loginModal = false;
+        this.$emit("showSignup");
+      },
+      openLoginModal() {
+        this.loginModal = true;
+      },
   },
 };
 </script>
