@@ -13,10 +13,10 @@
             <v-tab v-if="!isLogin" :to="{ name: 'signin' }">로그인</v-tab>
             <v-tab v-else @click.prevent="onClickLogout">로그아웃</v-tab>
             <v-tab :to="{ name: 'article' }">게시판</v-tab>
-            <v-tab :to="{ name: 'notice' }">공지사항</v-tab>
-            <v-tab :to="{ name: 'qna' }">Q&A</v-tab>
+            <!--v-tab :to="{ name: 'notice' }">공지사항</!--v-tab>
+            <v-tab-- :to="{ name: 'qna' }">Q&A</v-tab-->
             <v-tab :to="{ name: 'tour' }">여행정보</v-tab>
-            <v-tab :to="{ name: 'mypage' }">여행계획</v-tab>
+            <v-tab :to="{ name: 'plan' }">여행계획</v-tab>
         </v-tabs>
 
         <!-- 우측 회원 관리 창 -->

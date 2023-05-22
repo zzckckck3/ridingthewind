@@ -10,7 +10,6 @@ const onlyAuthUser = async (to, from, next) => {
   const checkToken = store.getters["memberStore/checkToken"];
   let token = sessionStorage.getItem("access-token");
 
-
   if (checkUserInfo != null && token) {
     await store.dispatch("memberStore/getUserInfo", token);
   }
@@ -60,7 +59,7 @@ const routes = [
         path: "delete",
         name: "delete",
         component: () => import("@/components/user/MemberDelete.vue"),
-      }
+      },
     ],
   },
   {
@@ -80,27 +79,26 @@ const routes = [
         path: "detail",
         name: "articleDetail",
         component: () =>
-
-            import(/* webpackChunkName: "article" */ "@/components/article/ArticleDetail.vue"),
+          import(/* webpackChunkName: "article" */ "@/components/article/ArticleDetail.vue"),
       },
       {
         path: "modify",
         name: "articleModify",
         component: () =>
-            import(/* webpackChunkName: "article" */ "@/components/article/ArticleModify.vue"),
+          import(/* webpackChunkName: "article" */ "@/components/article/ArticleModify.vue"),
       },
       {
         path: "write",
         name: "articleWrite",
         component: () =>
-            import(/* webpackChunkName: "article" */ "@/components/article/ArticleWrite.vue"),
+          import(/* webpackChunkName: "article" */ "@/components/article/ArticleWrite.vue"),
       },
       {
         path: "withPlanWrite",
         name: "articleWithPlanWrite",
         component: () =>
-            import(/* webpackChunkName: "article" */ "@/components/article/ArticleWithPlanWrite.vue"),
-      }
+          import(/* webpackChunkName: "article" */ "@/components/article/ArticleWithPlanWrite.vue"),
+      },
     ],
   },
   {
@@ -120,8 +118,16 @@ const routes = [
   {
     path: "/mypage",
     name: "mypage",
+    beforeEnter: onlyAuthUser,
     component: () => import(/* webpackChunkName: "trip" */ "@/views/PersonalTripView.vue"),
-    children: [],
+    children: [
+      {
+        path: "plan",
+        name: "plan",
+        component: () =>
+          import(/* webpackChunkName: "board" */ "@/components/personaltrip/PersonalTrip.vue"),
+      },
+    ],
   },
 ];
 
@@ -130,6 +136,5 @@ const router = new VueRouter({
   base: process.env.BASE_URL,
   routes,
 });
-
 
 export default router;

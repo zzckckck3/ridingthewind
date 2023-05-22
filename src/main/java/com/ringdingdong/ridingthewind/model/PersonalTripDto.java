@@ -23,6 +23,7 @@ public class PersonalTripDto {
 	private int gugunCode;
 	private double latitude;
 	private double longitude;
+	private String overView;
 	private String mlevel;
 	private int select;
 	
