@@ -95,4 +95,16 @@
 		set member_password = #{userPassword}
 		where member_id = #{userId}
 	</update>
+
+	<select id="getFollowingList" parameterType="String" resultType="String">
+		select `to`
+		from follow
+		where `from` = #{userId}
+	</select>
+
+	<select id="getFollowerList" parameterType="String" resultType="String">
+		select `from`
+		from follow
+		where `to` = #{userId}
+	</select>
 </mapper>

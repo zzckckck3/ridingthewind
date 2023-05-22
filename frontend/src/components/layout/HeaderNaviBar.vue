@@ -78,26 +78,28 @@
                         </v-list-item>
 
                         <v-divider></v-divider>
+                    </v-list>
+                    <v-list v-if="isLogin">
 
+                        <v-list-item @click="moveToMypageApp()">
+                            <v-list-item-content class="pl-3" >
+                                <v-list-item-title>마이페이지</v-list-item-title>
+                            </v-list-item-content>
+                        </v-list-item>
                         <v-list-item :to="{ name: 'update' }">
                             <v-list-item-content class="pl-3">
-                                <v-list-item-title
-                                    >내 정보 수정</v-list-item-title
-                                >
+                                <v-list-item-title>내 정보 수정</v-list-item-title>
                             </v-list-item-content>
                         </v-list-item>
                         <v-list-item :to="{ name: 'pwdupdate' }">
                             <v-list-item-content class="pl-3">
-                                <v-list-item-title
-                                    >비밀번호 변경</v-list-item-title
-                                >
+                                <v-list-item-title>비밀번호 변경</v-list-item-title>
                             </v-list-item-content>
                         </v-list-item>
+
                         <v-list-item @click="showConfirmationDialog = true">
                             <v-list-item-content class="pl-3">
-                                <v-list-item-title
-                                    >회원 탈퇴하기</v-list-item-title
-                                >
+                                <v-list-item-title>회원 탈퇴하기</v-list-item-title>
                             </v-list-item-content>
                         </v-list-item>
 
@@ -110,9 +112,7 @@
                     </v-list>
                     <v-dialog v-model="showConfirmationDialog" max-width="500">
                         <v-card>
-                            <v-card-title class="headline"
-                                >회원 탈퇴</v-card-title
-                            >
+                            <v-card-title class="headline">회원 탈퇴</v-card-title>
                             <v-card-text>
                                 정말로 회원을 탈퇴하시겠습니까?
                             </v-card-text>
@@ -121,9 +121,9 @@
                                 <v-btn
                                     color="red darken-1"
                                     text
-                                    @click="showConfirmationDialog = false"
-                                    >취소</v-btn
-                                >
+                                    @click="showConfirmationDialog = false">
+                                    취소
+                                </v-btn>
                                 <v-btn
                                     color="green darken-1"
                                     text
@@ -176,6 +176,9 @@ export default {
         onClickDeleteMember() {
             this.showConfirmationDialog = false;
             this.$router.push({ name: "delete" });
+        },
+        moveToMypageApp() {
+            this.$router.push({name:"infopage", params: {userId : this.userInfo.data.memberId}});
         },
         async openLoginModal() {
             this.$refs.loginOverlay.openLoginModal();

@@ -2,6 +2,7 @@ package com.ringdingdong.ridingthewind.model.service;
 
 import com.ringdingdong.ridingthewind.model.MemberDto;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -28,4 +29,8 @@ public interface MemberService {
     int passwordCheck(Map<String, String> map);
 
     void setPassword(Map<String, String> map);
+
+    ArrayList<String> getFollowingList(String userId);
+
+    ArrayList<String> getFollowerList(String userId);
 }

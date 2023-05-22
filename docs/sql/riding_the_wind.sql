@@ -275,6 +275,13 @@ alter table `article_attraction_map` add constraint fk_article_aam foreign key(a
 -- 게시판-여행경로 매핑 테이블 attraction_id를 관광정보 테이블 content_id의 외래키로 지정
 alter table `article_attraction_map` add constraint fk_attraction_aam foreign key(content_id) references attraction_info(content_id);
 
+create table if not exists `riding_the_wind`.`follow`(
+    `from` varchar(16) NOT NULL,
+    `to` varchar(16) NOT NULL,
+    PRIMARY KEY(`to`, `from`),
+    foreign key(`to`) references member(member_id),
+    foreign key(`from`) references member(member_id)
+    );
 -- 추천 시스템을 적용하기 위해 공유 게시판에 글이 등록된 횟수를 카운트 하는 column을 sido, gugun에 추가
 ALTER TABLE `sido` modify `post_count` int(10) default 0;
 ALTER TABLE `gugun` modify `post_count` int(10) default 0;

@@ -68,4 +68,8 @@
 		where member_id = #{memberId}
 		and member_password = #{memberPassword}
 	</delete>
+
+	<select id="getFollowingList">
+		select
+	</select>
 </mapper>
