@@ -6,16 +6,10 @@
             </v-card-title>
             <v-card-actions>
                 <v-spacer></v-spacer>
-                <v-btn
-                    color="blue darken-1"
-                    text
-                    @click.stop="writeArticle">
+                <v-btn color="blue darken-1" text @click.stop="writeArticle">
                     등록
                 </v-btn>
-                <v-btn
-                    color="grey darken-1"
-                    text
-                    @click.stop="dialog = false">
+                <v-btn color="grey darken-1" text @click.stop="dialog = false">
                     취소
                 </v-btn>
             </v-card-actions>
@@ -25,7 +19,7 @@
 
 <script>
 import http from "@/axios/http.js";
-import {mapState} from "vuex";
+import { mapState } from "vuex";
 const memberStore = "memberStore";
 
 export default {
@@ -45,8 +39,8 @@ export default {
         },
         cards: {
             type: Array,
-            required: false
-        }
+            required: false,
+        },
     },
     computed: {
         ...mapState(memberStore, ["userInfo"]),
@@ -55,7 +49,7 @@ export default {
                 return this.value;
             },
             set(value) {
-                this.$emit('input', value);
+                this.$emit("input", value);
             },
         },
     },
@@ -63,6 +57,7 @@ export default {
         writeArticle() {
             this.dialog = false;
             let cardList = Array.isArray(this.cards) ? this.cards : [];
+            console.log(cardList);
 
             const articleAttractionList = cardList.map((card, index) => {
                 return {
@@ -75,22 +70,39 @@ export default {
                 memberId: this.userInfo.data.memberId,
                 subject: this.subject,
                 content: this.content,
-                articleAttractionList: articleAttractionList
+                articleAttractionList: articleAttractionList,
             };
+
+            for (let i = 0; i < cardList.length; i++) {
+                let sidoCode = cardList[i].sidoCode;
+                let gugunCode = cardList[i].gugunCode;
+
+                http.put(`/tour/sido/${sidoCode}`)
+                    .then(() => {})
+                    .catch((error) => {
+                        console.log(error);
+                    });
+
+                http.put(`/tour/gugun/${sidoCode}/${gugunCode}`)
+                    .then(() => {})
+                    .catch((error) => {
+                        console.log(error);
+                    });
+            }
 
             http.post(`/article`, JSON.stringify(articleInfo))
                 .then(({ data }) => {
-                    if (data=="SUCCESS") {
+                    if (data == "SUCCESS") {
                         alert("등록 성공");
                     } else {
                         alert("등록 실패");
                     }
                     this.$router.push({ name: "article" });
                 })
-                .catch(( error ) => {
-                    this.$router.push('error/error', error);
+                .catch((error) => {
+                    this.$router.push("error/error", error);
                 });
-        }
-    }
+        },
+    },
 };
 </script>

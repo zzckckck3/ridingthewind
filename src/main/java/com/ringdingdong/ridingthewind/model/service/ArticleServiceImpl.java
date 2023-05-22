@@ -71,8 +71,8 @@ public class ArticleServiceImpl implements ArticleService {
 
 	@Override
 	public boolean modifyArticle(ArticleDto articleDto) throws Exception {
+		articleAttractionMapper.deleteArticleAttraction(articleDto.getArticleNo());
 		if (articleDto.getArticleAttractionList().size() != 0) {
-			articleAttractionMapper.deleteArticleAttraction(articleDto.getArticleNo());
 			articleAttractionMapper.writeArticleAttraction(articleDto.getArticleAttractionList());
 		}
 		return articleMapper.modifyArticle(articleDto) == 1;

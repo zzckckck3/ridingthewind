@@ -1,55 +1,52 @@
 <template>
     <!-- Login Component -->
-    <v-dialog
-      v-model="loginModal"
-      max-width="550"
-    >
-    <v-container style="max-width: 550px; padding: 0;" fill-height>
-        <v-flex xs12>
-          <v-card>
-            <div class="pa-10">
-              <h1 style="text-align: center" class="mb-10">Login</h1>
-                <v-text-field
-                  label="ID"
-                  prepend-inner-icon="mdi-account"
-                  v-model="user.userId"
-                  required
-                ></v-text-field>
-                <v-text-field
-                  prepend-inner-icon="mdi-lock"
-                  type="password"
-                  label="Password"
-                  v-model="user.userPwd"
-                  required
-                >
-                </v-text-field>
-                <v-btn
-                  type="button"
-                  color="blue lighten-1 text-capitalize"
-                  depressed
-                  large
-                  block
-                  dark
-                  class="mb-3"
-                  @click="loginSubmit"
-                >
-                  Login
-                </v-btn>
-                <v-btn
-                  @click="addUserShow"
-                  color="blue lighten-1 text-capitalize"
-                  depressed
-                  large
-                  block
-                  dark
-                >
-                  Sign Up
-                </v-btn>
-            </div>
-          </v-card>
-        </v-flex>
-    </v-container>
-  </v-dialog>
+    <v-dialog v-model="loginModal" max-width="550">
+        <v-container style="max-width: 550px; padding: 0" fill-height>
+            <v-flex xs12>
+                <v-card>
+                    <div class="pa-10">
+                        <h1 style="text-align: center" class="mb-10">Login</h1>
+                        <v-text-field
+                            label="ID"
+                            prepend-inner-icon="mdi-account"
+                            v-model="user.userId"
+                            required
+                        ></v-text-field>
+                        <v-text-field
+                            prepend-inner-icon="mdi-lock"
+                            type="password"
+                            label="Password"
+                            v-model="user.userPwd"
+                            required
+                        >
+                        </v-text-field>
+                        <v-btn
+                            type="button"
+                            color="blue lighten-1 text-capitalize"
+                            depressed
+                            large
+                            block
+                            dark
+                            class="mb-3"
+                            @click="loginSubmit"
+                        >
+                            Login
+                        </v-btn>
+                        <v-btn
+                            @click="addUserShow"
+                            color="blue lighten-1 text-capitalize"
+                            depressed
+                            large
+                            block
+                            dark
+                        >
+                            Sign Up
+                        </v-btn>
+                    </div>
+                </v-card>
+            </v-flex>
+        </v-container>
+    </v-dialog>
 </template>
 
 <script>
@@ -95,5 +92,6 @@ export default {
         this.loginModal = true;
       },
   },
+
 };
 </script>

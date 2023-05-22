@@ -3,9 +3,7 @@
 </template>
 
 <script>
-
-
 export default {
-    name: 'TourInfoView',
+    name: "TourInfoView",
 };
 </script>
