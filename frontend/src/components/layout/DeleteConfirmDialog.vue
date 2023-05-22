@@ -6,16 +6,10 @@
             </v-card-title>
             <v-card-actions>
                 <v-spacer></v-spacer>
-                <v-btn
-                    color="red darken-1"
-                    text
-                    @click.stop="deleteArticle">
+                <v-btn color="red darken-1" text @click.stop="deleteArticle">
                     삭제
                 </v-btn>
-                <v-btn
-                    color="grey darken-1"
-                    text
-                    @click.stop="dialog = false">
+                <v-btn color="grey darken-1" text @click.stop="dialog = false">
                     취소
                 </v-btn>
             </v-card-actions>
@@ -36,7 +30,7 @@ export default {
         articleNo: {
             type: Number,
             required: true,
-        }
+        },
     },
     computed: {
         dialog: {
@@ -44,7 +38,7 @@ export default {
                 return this.value;
             },
             set(value) {
-                this.$emit('input', value);
+                this.$emit("input", value);
             },
         },
     },
@@ -61,10 +55,10 @@ export default {
                     }
                     this.$router.push({ name: "article" });
                 })
-                .catch(( error ) => {
-                    this.$router.push('error/error', error);
+                .catch((error) => {
+                    this.$router.push("error/error", error);
                 });
-        }
-    }
+        },
+    },
 };
 </script>

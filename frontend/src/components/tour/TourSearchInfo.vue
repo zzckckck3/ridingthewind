@@ -12,7 +12,7 @@
                 rounded="lg"
                 elevation="8"
                 class="lighten-5 overflow-auto"
-                style="padding: 10px;"
+                style="padding: 10px; margin-bottom: 30px;"
             >
                 <div style="display:flex">
                     <v-select
@@ -90,7 +90,7 @@
                     <v-text-field label="키워드 입력" v-model="keyword" @keyup.enter="selectedSido !== null && selectedGugun !== null ? (keyword.length==0 ? markList() : markListwithSearch()) : sidogugunException()"></v-text-field>
                 </div>
                 <div class="mt-3 me-3">
-                    <div id="map" class="custom-sheet" style="width: 100%; height: 600px;"></div>
+                    <div id="map" class="custom-sheet" style="width: 102%; height: 600px;"></div>
                 </div>
 
             </v-sheet>
@@ -397,7 +397,6 @@ export default {
             this.agree = false;
         },
         myLikeList() {
-            // console.log(this.userInfo.data.memberId !== null);
             if (this.userInfo.data.memberId !== null) {
                 http.get(`/tour/mylikelist/${this.userInfo.data.memberId}`)
                 .then((response) => {
