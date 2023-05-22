@@ -76,9 +76,7 @@ export default {
     methods: {
         getMemberInfo(){
             http.get(geturl+"/"+ this.userInfo.data.memberId).then(response => {
-                console.log(response.data.data);
                 this.updateUserInfo = response.data;
-                console.log(this.updateUserInfo.data.memberId);
                 this.id = this.updateUserInfo.data.memberId;
                 this.name = this.updateUserInfo.data.memberName;
                 this.phoneNumber = this.updateUserInfo.data.memberPhone;
@@ -107,8 +105,6 @@ export default {
             updateForm.emailDomain = this.emailDomain;
             updateForm.birth = this.birth;
             updateForm.nickname = this.nickname;
-            console.log("updateform");
-            console.log(updateForm);
             http.post(updateurl, updateForm).then(response => {
                 if(response.status == 202){
                     alert("수정 완료");

@@ -61,14 +61,12 @@ export default {
     methods: {
         changePassword() {
             let userid = this.userInfo.data.memberId;
-            console.log(userid);
             http.get(pwdcheckurl, {
                 params: {
                     userId : userid,
                     userPassword : this.currentPassword
                 }
             }).then(response => {
-                console.log(response);
                 if(response.data !== 'SUCCESS'){
                     alert("현재 비밀번호가 일치하지 않습니다.");
                     return;

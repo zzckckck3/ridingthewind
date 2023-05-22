@@ -154,9 +154,6 @@ export default {
         sendMail(){
             const email = this.emailId + "@" + this.emailDomain;
             http.get(sendmailurl+"/"+email).then(response => {
-                console.log("메일번호 받기");
-                console.log(response);
-                console.log(response.data);
                 this.mailCode = response.data.toString();
                 // sessionStorage.setItem()
                 if(response.status === 202){

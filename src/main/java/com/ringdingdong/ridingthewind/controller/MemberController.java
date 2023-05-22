@@ -77,10 +77,9 @@ public class MemberController {
 
 	@GetMapping("/check/{memberId}")
 	public ResponseEntity<?> idCheck(@PathVariable("memberId") String memberId) throws Exception {
-		System.out.println(memberId);
+
 		try {
 			int cnt = memberService.idCheck(memberId);
-			System.out.println(cnt);
 			if(cnt == 0){
 				return ResponseEntity.ok().body(ResponseResult.SUCCESS.name());
 			}else{
@@ -127,7 +126,6 @@ public class MemberController {
 	@PostMapping(value="/update")
 	public ResponseEntity<?> update(@RequestBody Map<String, String> map) throws Exception {
 		HttpStatus status = null;
-		System.out.println("업데이트 접속"+map.toString());
 		MemberDto memberDto = new MemberDto();
 		memberDto.setMemberId(map.get("id"));
 		memberDto.setMemberName(map.get("name"));
@@ -150,7 +148,6 @@ public class MemberController {
 		HttpStatus status = null;
 		try {
 			memberService.deleteMember(memberId);
-			System.out.println("회원삭제완료");
 			status = HttpStatus.ACCEPTED;
 		} catch (Exception e) {
 			status = HttpStatus.INTERNAL_SERVER_ERROR;
@@ -160,15 +157,12 @@ public class MemberController {
 
 	@PostMapping("/login")
 	public ResponseEntity<?> login(@RequestBody Map<String, String> map) {
-		System.out.println(map.toString());
-		System.out.println("로그인 접속");
 		logger.debug("login map : {}", map);
 		Map<String, Object>  resultMap = new HashMap<>();
 		HttpStatus status = null;
 		try {
 			MemberDto memberDto = memberService.loginMember(map);
 			if(memberDto != null) {
-				System.out.println("로그인성공");
 				String accessToken = jwtService.createAccessToken("memberId", memberDto.getMemberId());
 				String refreshToken = jwtService.createRefreshToken("memberId", memberDto.getMemberId());
 
@@ -184,7 +178,6 @@ public class MemberController {
 				status = HttpStatus.ACCEPTED;
 
 			} else {
-				System.out.println("로그인실패");
 				resultMap.put("message", ResponseResult.FAIL.name());
 				status = HttpStatus.ACCEPTED;
 			}
@@ -199,7 +192,6 @@ public class MemberController {
 
 	@GetMapping("/info/{userid}")
 	public ResponseEntity<?> info(@PathVariable("userid") String memberId){
-		System.out.println("아이디출력"+memberId);
 		Map<String, Object>  resultMap = new HashMap<>();
 
 		resultMap.put("message", ResponseResult.FAIL.name());
@@ -207,7 +199,6 @@ public class MemberController {
 		try{
 			MemberDto result = memberService.findMemberId(memberId);
 			if(result != null){
-				System.out.println(result.toString());
 				resultMap.put("message", ResponseResult.SUCCESS.name());
 				resultMap.put("data", result); // MemberDto를 'data'라는 키로 추가
 
@@ -219,7 +210,6 @@ public class MemberController {
 
 	@GetMapping("/logout/{userid}")
 	public ResponseEntity<?> removeToken(@PathVariable("userid") String userId){
-		System.out.println("로그아웃"+ userId);
 		Map<String, Object> resultMap = new HashMap<>();
 		HttpStatus status = HttpStatus.ACCEPTED;
 
@@ -237,18 +227,8 @@ public class MemberController {
 
 	}
 
-//	@GetMapping("/sendmail/{email}")
-//	public ResponseEntity<?> sendMail(@PathVariable("email") String email) {
-//		System.out.println(email);
-//		System.out.println("메일 들어옴");
-//		String mailcode = mailSendUtil.joinEmail("ghwo2618@naver.com");
-//
-//		return null;
-//	}
 	@GetMapping("/sendmail/{email}")
 	public ResponseEntity<?> sendMail(@PathVariable("email") String email) {
-		System.out.println(email);
-		System.out.println("메일 들어옴");
 		HttpStatus status = null;
 		String mailcode = null;
 		try {
