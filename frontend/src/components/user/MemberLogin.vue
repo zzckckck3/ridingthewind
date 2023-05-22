@@ -4,13 +4,11 @@
       v-model="loginModal"
       max-width="550"
     >
-    <v-container style="max-width: 550px" fill-height>
-      <v-layout align-center row wrap>
+    <v-container style="max-width: 550px; padding: 0;" fill-height>
         <v-flex xs12>
           <v-card>
             <div class="pa-10">
               <h1 style="text-align: center" class="mb-10">Login</h1>
-
                 <v-text-field
                   label="ID"
                   prepend-inner-icon="mdi-account"
@@ -50,7 +48,6 @@
             </div>
           </v-card>
         </v-flex>
-      </v-layout>
     </v-container>
   </v-dialog>
 </template>
