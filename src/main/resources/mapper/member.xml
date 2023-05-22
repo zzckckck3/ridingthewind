@@ -107,4 +107,20 @@
 		from follow
 		where `to` = #{userId}
 	</select>
+
+	<select id="checkFollow" parameterType="map" resultType="int">
+		select count(*)
+		from follow
+		where `from` = #{from} and `to` = #{to}
+	</select>
+
+	<delete id="deleteFollow" parameterType="map">
+		delete
+		from follow
+		where `from` = #{from} and `to` = #{to}
+	</delete>
+
+	<insert id="insertFollow" parameterType="map">
+		insert into follow(`from`, `to`) values(#{from}, #{to})
+	</insert>
 </mapper>

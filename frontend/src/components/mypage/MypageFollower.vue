@@ -23,7 +23,8 @@ const getfollowerurl = "/member/follower";
 export default {
     data() {
         return{
-            followers : []
+            followers : [],
+            followerscheck : false
         }
     },
     created() {
@@ -34,6 +35,9 @@ export default {
     props:['userId'],
     watch: {
         userId(){
+            this.getUserFollowerList();
+        },
+        followerscheck(){
             this.getUserFollowerList();
         }
     },
@@ -47,6 +51,11 @@ export default {
         },
         moveToUserInfo(userId) {
             this.$router.push({name:"infopage", params: {userId : userId}});
+        },
+        changecheck(){
+            if(this.followerscheck) this.followerscheck = false;
+            else this.followerscheck = true;
+
         }
     }
 }
