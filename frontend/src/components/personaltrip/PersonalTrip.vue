@@ -35,7 +35,7 @@
               style="padding: 10px;"
             >
               <v-btn class="ma-1" outlined color="indigo" @click="optimalButtonClicked()">최적경로 보기</v-btn>
-              <v-btn class="ma-1" outlined color="indigo">공유!</v-btn>
+              <v-btn class="ma-1" outlined color="indigo" @click="Test()">공유!</v-btn>
               <v-btn class="ma-1" outlined color="indigo" @click="showRoute()">현재경로 보기</v-btn>
               <v-container fluid style="min-height: 500px;">
                 <v-row dense class="card-list" id="card-list-custom" style="min-height: 300px; min-width: 200px;">
@@ -125,13 +125,13 @@
 import http from "@/axios/http";
 import Sortable from 'sortablejs';
 import DeleteTourDialog from '@/components/tour/DeleteTourDialog.vue';
-import {mapState} from "vuex";
+import { mapState } from "vuex";
 const memberStore = "memberStore";
 
 export default {
-  name: 'TourSearchInfo',
+  name: 'PersonalTrip',
   components: {
-    DeleteTourDialog
+    DeleteTourDialog,
   },
   data() {
     return {
@@ -179,6 +179,7 @@ export default {
       /* Switching div Element Variables */
       customCards: [],
       customCardsShort: [],
+      customCardList: [],
       /* Switching div Element Variables End */
     };
   },
@@ -246,6 +247,18 @@ export default {
     },
   },
   methods: {
+    Test() {
+      const customCards = document.querySelectorAll("#card-list-custom > div");
+      const customCardList = Array.from(customCards);
+      const customCardListId = [];
+      for (let i = 0; i < customCardList.length; i++){
+        customCardListId[i] = customCardList[i].id;
+      }
+      console.log(customCardListId[0]);
+      
+      this.$router.push({ name: 'articleWithPlanWrite', params: { customCardListId: customCardListId } });
+
+    },
     registAll() {
       this.customCards = document.querySelectorAll("#card-list > div");
       this.customCardsShort = [];
@@ -280,7 +293,7 @@ export default {
         this.customCardsShort[i].classList.remove('fade-in');
         this.customCardsShort[i].classList.remove('show');
       }
-      for (let i = 0; i < this.customCards.length; i++) {
+      for (let i = 0; i < this.customCards.length; i++) { 
         this.customCards[i].remove();
       }
       // customCardsShorts에 있는 요소들을 순회하면서 HTML에 추가
@@ -406,9 +419,6 @@ export default {
       this.selectedId = id;
     },
     makeList() {
-      //======================================
-        // 바꿈!!
-      //======================================
       http.get(`/mypage/list/${this.userInfo.data.memberId}`)
         .then((response) => {
           this.positions.length = 0;
