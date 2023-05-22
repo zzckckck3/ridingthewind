@@ -75,7 +75,7 @@
                                         <v-row>
                                             <v-btn
                                                 icon
-                                                @click="tripDelete(card.id)"
+                                                @click="tripDelete(index)"
                                             >
                                                 <v-icon
                                                     :color="
@@ -172,6 +172,9 @@ export default {
     methods: {
         moveToList() {
             this.$router.push({ name: "article" });
+        },
+        tripDelete(index) {
+            this.cards.splice(index, 1);
         },
     },
     components: {
