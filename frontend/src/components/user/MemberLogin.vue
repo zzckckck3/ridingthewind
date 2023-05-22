@@ -86,14 +86,20 @@ export default {
             } else {
                 alert("아이디와 비밀번호를 확인해주세요");
             }
-        },
-        addUserShow() {
-            this.loginModal = false;
-            this.$emit("showSignup");
-        },
-        openLoginModal() {
-            this.loginModal = true;
-        },
-    },
+
+          }else{
+              alert("아이디와 비밀번호를 확인해주세요");
+          }
+      },
+      addUserShow() {
+        this.loginModal = false;
+        this.$emit("showSignup");
+      },
+      openLoginModal() {
+        this.user.userId = '',
+        this.user.userPwd = '',
+        this.loginModal = true;
+      },
+  },
 };
 </script>

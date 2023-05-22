@@ -135,11 +135,9 @@
                     </v-dialog>
                 </v-card>
             </v-menu>
-            <member-login
-                ref="loginOverlay"
-                @showSignup="openSignupModal"
-            ></member-login>
-            <member-signup ref="signupOverlay"></member-signup>
+
+            <member-login ref="loginOverlay" @showSignup="openSignupModal"></member-login>
+            <member-signup ref="signupOverlay" @showLogin="openLoginModal"></member-signup>
         </div>
     </v-app-bar>
 </template>

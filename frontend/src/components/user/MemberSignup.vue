@@ -200,8 +200,9 @@ export default {
             http.post(signupurl, signupForm).then((response) => {
                 if (response.status === 202) {
                     alert("성공");
-                    this.$router.push({ name: "signin" });
-                } else {
+                    this.signupModal = false;
+                    this.$emit("showLogin");
+                }else{
                     alert("실패");
                     this.$router.push({ name: "home" });
                 }
@@ -235,6 +236,16 @@ export default {
             }
         },
         openSignupModal() {
+            this.id = '',
+            this.password = '',
+            this.passwordcheck = '',
+            this.name = '',
+            this.phoneNumber = '',
+            this.emailId = '',
+            this.emailDomain = '',
+            this.birthday = '',
+            this.nickname = '',
+            this.inputMailCode = '',
             this.signupModal = true;
         },
     },
