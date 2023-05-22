@@ -276,6 +276,7 @@ alter table `article_attraction_map` add constraint fk_article_aam foreign key(a
 alter table `article_attraction_map` add constraint fk_attraction_aam foreign key(content_id) references attraction_info(content_id);
 
 -- 추천 시스템을 적용하기 위해 공유 게시판에 글이 등록된 횟수를 카운트 하는 column을 sido, gugun에 추가
-ALTER TABLE `sido` modify `post_count` int(10) default 0;
-ALTER TABLE `gugun` modify `post_count` int(10) default 0;
+ALTER TABLE `sido` add `post_count` int(10) default 0;
+ALTER TABLE `gugun` add `post_count` int(10) default 0;
+
 

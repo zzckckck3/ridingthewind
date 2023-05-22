@@ -52,11 +52,11 @@
 <script>
 // import http from "@/axios/http";
 import { mapState, mapActions } from "vuex";
-import { currentRoute } from "vue-router";
 
 const memberStore = "memberStore";
 export const loginurl = "/member/login";
 export default {
+
     data() {
         return {
             user: {
@@ -97,5 +97,6 @@ export default {
         this.loginModal = true;
       },
   },
+
 };
 </script>

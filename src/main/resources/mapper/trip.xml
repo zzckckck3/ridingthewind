@@ -31,6 +31,7 @@
 		<result column="longitude" property="longitude"/>
 		<result column="mlevel" property="mlevel"/>
 		<result column="overview" property="overView"/>
+		<result column="total_count" property="totalCount"/>
 	</resultMap>
 	
 	<resultMap type="PersonalTripDto" id="personalTrip">
@@ -43,10 +44,23 @@
 		from sido
 	</select>
 	
+	<update id="addSidoCount">
+		UPDATE sido
+		SET post_count = post_count + 1
+		WHERE sido_code = #{sidoCode}
+	</update>
+	
 	<select id="getGugun" parameterType="Integer" resultType="TourGugunDto" resultMap="gugun" >
 		select gugun_code, gugun_name from gugun 
 		where sido_code = #{sidoCode}
 	</select>
+	
+	<update id="addGugunCount">
+		UPDATE gugun
+		SET post_count = post_count + 1
+		WHERE gugun_code = #{gugunCode}
+		AND sido_code = #{sidoCode}
+	</update>
 	
 	<select id="getList" parameterType="int" resultType="TourDto" resultMap="tourinfo">
 		select * from attraction_info i join attraction_description d
@@ -87,4 +101,14 @@
 		insert into personal_trip (member_id, content_id)
 		values (#{memberId}, #{contentId});
 	</insert>
+	
+	
+	<select id="getPopularTourList" resultMap="tourinfo">
+		select *
+		from (select content_id, count(member_id) as total_count
+		from personal_trip 
+		group by content_id 
+		order by total_count desc limit 3) p left join attraction_info i
+		on p.content_id = i.content_id;
+	</select>
 </mapper>
