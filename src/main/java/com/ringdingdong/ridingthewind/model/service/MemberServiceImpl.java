@@ -5,6 +5,7 @@ import com.ringdingdong.ridingthewind.model.mapper.MemberMapper;
 import com.ringdingdong.ridingthewind.util.PasswordEncryptor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -94,6 +95,16 @@ public class MemberServiceImpl implements MemberService {
 	@Override
 	public void setPassword(Map<String, String> map) {
 		memberMapper.setPassword(map);
+	}
+
+	@Override
+	public ArrayList<String> getFollowingList(String userId) {
+		return memberMapper.getFollowingList(userId);
+	}
+
+	@Override
+	public ArrayList<String> getFollowerList(String userId) {
+		return memberMapper.getFollowerList(userId);
 	}
 
 

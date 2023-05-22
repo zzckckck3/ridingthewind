@@ -25,10 +25,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.xml.ws.Response;
-import java.util.Base64;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 @RestController
 @RequestMapping(value = "/member")
@@ -286,6 +283,30 @@ public class MemberController {
 		return ResponseEntity.ok().body(status);
 	}
 
+	@GetMapping("/following/{userId}")
+	public ResponseEntity<?> following(@PathVariable("userId") String userId){
+		System.out.println(userId);
+		ArrayList<String> list = null;
+		try{
+			list =  memberService.getFollowingList(userId);
+
+		}catch (Exception e){
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		}
+		return ResponseEntity.ok(list);
+	}
+	@GetMapping("/follower/{userId}")
+	public ResponseEntity<?> follower(@PathVariable("userId") String userId) {
+
+		System.out.println(userId);
+		ArrayList<String> list = null;
+		try {
+			list = memberService.getFollowerList(userId);
+		}catch (Exception e){
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		}
+		return ResponseEntity.ok(list);
+	}
 
 // 마이페이지 이동 메서드
 //	@GetMapping(value="/viewinfo")

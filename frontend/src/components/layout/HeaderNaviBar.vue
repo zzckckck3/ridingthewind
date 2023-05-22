@@ -66,6 +66,12 @@
                     <v-divider></v-divider>
 
                     <v-list v-if="isLogin">
+
+                        <v-list-item @click="moveToMypageApp()">
+                            <v-list-item-content class="pl-3" >
+                                <v-list-item-title>마이페이지</v-list-item-title>
+                            </v-list-item-content>
+                        </v-list-item>
                         <v-list-item :to="{ name: 'update' }">
                             <v-list-item-content class="pl-3">
                                 <v-list-item-title>내 정보 수정</v-list-item-title>
@@ -81,6 +87,7 @@
                                 <v-list-item-title>회원 탈퇴하기</v-list-item-title>
                             </v-list-item-content>
                         </v-list-item>
+
                     </v-list>
                     <v-dialog v-model="showConfirmationDialog" max-width="500">
                         <v-card>
@@ -150,6 +157,9 @@ export default {
         onClickDeleteMember(){
             this.showConfirmationDialog = false;
             this.$router.push({ name: "delete" });
+        },
+        moveToMypageApp() {
+            this.$router.push({name:"infopage", params: {userId : this.userInfo.data.memberId}});
         }
     }
 };

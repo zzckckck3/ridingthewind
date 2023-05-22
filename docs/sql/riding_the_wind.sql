@@ -275,3 +275,10 @@ alter table `article_attraction_map` add constraint fk_article_aam foreign key(a
 -- 게시판-여행경로 매핑 테이블 attraction_id를 관광정보 테이블 content_id의 외래키로 지정
 alter table `article_attraction_map` add constraint fk_attraction_aam foreign key(content_id) references attraction_info(content_id);
 
+create table if not exists `riding_the_wind`.`follow`(
+    `from` varchar(16) NOT NULL,
+    `to` varchar(16) NOT NULL,
+    PRIMARY KEY(`to`, `from`),
+    foreign key(`to`) references member(member_id),
+    foreign key(`from`) references member(member_id)
+    );

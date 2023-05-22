@@ -63,6 +63,11 @@ const routes = [
         path: "delete",
         name: "delete",
         component: () => import("@/components/user/MemberDelete.vue"),
+      },
+      {
+        path: "infopage/:userId",
+        name: "infopage",
+        component: () => import("@/components/user/MypageApp.vue"),
       }
     ],
   },
