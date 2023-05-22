@@ -71,5 +71,10 @@ public class TourServiceImpl implements TourService{
 		return tourMapper.addtour(contentId, memberId) == 1;
 	}
 
+	@Override
+	public List<TourDto> getPopularTourList() throws SQLException {
+		return tourMapper.getPopularTourList();
+	}
+
 
 }

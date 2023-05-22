@@ -138,6 +138,12 @@ public class TourController {
 		}
 		return new ResponseEntity<String>(FAIL, HttpStatus.NO_CONTENT);
 	}
+	
+	@GetMapping("/")
+	public ResponseEntity<List<TourDto>> popularTour() throws SQLException{
+		List<TourDto> list = tourService.getPopularTourList();
+		return ResponseEntity.ok(list);
+	}
 
 
 }

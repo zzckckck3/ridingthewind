@@ -56,41 +56,42 @@ import { mapState, mapActions } from "vuex";
 const memberStore = "memberStore";
 export const loginurl = "/member/login";
 export default {
-    data() {
-        return {
-            user: {
-                userId: "",
-                userPwd: "",
-            },
-            loginModal: false,
-        };
-    },
-    components: {},
-    computed: {
-        ...mapState(memberStore, ["isLogin", "isLoginError", "userInfo"]),
-    },
-    methods: {
-        ...mapActions(memberStore, ["userConfirm", "getUserInfo"]),
-        async loginSubmit() {
-            await this.userConfirm(this.user);
-            let token = sessionStorage.getItem("access-token");
-            if (this.isLogin) {
-                await this.getUserInfo(token);
-                alert("로그인 성공");
-                this.loginModal = false;
-            } else {
-                alert("아이디와 비밀번호를 확인해주세요");
-            }
-        },
-        addUserShow() {
+  data() {
+    return {
+      user:{
+          userId : '',
+          userPwd : '',
+      },
+      loginModal: false
+    };
+  },
+  components: {},
+  computed: {
+      ...mapState(memberStore, ["isLogin", "isLoginError", "userInfo"]),
+  },
+  methods: {
+      ...mapActions(memberStore, ['userConfirm', "getUserInfo"]),
+      async loginSubmit(){
+          await this.userConfirm(this.user);
+          let token = sessionStorage.getItem("access-token");
+          if(this.isLogin){
+            await this.getUserInfo(token);
+            alert("로그인 성공");
             this.loginModal = false;
-            this.$emit("showSignup");
-        },
-        openLoginModal() {
-            (this.user.userId = ""),
-                (this.user.userPwd = ""),
-                (this.loginModal = true);
-        },
-    },
+          }else{
+              alert("아이디와 비밀번호를 확인해주세요");
+          }
+      },
+      addUserShow() {
+        this.loginModal = false;
+        this.$emit("showSignup");
+      },
+      openLoginModal() {
+        this.user.userId = '',
+        this.user.userPwd = '',
+        this.loginModal = true;
+      },
+  },
+
 };
 </script>

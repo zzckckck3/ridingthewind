@@ -24,4 +24,5 @@ public class TourDto {
 	private double longitude;
 	private String overView;
 	private String mlevel;
+	private int totalCount;
 }
