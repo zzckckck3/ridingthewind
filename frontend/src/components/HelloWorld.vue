@@ -37,7 +37,7 @@
                         </v-sheet>
                     </v-row>
                     <!-- 하단 인기순 -->
-                    <v-row class="mt-5">
+                    <v-row class="margin-top">
                         <v-container
                             v-for="type in types"
                             :key="type"
@@ -138,3 +138,9 @@
     },
 }
 </script>
+
+<style scoped>
+    .margin-top{
+        margin-top: 50px;
+    }
+</style>
