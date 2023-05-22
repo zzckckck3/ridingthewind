@@ -30,7 +30,7 @@
                         color="blue"
                         elevation="3"
                         plain
-                        @click="$router.push({ name: 'mypage'})"
+                        @click="$router.push({ name: 'plan'})"
                     >여행 경로 공유</v-btn>
                 </v-col>
                 <v-col cols="1">
