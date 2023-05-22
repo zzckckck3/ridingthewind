@@ -31,12 +31,12 @@
               <v-container fluid style="max-height: 960px; overflow-y: auto;">
                   <v-row dense class="card-list" id="card-list" style="min-height: 300px; min-width: 200px;">
                       <v-col
-                          v-for="card in cards"
-                          :key="card.title"
-                          :cols="card.flex"
+                          v-for="(card, index) in customCardListId"
+                          :key="index"
+                          :cols="12"
                           :id="card.id"
                       >
-                          <v-card>
+                        <v-card>
                               <v-img
                                   :src="card.src"
                                   class="white--text align-end card-image"
@@ -72,8 +72,8 @@
                                   </div>
                               </v-expand-transition>
                           </v-card>
-                          <v-icon class="my-6">mdi-arrow-down-circle</v-icon>
-                      </v-col>
+                        <v-icon class="my-6">mdi-arrow-down-circle</v-icon>
+                    </v-col>
                   </v-row>
               </v-container>
           </v-card>
@@ -84,18 +84,26 @@
 <script>
 import WriteConfirmDialog from "@/components/layout/WriteConfirmDialog.vue";
 
+
 export default {
     name: "ArticleWithPlanWrite",
     data() {
         return {
             subject: "",
             content: "",
+            customCardListId: [],
             cards: [],
             dialog: false,
-        }
+        }   
     },
+
     created() {
-        this.cards = this.$route.params.array;
+        this.customCardListId = this.$route.params.customCardListId;
+
+        console.log(this.customCardListId);
+    },
+    mounted() {
+
     },
     methods: {
         moveToList() {
