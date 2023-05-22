@@ -4,9 +4,8 @@
 
 <script>
 
+
 export default {
     name: 'TourInfoView',
-    components: {
-    }
 };
 </script>

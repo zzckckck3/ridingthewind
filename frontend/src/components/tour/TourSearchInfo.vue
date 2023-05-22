@@ -1,5 +1,5 @@
 <template>
-<v-app id="inspire">
+<v-app>
     <v-main class="white">
     <v-container class="text-center">
     <h1>여행정보</h1>
@@ -396,11 +396,14 @@ export default {
             });    
             this.agree = false;
         },
-        myLikeList(){
-            http.get(`/tour/mylikelist/${this.userInfo.data.memberId}`)
+        myLikeList() {
+            // console.log(this.userInfo.data.memberId !== null);
+            if (this.userInfo.data.memberId !== null) {
+                http.get(`/tour/mylikelist/${this.userInfo.data.memberId}`)
                 .then((response) => {
                     this.loginLikeData = response.data.map((area) => area.contentId);
-                });
+                });    
+            }
         },
         create_sido() {
             http.get(`/tour/sido`)
