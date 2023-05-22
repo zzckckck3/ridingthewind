@@ -140,6 +140,7 @@ export default {
                 .then(({ data }) => {
                     this.article = data;
                     this.comment = "";
+                    this.cards = [];
                     data.tourList.forEach((area) => {
                         let card = {
                             id: area.contentId,
@@ -164,11 +165,6 @@ export default {
             this.$router.push({ name: "article" });
         },
         moveToModify() {
-            // let param = {
-            //     article: this.article,
-            //     cards: this.cards
-            // };
-
             this.$router.push({ name: "articleModify", params: {
                     article: JSON.stringify(this.article),
                     cards: JSON.stringify(this.cards),
