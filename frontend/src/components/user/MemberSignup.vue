@@ -152,7 +152,8 @@ export default {
             http.post(signupurl, signupForm).then(response => {
                 if(response.status === 202){
                     alert("성공");
-                    this.$router.push({name:'signin'});
+                    this.signupModal = false;
+                    this.$emit("showLogin");
                 }else{
                     alert("실패");
                     this.$router.push({name:'home'});
@@ -185,7 +186,17 @@ export default {
                 alert("먼저 인증코드를 발송해주세요");
             }
         },
-        openSignupModal(){
+        openSignupModal() {
+            this.id = '',
+            this.password = '',
+            this.passwordcheck = '',
+            this.name = '',
+            this.phoneNumber = '',
+            this.emailId = '',
+            this.emailDomain = '',
+            this.birthday = '',
+            this.nickname = '',
+            this.inputMailCode = '',
             this.signupModal = true;
         }
     }

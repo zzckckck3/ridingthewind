@@ -95,6 +95,8 @@ export default {
         this.$emit("showSignup");
       },
       openLoginModal() {
+        this.user.userId = '',
+        this.user.userPwd = '',
         this.loginModal = true;
       },
   },
