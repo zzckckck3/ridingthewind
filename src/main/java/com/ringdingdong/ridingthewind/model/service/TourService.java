@@ -21,5 +21,5 @@ public interface TourService {
 
 	List<PersonalTripDto> getLikeList(String memberId) throws SQLException;
 	boolean addtour(int contentId, String memberId) throws Exception;
-	
+	List<TourDto> getPopularTourList() throws SQLException;
 }
