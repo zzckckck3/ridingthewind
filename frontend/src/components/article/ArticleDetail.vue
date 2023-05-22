@@ -60,7 +60,7 @@
                                 <v-row align-content="center">
                                     추천: {{ article.like }}
                                     <span class="mx-5" @click="likeClicked">
-                                        <v-icon>mdi-thumb-up</v-icon>
+                                        <v-icon :color="like ? 'blue' : ''">mdi-thumb-up</v-icon>
                                     </span>
                                 </v-row>
                             </v-col>
@@ -200,6 +200,7 @@ export default {
             article: {},
             cards: [],
             comment: "",
+            like: false,
             dialog: false,
             commentDialog: false,
             deleteCommentNo: 0,
@@ -207,6 +208,7 @@ export default {
     },
     created() {
         this.getArticle();
+        this.getLike();
     },
     computed: {
         ...mapState(memberStore, ["userInfo"]),
@@ -272,8 +274,40 @@ export default {
             this.deleteCommentNo = key;
         },
         likeClicked() {
+            let likeDto = {
+                articleNo: this.$route.params.articleNo,
+                memberId: this.userInfo.data.memberId
+            };
+
+            if(this.like) {
+                http.delete('/like', likeDto)
+                    .then(({ data }) => {
+                        if (data == "SUCCESS") {
+                            this.like = false;
+                        } else {
+                            alert("서버 에러 발생");
+                        }
+                    })
+                    .catch((error) => {
+                        this.$router.push("error/error", error);
+                    });
+            } else {
+                http.post('/like', likeDto)
+                    .then(({ data }) => {
+                        if (data == "SUCCESS") {
+                            this.like = true;
+                        } else {
+                            alert("서버 에러 발생");
+                        }
+                    })
+                    .catch((error) => {
+                        this.$router.push("error/error", error);
+                    });
+            }
+        },
+        getLike() {
             let articleNo = this.$route.params.articleNo;
-            http.post('/article/like', {
+            http.get('/like', {
                 params:
                     {
                         articleNo: articleNo,
@@ -281,9 +315,7 @@ export default {
                     }
             })
                 .then(({ data }) => {
-                    if (data == "SUCCESS") {
-                        
-                    }
+                    this.like = data == "SUCCESS";
                 })
                 .catch((error) => {
                     this.$router.push("error/error", error);
@@ -293,6 +325,6 @@ export default {
     components: {
         CommentDeleteConfirmDialog,
         DeleteConfirmDialog,
-    },
+    }
 };
 </script>
