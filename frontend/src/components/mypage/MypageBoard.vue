@@ -3,15 +3,34 @@
         <!-- 배너 내용 -->
         <div class="banner custom-font">
             추천한 게시글
+
         </div>
     </div>
 </template>
 
 <script>
-
+// import http from "@/axios/http";
+// const likelisturl = "/member/likelist";
 export default {
-    name: 'MypageBoard'
+    name: 'MypageBoard',
+    props:['userId'],
+    created() {
+        this.getLikeList();
+    },
+    watch(){
+        this.getLikeList();
+    },
+    methods: {
+        getLikeList(){
+            console.log("여기서"+ this.userId);
+            http.get(likelisturl).then(response => {
+                console.log(this.userId);
+            })
+        }
+    }
+
 }
+
 </script>
 
 <style scoped>
