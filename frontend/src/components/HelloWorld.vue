@@ -46,31 +46,45 @@
                     <!-- 하단 인기순 -->
                     <v-row class="margin-top">
                         <v-container
-                            v-for="type in types"
-                            :key="type"
-                            class="grey lighten-4"
-                            style="padding-left: 80px; padding-right: 80px;"
+                            class="grey lighten-4 rounded-lg"
+                            style="padding-left: 40px; padding-right: 80px; padding-top: 30px; padding-bottom: 40px;"
                             fluid
                         >
-                        <v-subheader>{{ type }}</v-subheader>
+                        <v-subheader class="text-1">찜 많은순</v-subheader>
                         
+                        <v-card-text>
+                            <v-chip-group
+                                v-model="sidoSelection"
+                                active-class="accent-4 white--text"
+                                column
+                            >
+                                <v-chip class="custom-chip" :style="{display : cards.some(card => card.sidoCode === 1) ? '' : 'none'}" >서울</v-chip>
+
+                                <v-chip class="custom-chip" :style="{display : cards.some(card => card.sidoCode === 2) ? '' : 'none'}" >인천</v-chip>
+                                
+                                <v-chip class="custom-chip" :style="{display : cards.some(card => card.sidoCode === 3) ? '' : 'none'}" >대전</v-chip>
+
+                                <v-chip class="custom-chip" :style="{display : cards.some(card => card.sidoCode === 4) ? '' : 'none'}" >대구</v-chip>
+                            </v-chip-group>
+                        </v-card-text>
+
                         <v-row>
                             <v-spacer></v-spacer>
                             <v-col
-                                v-for="card in cards"
-                                :key="card"
+                                v-for="card in filteredCards"
+                                :key="card.id"
                                 cols="12"
                                 sm="6"
-                                md="4"
+                                md="3"
                             >
                                 <v-card>
                                     <v-img
-                                    :src="`https://picsum.photos/200/300?image=${getImage()}`"
+                                    :src="card.src"
                                     height="300px"
                                     >
                                     <span
                                         class="text-h5 white--text pl-4 pt-4 d-inline-block"
-                                        v-text="card"
+                                        v-text="card.title"
                                     ></span>
                                     </v-img>
 
@@ -90,11 +104,18 @@
                                     </v-card-actions>
                                 </v-card>
                             </v-col>
+                            
+                            
+                            
                         </v-row>
                         </v-container>
                     </v-row>
+                    {{ tempSelection }}
                 </v-col>
-                
+        
+                    
+    
+
                 <!--Right Container-->
                 <v-col class="text-center" cols="12" sm="2">
                     <v-sheet
@@ -113,6 +134,8 @@
 </template>
 
 <script>
+import http from "@/axios/http";
+
 export default {
     data() {
         return {
@@ -124,9 +147,10 @@ export default {
                 "orange",
             ],
             model: 0,
-
-            types: ["Places to Be", "Places to See"],
-            cards: ["Good", "Best", "Finest"],
+            sidoSelection: 0,
+            tempSelection: 1,
+            types: ["인기 많은 순", "Places to See"],
+            cards: [],
             socials: [
                 {
                     icon: "mdi-facebook",
@@ -143,18 +167,68 @@ export default {
             ],
         };
     },
+    created() {
+        this.getLikelist();
+    },
+    computed: {
+        filteredCards() {
+            return this.cards.filter(card => this.tempSelection === card.sidoCode);
+        }  
+    },
+    watch: {
+        sidoSelection: {
+            handler(val) {
+                if (val > 8) {
+                    this.tempSelection = val+30;
+                } else {
+                    console.log(val);
+                    this.tempSelection = val+1;
+                }
+            }
+        },  
+    },
     methods: {
         getImage() {
             const min = 550;
             const max = 560;
             return Math.floor(Math.random() * (max - min + 1)) + min;
         },
-    },
+        getLikelist() {
+            http.get(`/`)
+                .then((response) => {
+                    console.log(response.data);
+                    response.data.forEach((area) => {
+                        let card = {
+                            id: area.contentId,
+                            src: area.firstImage,
+                            title: area.title,
+                            sidoCode: area.sidoCode
+                        }
+                        this.cards.push(card);
+                    });
+                });
+        },
+
+    }
 }
 </script>
 
 <style scoped>
     .margin-top{
         margin-top: 50px;
+    }
+    .text-1{
+        font-size: x-large;
+        font-weight: 600;
+        color: navy;
+        font-family: math;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.15);
+    }
+    .custom-chip{
+        font-size: large;
+        padding: 20px;
+        border-radius: 6px;
+        box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.15);
+        background-image: linear-gradient(to right, #8a77f7, #0767f7);
     }
 </style>
