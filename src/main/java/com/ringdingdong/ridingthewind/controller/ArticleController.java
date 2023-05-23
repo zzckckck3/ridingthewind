@@ -4,15 +4,7 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.ringdingdong.ridingthewind.enumerate.ResponseResult;
 import com.ringdingdong.ridingthewind.model.ArticleDetailDto;
@@ -48,6 +40,12 @@ public class ArticleController {
 	@GetMapping
 	public ResponseEntity<ArticleListResponseDto> listArticle(@ApiParam(value = "게시글을 얻기위한 부가정보.", required = true) ArticleParameterDto articleParameterDto) throws Exception {
 		return new ResponseEntity<>(articleService.listArticle(articleParameterDto), HttpStatus.OK);
+	}
+
+	@ApiOperation(value = "핫글 목록", notes = "특정 기간안의 추천수가 높은 게시글의 정보를 반환한다.", response = List.class)
+	@GetMapping("/hot")
+	public ResponseEntity<List<ArticleDetailDto>> listHotArticle(@ApiParam(value = "게시글을 얻기위한 부가정보.", required = true) @RequestParam int period) throws Exception {
+		return new ResponseEntity<>(articleService.listHotArticle(period), HttpStatus.OK);
 	}
 
 	@ApiOperation(value = "게시판 글보기", notes = "글번호에 해당하는 게시글의 정보를 반환한다.", response = ArticleDto.class)

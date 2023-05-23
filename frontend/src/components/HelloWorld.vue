@@ -19,27 +19,60 @@
                     <v-sheet
                         class="grey lighten-5 text-center"
                         rounded="lg"
-                        elevation="12"
-                    >
+                        elevation="12">
                         <template>
-                            <v-carousel v-model="model">
-                                <v-carousel-item
-                                    v-for="(color, i) in colors"
-                                    :key="color"
-                                    :value="i"
-                                >
-                                    <v-sheet :color="color" height="100%" tile>
-                                        <div
-                                            class="d-flex fill-height justify-center align-center"
-                                        >
-                                            <div class="text-h2">
-                                                Manager Custom {{ i + 1 }}
-                                            </div>
-                                        </div>
-                                    </v-sheet>
+                            <v-carousel>
+                                <v-carousel-item v-for="article in articles" :key="article.id">
+                                    <v-col>
+                                        <v-card>
+                                            <v-row>
+                                                <v-col v-for="tour in article.tourList.slice(0, 3)" :key="tour.contentId" cols="4">
+                                                    <v-card>
+                                                        <v-img
+                                                                :src="tour.firstImage"
+                                                                class="white--text align-end card-image"
+                                                                gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)"
+                                                                height="200px"
+                                                        >
+                                                            <v-card-title style="font-size: medium">
+                                                                {{ tour.title }}
+                                                            </v-card-title>
+                                                        </v-img>
+                                                    </v-card>
+                                                </v-col>
+                                            </v-row>
+                                            <v-row>
+                                                <v-col v-for="tour in article.tourList.slice(3, 6)" :key="tour.contentId" cols="4">
+                                                    <v-card>
+                                                        <v-img
+                                                                :src="tour.firstImage"
+                                                                class="white--text align-end card-image"
+                                                                gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)"
+                                                                height="200px"
+                                                        >
+                                                            <v-card-title style="font-size: medium">
+                                                                {{ tour.title }}
+                                                            </v-card-title>
+                                                        </v-img>
+                                                    </v-card>
+                                                </v-col>
+                                            </v-row>
+                                        </v-card>
+                                    </v-col>
                                 </v-carousel-item>
                             </v-carousel>
                         </template>
+                        <v-col cols="3">
+                            <v-select
+                                v-model="selectedPeriod"
+                                :items="periodList"
+                                item-text="text"
+                                item-value="value"
+                                label="기간"
+                                outlined
+                                @input="getHotArticles"
+                            ></v-select>
+                        </v-col>
                     </v-sheet>
                 </v-col>
 
@@ -61,18 +94,37 @@
 </template>
 
 <script>
+import http from "@/axios/http.js";
+
 export default {
     data() {
         return {
-            colors: [
-                "primary",
-                "secondary",
-                "yellow darken-2",
-                "red",
-                "orange",
+            periodList: [
+                { text: 'day', value: 1 },
+                { text: 'week', value: 7 },
+                { text: 'month', value: 30 },
             ],
-            model: 0,
+            selectedPeriod: 1,
+            articles: [],
         };
     },
+    mounted() {
+        this.getHotArticles();
+    },
+    methods: {
+        getHotArticles() {
+            http.get('/article/hot', {
+                params: {
+                    period: this.selectedPeriod
+                }
+            })
+                .then(({ data }) => {
+                    this.articles = data;
+                })
+                .catch((error) => {
+                    this.$router.push("error/error", error);
+                });
+        },
+    }
 };
 </script>

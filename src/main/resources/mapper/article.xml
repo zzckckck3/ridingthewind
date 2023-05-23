@@ -44,7 +44,16 @@
 		order by a.article_no desc
 		limit #{start}, #{spp}
 	</select>
-	
+
+	<select id="listHotArticle" parameterType="int" resultMap="articleDetailDto">
+		SELECT *
+		FROM article
+		WHERE register_time >= DATE_SUB(CURDATE(), INTERVAL ${period} DAY)
+		  AND article_no IN (SELECT DISTINCT article_no
+							 FROM article_attraction_map)
+		ORDER BY `like` DESC LIMIT 5;
+	</select>
+
 	<select id="getTotalArticleCount" parameterType="map" resultType="int">
 		select count(article_no)
 		from article a, member m

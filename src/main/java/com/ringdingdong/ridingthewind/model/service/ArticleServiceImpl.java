@@ -43,6 +43,15 @@ public class ArticleServiceImpl implements ArticleService {
 	}
 
 	@Override
+	public List<ArticleDetailDto> listHotArticle(int period) throws Exception {
+		List<ArticleDetailDto> articleDetailDtos = articleMapper.listHotArticle(period);
+		for (ArticleDetailDto articleDetailDto : articleDetailDtos) {
+			articleDetailDto.setTourList(tourMapper.getListByContentIds(articleAttractionMapper.listArticleAttraction(articleDetailDto.getArticleNo()).stream().map(ArticleAttractionDto::getContentId).collect(Collectors.toList())));
+		}
+		return articleDetailDtos;
+	}
+
+	@Override
 	public PageNavigationResponseDto makePageNavigation(ArticleParameterDto articleParameterDto) throws Exception {
 		int spp = articleParameterDto.getSpp();
 		int totalCount = articleMapper.getTotalArticleCount(articleParameterDto);
