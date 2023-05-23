@@ -173,7 +173,7 @@
 		from (select content_id, count(member_id) as total_count
 		from personal_trip 
 		group by content_id 
-		order by total_count desc limit 3) p left join attraction_info i
+		order by total_count desc limit 8) p left join attraction_info i
 		on p.content_id = i.content_id;
 	</select>
 </mapper>
