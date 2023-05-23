@@ -58,14 +58,13 @@ public class TourController {
 		return ResponseEntity.ok(list);
 	}
 	
-	@PutMapping("/sido/{sidoCode}")
-	public ResponseEntity<String> addSidoCount(@PathVariable("sidoCode") int sidoCode) throws Exception{
-		if(tourService.addSidoCount(sidoCode)) {
+	@PutMapping("/sido/{sidoCode}/{birthyear}")
+	public ResponseEntity<String> addSidoCount(@PathVariable("sidoCode") int sidoCode, @PathVariable("birthyear") int birthyear) throws Exception{
+		if(tourService.addSidoCount(sidoCode, birthyear)) {
 			return new ResponseEntity<String>(SUCCESS, HttpStatus.OK);
 		}
 		return new ResponseEntity<String>(FAIL, HttpStatus.NO_CONTENT);
 	}
-
 
 	@GetMapping("/gugun")
 	public ResponseEntity<List<TourGugunDto>> gugun(@RequestParam("search-area") int sidoCode) throws Exception {
@@ -74,13 +73,23 @@ public class TourController {
 		return ResponseEntity.ok(list);
 	}
 	
-	@PutMapping("/gugun/{sidoCode}/{gugunCode}")
-	public ResponseEntity<String> addGugunCount(@PathVariable("sidoCode") int sidoCode, @PathVariable("gugunCode") int gugunCode) throws Exception{
-		if(tourService.addGugunCount(sidoCode, gugunCode)) {
+	@PutMapping("/gugun/{sidoCode}/{gugunCode}/{birthyear}")
+	public ResponseEntity<String> addGugunCount(@PathVariable("sidoCode") int sidoCode, @PathVariable("gugunCode") int gugunCode, @PathVariable("birthyear") int birthyear) throws Exception{
+		if(tourService.addGugunCount(sidoCode, gugunCode, birthyear)) {
 			return new ResponseEntity<String>(SUCCESS, HttpStatus.OK);
 		}
 		return new ResponseEntity<String>(FAIL, HttpStatus.NO_CONTENT);
 	}
+	
+	@PutMapping("/attraction-post-count-add/{contentId}")
+	public ResponseEntity<String> addPostCount(@PathVariable("contentId") int contentId) throws Exception{
+		if(tourService.addPostCount(contentId)) {
+			return new ResponseEntity<String>(SUCCESS, HttpStatus.OK);
+		}
+		return new ResponseEntity<String>(FAIL, HttpStatus.NO_CONTENT);
+	}
+	
+	
 
 	@GetMapping("/attraction-info")
 	public ResponseEntity<List<TourDto>> attraction_info(@RequestParam("search-area") int sidoCode, @RequestParam("search-area-gu") int gugunCode) throws Exception {
@@ -112,16 +121,6 @@ public class TourController {
 		return ResponseEntity.ok(list);
 	}
 
-	//	@PostMapping("/addtour/{contentid}")
-//	public ResponseEntity<String> addtour(@PathVariable("contentid") int contentId, HttpServletRequest request, HttpServletResponse response) throws Exception{
-//		HttpSession session = request.getSession();
-//		MemberDto memberDto = (MemberDto) session.getAttribute("memberinfo");
-//		String memberId = memberDto.getMemberId();
-//		if(tourService.addtour(contentId, memberId)) {
-//			return new ResponseEntity<String>(SUCCESS, HttpStatus.OK);			
-//		}
-//		return new ResponseEntity<String>(FAIL, HttpStatus.NO_CONTENT);
-//	}
 	@GetMapping("/mylikelist/{memberid}")
 	public ResponseEntity<List<PersonalTripDto>> mylikelist(@PathVariable("memberid") String memberId) throws SQLException{
 		List<PersonalTripDto> list = tourService.getLikeList(memberId);

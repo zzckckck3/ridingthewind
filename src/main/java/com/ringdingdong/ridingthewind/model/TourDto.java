@@ -25,4 +25,5 @@ public class TourDto {
 	private String overView;
 	private String mlevel;
 	private int totalCount;
+	private int postCount;
 }
