@@ -99,17 +99,28 @@
                                 column
                             >
                                 <v-chip class="custom-chip" :style="{display : cards.some(card => card.sidoCode === 1) ? '' : 'none'}" >서울</v-chip>
-
                                 <v-chip class="custom-chip" :style="{display : cards.some(card => card.sidoCode === 2) ? '' : 'none'}" >인천</v-chip>
-                                
                                 <v-chip class="custom-chip" :style="{display : cards.some(card => card.sidoCode === 3) ? '' : 'none'}" >대전</v-chip>
-
                                 <v-chip class="custom-chip" :style="{display : cards.some(card => card.sidoCode === 4) ? '' : 'none'}" >대구</v-chip>
+                                <v-chip class="custom-chip" :style="{display : cards.some(card => card.sidoCode === 5) ? '' : 'none'}" >광주</v-chip>
+                                <v-chip class="custom-chip" :style="{display : cards.some(card => card.sidoCode === 6) ? '' : 'none'}" >부산</v-chip>
+                                <v-chip class="custom-chip" :style="{display : cards.some(card => card.sidoCode === 7) ? '' : 'none'}" >울산</v-chip>
+                                <v-chip class="custom-chip" :style="{display : cards.some(card => card.sidoCode === 8) ? '' : 'none'}" >세종</v-chip>
+                                <v-chip class="custom-chip" :style="{display : cards.some(card => card.sidoCode === 31) ? '' : 'none'}" >경기</v-chip>
+                                <v-chip class="custom-chip" :style="{display : cards.some(card => card.sidoCode === 32) ? '' : 'none'}" >강원</v-chip>
+                                <v-chip class="custom-chip" :style="{display : cards.some(card => card.sidoCode === 33) ? '' : 'none'}" >충북</v-chip>
+                                <v-chip class="custom-chip" :style="{display : cards.some(card => card.sidoCode === 34) ? '' : 'none'}" >충남</v-chip>
+                                <v-chip class="custom-chip" :style="{display : cards.some(card => card.sidoCode === 35) ? '' : 'none'}" >경북</v-chip>
+                                <v-chip class="custom-chip" :style="{display : cards.some(card => card.sidoCode === 36) ? '' : 'none'}" >경남</v-chip>
+                                <v-chip class="custom-chip" :style="{display : cards.some(card => card.sidoCode === 37) ? '' : 'none'}" >전북</v-chip>
+                                <v-chip class="custom-chip" :style="{display : cards.some(card => card.sidoCode === 38) ? '' : 'none'}" >전남</v-chip>
+                                <v-chip class="custom-chip" :style="{display : cards.some(card => card.sidoCode === 39) ? '' : 'none'}" >제주</v-chip>
+                                
+
                             </v-chip-group>
                         </v-card-text>
 
                         <v-row>
-                            <v-spacer></v-spacer>
                             <v-col
                                 v-for="card in filteredCards"
                                 :key="card.id"
@@ -131,30 +142,44 @@
 
                                     <v-card-actions class="white justify-center">
                                     <v-btn
-                                        v-for="(social, i) in socials"
-                                        :key="i"
-                                        :color="social.color"
+                                        :color="'green'"
                                         class="white--text"
                                         fab
                                         icon
                                         small
+                                        @click="redirectToNaverSite"
                                     >
-                                        <v-icon>{{ social.icon }}</v-icon>
+                                        <v-icon> mdi-alpha-n-circle </v-icon>
+                                    </v-btn>
+                                    <v-btn
+                                        :color="'indigo'"
+                                        class="white--text"
+                                        fab
+                                        icon
+                                        small
+                                        @click="redirectToFaceBookSite"
+                                    >
+                                        <v-icon> mdi-facebook </v-icon>
+                                    </v-btn>
+                                    <v-btn
+                                        :color="'red lighten-3'"
+                                        class="white--text"
+                                        fab
+                                        icon
+                                        small
+                                        @click="redirectToInstagramSite"
+                                    >
+                                        <v-icon> mdi-instagram </v-icon>
                                     </v-btn>
                                     </v-card-actions>
                                 </v-card>
                             </v-col>
-                            
-                            
-                            
+                            <v-spacer></v-spacer>
                         </v-row>
                         </v-container>
                     </v-row>
                     {{ tempSelection }}
                 </v-col>
-        
-                    
-    
 
                 <!--Right Container-->
                 <v-col class="text-center" cols="12" sm="2">
@@ -310,6 +335,21 @@ export default {
                     { contentByType: this.contentByType },
                 ]
             });
+        },
+        redirectToFaceBookSite() {
+            const searchTerm = '도산공원';
+            const searchUrl = `https://www.facebook.com/search/posts/?q=${encodeURIComponent(searchTerm)}`;
+            window.location.href = searchUrl;
+        },
+        redirectToInstagramSite() {
+            const searchTerm = '도산공원';
+            const searchUrl = `https://www.instagram.com/explore/tags/${encodeURIComponent(searchTerm)}/`;
+            window.location.href = searchUrl;
+        },
+        redirectToNaverSite() {
+            const searchTerm = '도산공원';
+            const searchUrl = `https://search.naver.com/search.naver?query=${encodeURIComponent(searchTerm)}`;
+            window.location.href = searchUrl;
         }
     }
 }
