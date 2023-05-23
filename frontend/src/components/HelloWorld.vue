@@ -246,17 +246,13 @@ export default {
             return Math.floor(Math.random() * (max - min + 1)) + min;
         },
         sendToTripSearch() {
-            console.log(this.selectedSido);
-            console.log(this.selectedGugun);
-            console.log(this.contentByType);
-            console.log("---------------------")
             this.$router.push({
-                name: 'tour',
-                params: [
-                    { selectedSido: this.selectedSido },
-                    { selectedGugun: this.selectedGugun },
-                    { contentByType: this.contentByType },
-                ]
+                name: 'tourinfo',
+                params: {
+                    selectedSido: this.selectedSido,
+                    selectedGugun: this.selectedGugun,
+                    selectedContentById: this.selectedContentById,
+                }
             });
         }
     },
