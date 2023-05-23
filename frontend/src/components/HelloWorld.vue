@@ -60,7 +60,6 @@
                             <template v-slot:selection="{ item }">
                                 <!--추후 chips색깔 바꿀 예정-->
                                 <v-chip 
-
                                 >
                                 {{ item.value }}
                                 </v-chip>
@@ -90,7 +89,7 @@
                             style="padding-left: 40px; padding-right: 80px; padding-top: 30px; padding-bottom: 40px;"
                             fluid
                         >
-                        <v-subheader class="text-1">찜 많은순</v-subheader>
+                        <v-subheader class="text-1">찜 많은순 ( 지역별 )</v-subheader>
                         
                         <v-card-text>
                             <v-chip-group
@@ -115,7 +114,6 @@
                                 <v-chip class="custom-chip" :style="{display : cards.some(card => card.sidoCode === 37) ? '' : 'none'}" >전북</v-chip>
                                 <v-chip class="custom-chip" :style="{display : cards.some(card => card.sidoCode === 38) ? '' : 'none'}" >전남</v-chip>
                                 <v-chip class="custom-chip" :style="{display : cards.some(card => card.sidoCode === 39) ? '' : 'none'}" >제주</v-chip>
-                                
 
                             </v-chip-group>
                         </v-card-text>
@@ -132,22 +130,22 @@
                                     <v-img
                                     :src="card.src"
                                     height="300px"
+                                    class="align-end"
                                     >
-                                    <span
-                                        class="text-h5 white--text pl-4 pt-4 d-inline-block"
-                                        v-text="card.title"
-                                    ></span>
+                                    <v-card-title class="text-h5 white--text pl-4 pt-4 d-inline-block" style="font-size: medium;">{{ card.title }}</v-card-title>
                                     </v-img>
-
-
                                     <v-card-actions class="white justify-center">
+
+                                    <v-icon class="custom-heart"  :color="'red'"> mdi-heart-multiple </v-icon><h5 class="custom-heart-text ms-3">{{ card.totalCount }}</h5>
+
                                     <v-btn
                                         :color="'green'"
                                         class="white--text"
+                                        style="margin-left: 40px;"
                                         fab
                                         icon
                                         small
-                                        @click="redirectToNaverSite"
+                                        @click="redirectToNaverSite(card.title)"
                                     >
                                         <v-icon> mdi-alpha-n-circle </v-icon>
                                     </v-btn>
@@ -157,7 +155,7 @@
                                         fab
                                         icon
                                         small
-                                        @click="redirectToFaceBookSite"
+                                        @click="redirectToFaceBookSite(card.title)"
                                     >
                                         <v-icon> mdi-facebook </v-icon>
                                     </v-btn>
@@ -167,7 +165,7 @@
                                         fab
                                         icon
                                         small
-                                        @click="redirectToInstagramSite"
+                                        @click="redirectToInstagramSite(card.title)"
                                     >
                                         <v-icon> mdi-instagram </v-icon>
                                     </v-btn>
@@ -178,7 +176,6 @@
                         </v-row>
                         </v-container>
                     </v-row>
-                    {{ tempSelection }}
                 </v-col>
 
                 <!--Right Container-->
@@ -223,23 +220,8 @@ export default {
             ],
             model: 0,
             sidoSelection: 0,
-            tempSelection: 1,
-            types: ["인기 많은 순", "Places to See"],
+            tempSelection: 99,
             cards: [],
-            socials: [
-                {
-                    icon: "mdi-facebook",
-                    color: "indigo",
-                },
-                {
-                    icon: "mdi-linkedin",
-                    color: "cyan darken-1",
-                },
-                {
-                    icon: "mdi-instagram",
-                    color: "red lighten-3",
-                },
-            ],
         };
     },
     created() {
@@ -248,7 +230,8 @@ export default {
     },
     computed: {
         filteredCards() {
-            return this.cards.filter(card => this.tempSelection === card.sidoCode);
+            const filtered = this.cards.filter(card => this.tempSelection === card.sidoCode);
+            return filtered.slice(0, 4);
         }
     },
     watch: {
@@ -312,15 +295,20 @@ export default {
                 .then((response) => {
                     console.log(response.data);
                     response.data.forEach((area) => {
+                        if (area.sidoCode < this.tempSelection) {
+                            this.tempSelection = area.sidoCode;
+                        }
                         let card = {
                             id: area.contentId,
                             src: area.firstImage,
                             title: area.title,
-                            sidoCode: area.sidoCode
+                            sidoCode: area.sidoCode,
+                            totalCount: area.totalCount
                         }
                         this.cards.push(card);
                     });
                 });
+                this.tempSelection = this.tempSelection === 99 ? 1 : this.tempSelection;
         },
         sendToTripSearch() {
             this.$router.push({
@@ -332,18 +320,15 @@ export default {
                 }
             });
         },
-        redirectToFaceBookSite() {
-            const searchTerm = '도산공원';
+        redirectToFaceBookSite(searchTerm) {
             const searchUrl = `https://www.facebook.com/search/posts/?q=${encodeURIComponent(searchTerm)}`;
             window.location.href = searchUrl;
         },
-        redirectToInstagramSite() {
-            const searchTerm = '도산공원';
+        redirectToInstagramSite(searchTerm) {
             const searchUrl = `https://www.instagram.com/explore/tags/${encodeURIComponent(searchTerm)}/`;
             window.location.href = searchUrl;
         },
-        redirectToNaverSite() {
-            const searchTerm = '도산공원';
+        redirectToNaverSite(searchTerm) {
             const searchUrl = `https://search.naver.com/search.naver?query=${encodeURIComponent(searchTerm)}`;
             window.location.href = searchUrl;
         }
@@ -368,5 +353,13 @@ export default {
         border-radius: 6px;
         box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.15);
         background-image: linear-gradient(to right, #8a77f7, #0767f7);
+    }
+    .custom-heart{
+        position: absolute;
+        left: 0;
+        margin-left:10px;
+    }
+    .custom-heart-text{
+        color: red;
     }
 </style>

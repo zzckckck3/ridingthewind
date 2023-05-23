@@ -27,10 +27,9 @@ public class MainController {
 	private static final String SUCCESS = "success";
 	private static final String FAIL = "fail";
 	
-
-	
 	private ResponseEntity<String> exceptionHandling(Exception e) {
 		e.printStackTrace();
 		return new ResponseEntity<String>("Error : " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+
 	}
 }
