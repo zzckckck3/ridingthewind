@@ -54,6 +54,13 @@
 		ORDER BY `like` DESC LIMIT 5;
 	</select>
 
+	<select id="listMyLikeArticle" parameterType="string" resultMap="articleDto">
+		select a.article_no, a.member_id, a.subject, a.content, a.hit, a.like, a.register_time, a.modify_time
+		from article a, article_member_map m
+		where a.article_no = m.article_no and m.member_id = #{userId}
+		order by m.likedate desc;
+	</select>
+
 	<select id="getTotalArticleCount" parameterType="map" resultType="int">
 		select count(article_no)
 		from article a, member m

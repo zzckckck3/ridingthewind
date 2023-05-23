@@ -52,6 +52,11 @@ public class ArticleServiceImpl implements ArticleService {
 	}
 
 	@Override
+	public List<ArticleDto> listMyLikeArticle(String memberId) throws Exception {
+		return articleMapper.listMyLikeArticle(memberId);
+	}
+
+	@Override
 	public PageNavigationResponseDto makePageNavigation(ArticleParameterDto articleParameterDto) throws Exception {
 		int spp = articleParameterDto.getSpp();
 		int totalCount = articleMapper.getTotalArticleCount(articleParameterDto);
