@@ -224,8 +224,8 @@ export default {
             map: null,
             sido: [],
             gugun: [],
-            selectedSido: null,
-            selectedGugun: null,
+            selectedSido: '',
+            selectedGugun: '',
             keyword: '',
             liveKeyword: '',
             showKeyword: false,
@@ -255,7 +255,16 @@ export default {
         };
     },
     created() {
+        if (this.$route.params.selectedSido != null) {
+            this.selectedSido = this.$route.params.selectedSido;
+        }
         this.create_sido();
+        if (this.$route.params.selectedGugun != null) {
+            this.selectedGugun = this.$route.params.selectedGugun;
+        }
+        if (this.$route.params.selectedContentById != null) {
+            this.selectedContentById = this.$route.params.selectedContentById;    
+        }
         this.myLikeList();
     },
     mounted() {
@@ -273,13 +282,12 @@ export default {
                     this.map = new window.kakao.maps.Map(mapContainer, mapOption);
                     this.createRightBar();
                 });
-            }  
+            }
         };
         script.async = true;
         script.type = 'text/javascript';
         script.src = "http://dapi.kakao.com/v2/maps/sdk.js?autoload=false&appkey=1b7a0eb6294cdd4b1f985683a25bd972";
         document.head.appendChild(script);
-        
     },
     computed: {
         ...mapState(memberStore, ["isLogin", "userInfo"]),

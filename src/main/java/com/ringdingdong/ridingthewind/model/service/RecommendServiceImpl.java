@@ -26,5 +26,20 @@ public class RecommendServiceImpl implements RecommendService {
 		return recommendMapper.getGugunCountList(sidoCode);
 	}
 
+	@Override
+	public List<TourDto> getMostLikeTourList() throws Exception {
+		return recommendMapper.getMostLikeTourList();
+	}
+
+	@Override
+	public List<TourDto> getPopularTourSidoList(String orderByWhat) throws Exception {
+		return recommendMapper.getPopularTourSidoList(orderByWhat);
+	}
+
+	@Override
+	public List<TourDto> getPopularContentSido(int sidoCode) throws Exception {
+		return recommendMapper.getPopularContentSido(sidoCode);
+	}
+
 
 }

@@ -61,6 +61,54 @@ public class RecommendController {
 		}
 	}
 	
+	@GetMapping("/like")
+	public ResponseEntity<?> getMostLikeTourList() throws Exception{
+		logger.debug("getMostLikeTourList called");
+
+		try {
+			List<TourDto> list = recommendService.getMostLikeTourList();
+			if(list != null && !list.isEmpty()) {
+				return new ResponseEntity<List<TourDto>>(recommendService.getMostLikeTourList(), HttpStatus.OK);
+			} else {
+				return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
+			}
+		} catch (Exception e) {
+			return exceptionHandling(e);
+		}
+	}
+	
+	@GetMapping("/post-count-sido/{orderByWhat}")
+	public ResponseEntity<?> getPopularTourSidoList(@PathVariable("orderByWhat") String orderByWhat) throws Exception {
+		logger.debug("getPopularTourSidoList called");
+		
+		try {
+			List<TourDto> list = recommendService.getPopularTourSidoList(orderByWhat);
+			if(list != null && !list.isEmpty()) {
+				return new ResponseEntity<List<TourDto>>(recommendService.getPopularTourSidoList(orderByWhat), HttpStatus.OK);
+			} else {
+				return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
+			}
+		} catch (Exception e) {
+			return exceptionHandling(e);
+		}
+	}
+	
+	@GetMapping("/get-popular-content/sido/{sidoCode}")
+	public ResponseEntity<?> getPopularContentSido(@PathVariable("sidoCode") int sidoCode) throws Exception{
+		logger.debug("getPopularContentSido called");
+
+		try {
+			List<TourDto> list = recommendService.getPopularContentSido(sidoCode);
+			if(list != null && !list.isEmpty()) {
+				return new ResponseEntity<List<TourDto>>(recommendService.getPopularContentSido(sidoCode), HttpStatus.OK);
+			} else {
+				return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
+			}
+		} catch (Exception e) {
+			return exceptionHandling(e);
+		}
+	}
+	
 	private ResponseEntity<String> exceptionHandling(Exception e) {
 		e.printStackTrace();
 		return new ResponseEntity<String>("Error : " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
