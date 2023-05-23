@@ -207,6 +207,7 @@ export default {
         };
     },
     created() {
+        this.updateHit();
         this.getArticle();
     },
     computed: {
@@ -216,6 +217,16 @@ export default {
         }
     },
     methods: {
+        updateHit() {
+            let articleNo = this.$route.params.articleNo;
+            http.put(`/article/${articleNo}/hit`)
+                .then(() => {
+                    return this.getArticle();
+                })
+                .catch((error) => {
+                  this.$router.push("/error/error", error);
+                });
+        },
         getArticle() {
             let articleNo = this.$route.params.articleNo;
             http.get(`/article/${articleNo}`)
