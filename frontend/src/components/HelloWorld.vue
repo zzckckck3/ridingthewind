@@ -331,6 +331,9 @@ export default {
                 }
             });
         },
+        getPostCount(){
+            http.get(`/get-popular-content/gugun/{sidoCode}/{gugunCode}`)
+        },
         redirectToFaceBookSite(searchTerm) {
             const searchUrl = `https://www.facebook.com/search/posts/?q=${encodeURIComponent(searchTerm)}`;
             window.location.href = searchUrl;
