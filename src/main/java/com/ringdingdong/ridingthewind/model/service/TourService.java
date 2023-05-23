@@ -25,6 +25,7 @@ public interface TourService {
 
 	boolean addSidoCount(int sidoCode, int birthyear) throws Exception;
 	boolean addGugunCount(int sidoCode, int gugunCode, int birthyear) throws Exception;
+	boolean addPostCount(int contentId) throws Exception;
 	
 
 }

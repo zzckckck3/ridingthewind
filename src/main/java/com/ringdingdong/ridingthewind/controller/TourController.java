@@ -66,7 +66,6 @@ public class TourController {
 		return new ResponseEntity<String>(FAIL, HttpStatus.NO_CONTENT);
 	}
 
-
 	@GetMapping("/gugun")
 	public ResponseEntity<List<TourGugunDto>> gugun(@RequestParam("search-area") int sidoCode) throws Exception {
 		List<TourGugunDto> list = tourService.getGugun(sidoCode);
@@ -81,6 +80,16 @@ public class TourController {
 		}
 		return new ResponseEntity<String>(FAIL, HttpStatus.NO_CONTENT);
 	}
+	
+	@PutMapping("/attraction-post-count-add/{contentId}")
+	public ResponseEntity<String> addPostCount(@PathVariable("contentId") int contentId) throws Exception{
+		if(tourService.addPostCount(contentId)) {
+			return new ResponseEntity<String>(SUCCESS, HttpStatus.OK);
+		}
+		return new ResponseEntity<String>(FAIL, HttpStatus.NO_CONTENT);
+	}
+	
+	
 
 	@GetMapping("/attraction-info")
 	public ResponseEntity<List<TourDto>> attraction_info(@RequestParam("search-area") int sidoCode, @RequestParam("search-area-gu") int gugunCode) throws Exception {
@@ -112,16 +121,7 @@ public class TourController {
 		return ResponseEntity.ok(list);
 	}
 
-	//	@PostMapping("/addtour/{contentid}")
-//	public ResponseEntity<String> addtour(@PathVariable("contentid") int contentId, HttpServletRequest request, HttpServletResponse response) throws Exception{
-//		HttpSession session = request.getSession();
-//		MemberDto memberDto = (MemberDto) session.getAttribute("memberinfo");
-//		String memberId = memberDto.getMemberId();
-//		if(tourService.addtour(contentId, memberId)) {
-//			return new ResponseEntity<String>(SUCCESS, HttpStatus.OK);			
-//		}
-//		return new ResponseEntity<String>(FAIL, HttpStatus.NO_CONTENT);
-//	}
+
 	@GetMapping("/mylikelist/{memberid}")
 	public ResponseEntity<List<PersonalTripDto>> mylikelist(@PathVariable("memberid") String memberId) throws SQLException{
 		List<PersonalTripDto> list = tourService.getLikeList(memberId);

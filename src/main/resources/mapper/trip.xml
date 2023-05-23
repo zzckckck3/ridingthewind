@@ -121,6 +121,11 @@
 		AND sido_code = #{sidoCode}
 	</update>
 	
+	<update id="addPostCount">
+		UPDATE attraction_post_count
+		SET post_count = post_count + 1
+		WHERE content_id = #{contentId}
+	</update>
 	
 	<select id="getList" parameterType="int" resultType="TourDto" resultMap="tourinfo">
 		select * from attraction_info i join attraction_description d

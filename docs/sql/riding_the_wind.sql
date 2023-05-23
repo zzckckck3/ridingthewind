@@ -294,3 +294,14 @@ alter table `gugun` add `fourty` int(10) default 0;
 alter table `gugun` add `fifty` int(10) default 0;
 alter table `gugun` add `sixty` int(10) default 0;
 alter table `gugun` add `no_input` int(10) default 0;
+
+-- 여행지별 등록 갯수를 세기 위해 새로운 테이블 생성
+CREATE TABLE attraction_post_count (
+  content_id INT PRIMARY KEY,
+  post_count INT,
+  FOREIGN KEY (content_id) REFERENCES attraction_info (content_id)
+);
+
+INSERT INTO attraction_post_count (content_id, post_count)
+SELECT content_id, 0
+FROM attraction_info;

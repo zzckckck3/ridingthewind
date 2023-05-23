@@ -27,5 +27,6 @@ public interface TourMapper {
 	int addGugunCountAge(@Param("sidoCode") int sidoCode, 
 						@Param("gugunCode") int gugunCode, 
 						@Param("ageRange") String ageRange) throws SQLException;
+	int addPostCount(@Param("contentId") int contentId) throws SQLException;
 
 }

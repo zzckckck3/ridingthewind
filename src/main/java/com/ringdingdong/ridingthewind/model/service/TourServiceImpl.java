@@ -112,6 +112,11 @@ public class TourServiceImpl implements TourService{
 		return (tourMapper.addGugunCount(sidoCode, gugunCode) == 1 &&
 				tourMapper.addGugunCountAge(sidoCode, gugunCode, ageRange) == 1);
 	}
+	
+	@Override
+	public boolean addPostCount(int contentId) throws Exception {
+		return tourMapper.addPostCount(contentId) == 1;
+	}
 
 	@Override
 	public List<TourDto> getList(int sidoCode, int gugunCode) throws SQLException {
@@ -147,6 +152,8 @@ public class TourServiceImpl implements TourService{
 	public List<TourDto> getPopularTourList() throws SQLException {
 		return tourMapper.getPopularTourList();
 	}
+
+
 
 
 }

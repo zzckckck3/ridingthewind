@@ -78,6 +78,7 @@ export default {
             for (let i = 0; i < cardList.length; i++) {
                 let sidoCode = cardList[i].sidoCode;
                 let gugunCode = cardList[i].gugunCode;
+                //let contentId = cardList[i].id;
 
                 http.put(`/tour/sido/${sidoCode}/${birthyear}`)
                     .then(() => {})
