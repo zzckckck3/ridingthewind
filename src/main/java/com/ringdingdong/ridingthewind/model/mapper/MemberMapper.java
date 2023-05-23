@@ -34,4 +34,12 @@ public interface MemberMapper {
     ArrayList<String> getFollowingList(String userId);
 
 	ArrayList<String> getFollowerList(String userId);
+
+    int checkFollow(Map<String, String> map);
+
+	int deleteFollow(Map<String, String> map);
+
+	int insertFollow(Map<String, String> map);
+
+    ArrayList<String> getFollowerRankList();
 }

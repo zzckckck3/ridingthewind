@@ -107,5 +107,25 @@ public class MemberServiceImpl implements MemberService {
 		return memberMapper.getFollowerList(userId);
 	}
 
+	@Override
+	public int checkFollow(Map<String, String> map) {
+		return memberMapper.checkFollow(map);
+	}
+
+	@Override
+	public int deleteFollow(Map<String, String> map) {
+		return memberMapper.deleteFollow(map);
+	}
+
+	@Override
+	public int insertFollow(Map<String, String> map) {
+		return memberMapper.insertFollow(map);
+	}
+
+	@Override
+	public ArrayList<String> getFollowerRankList() {
+		return memberMapper.getFollowerRankList();
+	}
+
 
 }

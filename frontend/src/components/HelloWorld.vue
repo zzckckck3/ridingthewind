@@ -4,13 +4,24 @@
             <v-row>
                 <!--Left Container-->
                 <v-col class="text-center" cols="12" sm="2">
-                    <v-sheet
-                        class="grey lighten-5"
-                        rounded="lg"
-                        min-height="268"
-                        elevation="8"
-                    >
-                        Left Container
+                    <v-sheet cols="8" class="grey lighten-5" rounded="lg" min-height="268" elevation="8">
+                        <h3 class="pt-2 pb-2">☆☆팔로워 순위!☆☆</h3>
+                        <v-list>
+                            <v-list-item
+                                v-for="(follower, index) in followerList"
+                                :key="follower"
+                                :value="follower"
+                                active-color="primary"
+                                variant="tonal"
+                            >
+                                <v-col cols="3">
+                                    <v-list-item-title>{{ index + 1 }}</v-list-item-title>
+                                </v-col>
+                                <v-col cols="6" offset="1">
+                                    <v-list-item-title v-text="follower" @click="moveToUserInfo(follower)"></v-list-item-title>
+                                </v-col>
+                            </v-list-item>
+                        </v-list>
                     </v-sheet>
                 </v-col>
 
@@ -95,7 +106,7 @@
 
 <script>
 import http from "@/axios/http.js";
-
+const followerlisturl = "/member/followerlist";
 export default {
     data() {
         return {
@@ -106,10 +117,13 @@ export default {
             ],
             selectedPeriod: 1,
             articles: [],
+            model: 0,
+            followerList : [],
         };
     },
     mounted() {
         this.getHotArticles();
+        this.getfollowList();
     },
     methods: {
         getHotArticles() {
@@ -124,6 +138,15 @@ export default {
                 .catch((error) => {
                     this.$router.push("error/error", error);
                 });
+        },
+        async getfollowList() {
+            await http.get(followerlisturl).then(response => {
+                console.log(response.data);
+                this.followerList = response.data;
+            })
+        },
+        moveToUserInfo(userId) {
+            this.$router.push({name:"infopage", params: {userId : userId}});
         },
     }
 };

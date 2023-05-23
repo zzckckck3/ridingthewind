@@ -288,6 +288,56 @@ public class MemberController {
 		return ResponseEntity.ok(list);
 	}
 
+	// 현재 userId를 로그인한 유저가 팔로우하고 있는지 확인함
+	@GetMapping("/followcheck/{from}/{to}")
+	public ResponseEntity<?> followcheck(@PathVariable("from") String from, @PathVariable("to") String to) {
+		Map<String, String> map = new HashMap<>();
+		map.put("from", from);
+		map.put("to", to);
+		String data = ResponseResult.FAIL.name();
+		try {
+			if(memberService.checkFollow(map) == 1) data = ResponseResult.SUCCESS.name();
+			return ResponseEntity.ok(data);
+		}catch (Exception e){
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		}
+	}
+
+	@DeleteMapping("/followcheck")
+	public ResponseEntity<?> deleteFollow(@RequestParam Map<String, String> map){
+		System.out.println(map.toString());
+		try{
+			int result = memberService.deleteFollow(map);
+			return ResponseEntity.ok().build();
+		}catch (Exception e){
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		}
+	}
+
+	@PostMapping("/followcheck")
+	public ResponseEntity<?> insertFollow(@RequestBody Map<String, String> map){
+		try{
+			int result = memberService.insertFollow(map);
+			return ResponseEntity.ok().build();
+		}catch (Exception e){
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		}
+	}
+
+	@GetMapping("/followerlist")
+	public ResponseEntity<?> getFollowerRankList(){
+		System.out.println("get리스트 들어옴");
+		try{
+			ArrayList<String> list = memberService.getFollowerRankList();
+			return ResponseEntity.ok().body(list);
+		}catch (Exception e){
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		}
+	}
+
+//	@GetMapping("/followerlist")
+//	public ResponseEntity<?> foll
+
 // 마이페이지 이동 메서드
 //	@GetMapping(value="/viewinfo")
 //	public String viewinfo(Model model, HttpSession session){

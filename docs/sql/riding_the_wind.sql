@@ -304,3 +304,7 @@ alter table article_member_map add constraint fk_article_amm foreign key(article
 
 -- 게시판-회원 매핑 테이블 member_id를 관광정보 테이블 member_id의 외래키로 지정
 alter table article_member_map add constraint fk_member_amm foreign key(member_id) references member(member_id) on delete cascade;
+
+alter table `follow` add constraint fk_from_member_id foreign key(`from`) references member(member_id) on delete cascade;
+alter table `follow` add constraint fk_to_member_id foreign key(`to`) references member(member_id) on delete cascade;
+

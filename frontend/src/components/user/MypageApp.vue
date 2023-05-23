@@ -1,11 +1,11 @@
 <template>
     <div class="mypage">
         <div class="top-space"></div>
-        <MypageUserInfo :userId="userId"/>
-        <MypageBoard />
+        <MypageUserInfo  @follow-click="followButtonClick" :userId="userId"/>
+        <MypageBoard :userId="userId"/>
         <div class="content">
             <div class="follower">
-                <MypageFollower :userId="userId"/>
+                <MypageFollower ref="follwerRef" :userId="userId"/>
             </div>
             <div class="following">
                 <MypageFollowing :userId="userId"/>
@@ -45,14 +45,15 @@ export default {
     methods: {
         getUserId() {
             this.userId = this.$route.params.userId;
-            console.log("마이페이지 이동");
-            console.log(this.userId);
         },
         pageChange(to, from) {
             // 현재 경로의 변화에 대한 처리를 수행합니다.
             console.log('Route changed from', from.path, 'to', to.path);
-
-
+        },
+        followButtonClick() {
+            console.log("뭔가 찍히나요...?");
+            // this.$refs.follwerRef.changecheck();
+            this.$refs.follwerRef.getUserFollowerList();
         }
     }
 }
