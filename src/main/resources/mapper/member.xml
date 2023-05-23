@@ -123,4 +123,12 @@
 	<insert id="insertFollow" parameterType="map">
 		insert into follow(`from`, `to`) values(#{from}, #{to})
 	</insert>
+
+	<select id="getFollowerRankList" resultType="string">
+		SELECT `to`
+		FROM follow
+		GROUP BY `to`
+		ORDER BY COUNT(*) DESC
+		LIMIT 5
+	</select>
 </mapper>
