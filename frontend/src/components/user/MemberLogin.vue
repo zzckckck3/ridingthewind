@@ -79,10 +79,6 @@ export default {
                 await this.getUserInfo(token);
                 alert("로그인 성공");
                 this.loginModal = false;
-                const currentPath = currentRoute.value.path;
-                if (currentPath !== "/") {
-                    this.$router.push({ name: "home" });
-                }
             } else {
                 alert("아이디와 비밀번호를 확인해주세요");
             }
