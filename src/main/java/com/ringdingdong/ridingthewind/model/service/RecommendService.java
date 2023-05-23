@@ -10,4 +10,5 @@ public interface RecommendService {
 	List<TourDto> getGugunCountList(int sidoCode) throws Exception;
 	List<TourDto> getMostLikeTourList() throws Exception;
 	List<TourDto> getPopularTourSidoList(String orderByWhat) throws Exception;
+	List<TourDto> getPopularContentSido(int sidoCode) throws Exception;
 }
