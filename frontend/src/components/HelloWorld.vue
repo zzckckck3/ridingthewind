@@ -1,5 +1,5 @@
 <template>
-    <v-main class="white" style="margin-bottom: 20px">
+    <v-main class="custom-main-backgoround" style="margin-bottom: 20px">
         <v-container>
             <v-row>
                 <!--Left Container-->
@@ -128,12 +128,12 @@
                             >
                                 <v-card>
                                     <v-img
-                                    :src="card.src"
+                                    :src="showImg(card.src)"
                                     height="300px"
                                     gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)"
                                     class="align-end"
                                     >
-                                    <v-card-title class="text-h5 white--text pl-4 pt-4 d-inline-block" style="font-size: medium;">{{ card.title }}</v-card-title>
+                                    <v-card-title class="text-h6 white--text pl-4 pt-4 d-inline-block font-weight-bold text-custom-2">{{ card.title }}</v-card-title>
                                     </v-img>
                                     <v-card-actions class="white justify-center">
 
@@ -233,7 +233,18 @@ export default {
         filteredCards() {
             const filtered = this.cards.filter(card => this.tempSelection === card.sidoCode);
             return filtered.slice(0, 4);
-        }
+        },
+        showImg() { // 이미지 가져오기
+            return (src) => {
+                if (src) {
+                // 실제 이미지 파일이 있는 경우
+                return src;
+                } else {
+                // 이미지 파일이 없는 경우 noimg.png 사용
+                return require('@/assets/mark/noimg2.jpg');
+                }
+            };
+        },
     },
     watch: {
         sidoSelection: {
@@ -338,6 +349,9 @@ export default {
 </script>
 
 <style scoped>
+    .custom-main-backgoround{
+        background-image: linear-gradient(to right, rgb(86,82,218), rgb(168,117,243));
+    }
     .margin-top{
         margin-top: 50px;
     }
@@ -362,5 +376,9 @@ export default {
     }
     .custom-heart-text{
         color: red;
+    }
+    .font-weight-bold{
+        font-style: oblique;
+        text-shadow: 0px 2px 4px rgba(0, 0, 0, 0.5); 
     }
 </style>
