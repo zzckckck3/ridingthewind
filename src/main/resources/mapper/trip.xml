@@ -44,9 +44,38 @@
 		from sido
 	</select>
 	
+	<!-- 사용자가 게시글을 등록 시 나이대와 해당 시도의 등록 수 증가 -->
 	<update id="addSidoCount">
 		UPDATE sido
 		SET post_count = post_count + 1
+		WHERE sido_code = #{sidoCode}
+	</update>
+	<update id="addSidoCountAge">
+		UPDATE sido
+		SET 
+			<choose>
+		      <when test="ageRange == 'ten'">
+		        ten = ten + 1
+		      </when>
+		      <when test="ageRange == 'twenty'">
+		        twenty = twenty + 1
+		      </when>
+		      <when test="ageRange == 'thirty'">
+		        thirty = thirty + 1
+		      </when>
+		      <when test="ageRange == 'fourty'">
+		        fourty = fourty + 1
+		      </when>
+		      <when test="ageRange == 'fifty'">
+		        fifty = fifty + 1
+		      </when>
+		      <when test="ageRange == 'thirty'">
+		        sixty = sixty + 1
+		      </when>
+		      <otherwise>
+		        no_input = no_input + 1
+		      </otherwise>
+		    </choose>
 		WHERE sido_code = #{sidoCode}
 	</update>
 	
@@ -55,11 +84,47 @@
 		where sido_code = #{sidoCode}
 	</select>
 	
+	<!-- 사용자가 게시글을 등록 시 나이대와 해당 구군의 등록 수 증가 -->
 	<update id="addGugunCount">
 		UPDATE gugun
 		SET post_count = post_count + 1
 		WHERE gugun_code = #{gugunCode}
 		AND sido_code = #{sidoCode}
+	</update>
+	<update id="addGugunCountAge">
+		UPDATE gugun
+		SET
+			<choose>
+		      <when test="ageRange == 'ten'">
+		        ten = ten + 1
+		      </when>
+		      <when test="ageRange == 'twenty'">
+		        twenty = twenty + 1
+		      </when>
+		      <when test="ageRange == 'thirty'">
+		        thirty = thirty + 1
+		      </when>
+		      <when test="ageRange == 'fourty'">
+		        fourty = fourty + 1
+		      </when>
+		      <when test="ageRange == 'fifty'">
+		        fifty = fifty + 1
+		      </when>
+		      <when test="ageRange == 'thirty'">
+		        sixty = sixty + 1
+		      </when>
+		      <otherwise>
+		        no_input = no_input + 1
+		      </otherwise>
+		    </choose>
+		WHERE gugun_code = #{gugunCode}
+		AND sido_code = #{sidoCode}
+	</update>
+	
+	<update id="addPostCount">
+		UPDATE attraction_post_count
+		SET post_count = post_count + 1
+		WHERE content_id = #{contentId}
 	</update>
 	
 	<select id="getList" parameterType="int" resultType="TourDto" resultMap="tourinfo">
@@ -103,12 +168,5 @@
 	</insert>
 	
 	
-	<select id="getPopularTourList" resultMap="tourinfo">
-		select *
-		from (select content_id, count(member_id) as total_count
-		from personal_trip 
-		group by content_id 
-		order by total_count desc limit 3) p left join attraction_info i
-		on p.content_id = i.content_id;
-	</select>
+
 </mapper>
