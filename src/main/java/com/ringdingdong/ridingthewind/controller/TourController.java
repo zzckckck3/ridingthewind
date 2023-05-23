@@ -58,9 +58,9 @@ public class TourController {
 		return ResponseEntity.ok(list);
 	}
 	
-	@PutMapping("/sido/{sidoCode}")
-	public ResponseEntity<String> addSidoCount(@PathVariable("sidoCode") int sidoCode) throws Exception{
-		if(tourService.addSidoCount(sidoCode)) {
+	@PutMapping("/sido/{sidoCode}/{birthyear}")
+	public ResponseEntity<String> addSidoCount(@PathVariable("sidoCode") int sidoCode, @PathVariable("birthyear") int birthyear) throws Exception{
+		if(tourService.addSidoCount(sidoCode, birthyear)) {
 			return new ResponseEntity<String>(SUCCESS, HttpStatus.OK);
 		}
 		return new ResponseEntity<String>(FAIL, HttpStatus.NO_CONTENT);
@@ -74,9 +74,9 @@ public class TourController {
 		return ResponseEntity.ok(list);
 	}
 	
-	@PutMapping("/gugun/{sidoCode}/{gugunCode}")
-	public ResponseEntity<String> addGugunCount(@PathVariable("sidoCode") int sidoCode, @PathVariable("gugunCode") int gugunCode) throws Exception{
-		if(tourService.addGugunCount(sidoCode, gugunCode)) {
+	@PutMapping("/gugun/{sidoCode}/{gugunCode}/{birthyear}")
+	public ResponseEntity<String> addGugunCount(@PathVariable("sidoCode") int sidoCode, @PathVariable("gugunCode") int gugunCode, @PathVariable("birthyear") int birthyear) throws Exception{
+		if(tourService.addGugunCount(sidoCode, gugunCode, birthyear)) {
 			return new ResponseEntity<String>(SUCCESS, HttpStatus.OK);
 		}
 		return new ResponseEntity<String>(FAIL, HttpStatus.NO_CONTENT);

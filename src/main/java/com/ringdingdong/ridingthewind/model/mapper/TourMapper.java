@@ -18,7 +18,14 @@ public interface TourMapper {
 	int addtour(@Param("contentId") int contentId, @Param("memberId") String memberId) throws SQLException;
 	List<PersonalTripDto> getLikeList(String memberId) throws SQLException;
 	List<TourDto> getPopularTourList() throws SQLException;
+	
+	
 	int addSidoCount(@Param("sidoCode") int sidoCode) throws SQLException;
+	int addSidoCountAge(@Param("sidoCode") int sidoCode, 
+						@Param("ageRange") String ageRange) throws SQLException;
 	int addGugunCount(@Param("sidoCode") int sidoCode, @Param("gugunCode") int gugunCode) throws SQLException;
+	int addGugunCountAge(@Param("sidoCode") int sidoCode, 
+						@Param("gugunCode") int gugunCode, 
+						@Param("ageRange") String ageRange) throws SQLException;
 
 }
