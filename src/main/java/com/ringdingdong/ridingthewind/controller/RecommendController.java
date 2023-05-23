@@ -68,7 +68,7 @@ public class RecommendController {
 		try {
 			List<TourDto> list = recommendService.getMostLikeTourList();
 			if(list != null && !list.isEmpty()) {
-				return new ResponseEntity<List<TourDto>>(recommendService.getPopularTourSidoList(), HttpStatus.OK);
+				return new ResponseEntity<List<TourDto>>(recommendService.getMostLikeTourList(), HttpStatus.OK);
 			} else {
 				return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
 			}
@@ -82,9 +82,9 @@ public class RecommendController {
 		logger.debug("getPopularTourSidoList called");
 		
 		try {
-			List<TourDto> list = recommendService.getPopularTourSidoList();
+			List<TourDto> list = recommendService.getPopularTourSidoList(orderByWhat);
 			if(list != null && !list.isEmpty()) {
-				return new ResponseEntity<List<TourDto>>(recommendService.getPopularTourSidoList(), HttpStatus.OK);
+				return new ResponseEntity<List<TourDto>>(recommendService.getPopularTourSidoList(orderByWhat), HttpStatus.OK);
 			} else {
 				return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
 			}
