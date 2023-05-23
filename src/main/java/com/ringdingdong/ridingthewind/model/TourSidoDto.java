@@ -17,5 +17,5 @@ public class TourSidoDto {
 	private int fourty;
 	private int fifty;
 	private int sixty;
-	
+	private int noInput;
 }

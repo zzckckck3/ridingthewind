@@ -121,7 +121,6 @@ public class TourController {
 		return ResponseEntity.ok(list);
 	}
 
-
 	@GetMapping("/mylikelist/{memberid}")
 	public ResponseEntity<List<PersonalTripDto>> mylikelist(@PathVariable("memberid") String memberId) throws SQLException{
 		List<PersonalTripDto> list = tourService.getLikeList(memberId);

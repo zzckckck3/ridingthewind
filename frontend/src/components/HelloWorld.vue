@@ -16,33 +16,73 @@
 
                 <!--Center Container-->
                 <v-col class="text-center" cols="12" sm="8">
-                    <v-row>
-                        <v-sheet class="grey lighten-5 text-center" rounded="lg" elevation="12" style="width:100%;">
-                            <template>
-                                <v-carousel v-model="model">
-                                    <v-carousel-item
-                                        v-for="(color, i) in colors"
-                                        :key="color"
-                                        :value="i"
-                                    >
-                                    <v-sheet
-                                        :color="color"
-                                            height="100%"
-                                            tile
-                                        >
-                                        <div class="d-flex fill-height justify-center align-center">
+                    <v-sheet
+                        rounded="lg"
+                        elevation="8"
+                        class="lighten-5 overflow-auto"
+                        style="padding: 10px; padding-left: 20px; padding-right: 20px;"
+                    >
+                        <h1>응애 뭐넣어</h1>
+                        <div style="display:flex; margin-top: 20px;">
+                            <v-select
+                                id="search-area"
+                                label="시, 도"
+                                :items="sido"
+                                item-text="sidoName"
+                                item-value="sidoCode"
+                                v-model="selectedSido"
+                                outlined
+                            >
+                            </v-select>
+                            <v-select
+                                class="ms-4"
+                                label="군, 구"
+                                :items="gugun"
+                                item-text="gugunName"
+                                item-value="gugunCode"
+                                v-model="selectedGugun"
+                                outlined
+                            ></v-select>
+                        </div>
+                        <div style="display:flex">
+                            <v-autocomplete
+                                class="me-2"
+                                clearable
+                                chips
+                                label="여행지 종류"
+                                :items="contentByType"
+                                item-text="value"
+                                item-value="id"
+                                v-model="selectedContentById"
+                                multiple
+                                outlined
+                            >
+                            <template v-slot:selection="{ item }">
+                                <!--추후 chips색깔 바꿀 예정-->
+                                <v-chip 
 
-                                            <div class="text-h2">
-                                                Manager Custom {{ i + 1 }}
-                                            </div>
-                                        </div>
-                                    </v-sheet>
-
-                                    </v-carousel-item>
-                                </v-carousel>
+                                >
+                                {{ item.value }}
+                                </v-chip>
                             </template>
-                        </v-sheet>
-                    </v-row>
+                            </v-autocomplete>
+                            <v-btn
+                                @click="selectedSido !== null && selectedGugun !== null && sendToTripSearch()"
+                                class="ma-2"
+                                outlined
+                                large
+                                fab
+                                color="indigo"
+                                >
+                                <v-icon
+                                    large
+                                    color="darken-2"
+                                >
+                                mdi-magnify
+                                </v-icon>
+                            </v-btn>
+                        </div>
+                    </v-sheet>
                     <!-- 하단 인기순 -->
                     <v-row class="margin-top">
                         <v-container
@@ -113,18 +153,30 @@
 </template>
 
 <script>
+import http from "@/axios/http";
 
 export default {
     data() {
         return {
-            colors: [
-                "primary",
-                "secondary",
-                "yellow darken-2",
-                "red",
-                "orange",
+            /* 상단 여행 정보 표시 변수 */
+            sido: [],
+            gugun: [],
+            selectedSido: null,
+            selectedGugun: null,
+            selectedContentById: [],
+            contentByType: [
+                {id: 1, value: "전체"},
+                { id: 12, value: "관광지" },
+                { id: 14, value: "문화시설" },
+                { id: 15, value: "축제공연행사" },
+                { id: 25, value: "여행코스" },
+                { id: 28, value: "레포츠" },
+                { id: 32, value: "숙박" },
+                { id: 38, value: "쇼핑" },
+                { id: 39, value: "음식점" }
             ],
-            model: 0,
+            selectAll: false,
+            selectedId: null,
 
             types: ["Places to Be", "Places to See"],
             cards: ["Good", "Best", "Finest"],
@@ -144,12 +196,69 @@ export default {
             ],
         };
     },
+    created() {
+        this.create_sido();
+    },
+    watch: {
+        selectedSido: "create_gugun",
+        // selectAll 감시
+        selectAll: {
+            // selectAll가 true이면 전체를 넣고
+            handler(val) {
+                if (val) {
+                    this.selectedContentById = this.contentByType.map(item => item.id);
+                // 아니면 한번더 눌렀으므로 빈거 출력
+                } else {
+                    this.selectedContentById = [];
+                }
+            }
+        },
+        // selectedContentById 감시
+        selectedContentById: {
+            // 전체 선택을 누른다면 selectAll = true;
+            handler(val) {
+                if (val.includes(1)) {
+                    this.selectAll = true;
+                } else {
+                    this.selectAll = false;
+                }
+            },
+            deep: true,
+            immediate: true
+        },
+    },
     methods: {
+        create_sido() {
+            http.get(`/tour/sido`)
+                .then((response) => {
+                    this.sido = response.data;
+                });
+        },
+        create_gugun() {
+            http.get(`/tour/gugun?search-area=${this.selectedSido}`)
+                .then((response) => {
+                    this.gugun = response.data;
+                });
+        },
         getImage() {
             const min = 550;
             const max = 560;
             return Math.floor(Math.random() * (max - min + 1)) + min;
         },
+        sendToTripSearch() {
+            console.log(this.selectedSido);
+            console.log(this.selectedGugun);
+            console.log(this.contentByType);
+            console.log("---------------------")
+            this.$router.push({
+                name: 'tour',
+                params: [
+                    { selectedSido: this.selectedSido },
+                    { selectedGugun: this.selectedGugun },
+                    { contentByType: this.contentByType },
+                ]
+            });
+        }
     },
 }
 </script>
