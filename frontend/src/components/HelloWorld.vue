@@ -1,5 +1,5 @@
 <template>
-    <v-main class="white lighten-3" style="margin-bottom: 20px">
+    <v-main class="white" style="margin-bottom: 20px">
         <v-container>
             <v-row>
                 <!--Left Container-->
@@ -132,6 +132,7 @@
                                     <v-img
                                     :src="card.src"
                                     height="300px"
+                                    gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)"
                                     >
                                     <span
                                         class="text-h5 white--text pl-4 pt-4 d-inline-block"
@@ -308,7 +309,7 @@ export default {
             return Math.floor(Math.random() * (max - min + 1)) + min;
         },
         getLikelist() {
-            http.get(`/like`)
+            http.get(`recommend/like`)
                 .then((response) => {
                     console.log(response.data);
                     response.data.forEach((area) => {

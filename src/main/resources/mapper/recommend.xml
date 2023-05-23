@@ -68,21 +68,31 @@
 		from (select content_id, count(member_id) as total_count
 		from personal_trip 
 		group by content_id 
-		order by total_count desc limit 8) p left join attraction_info i
+		order by total_count desc limit 100) p left join attraction_info i
 		on p.content_id = i.content_id;
 	</select>
 	
-	<select id="getPopularTourSidoList" resultMap="tourinfo">
+	<select id="getPopularTourList" resultMap="tourinfo">
 		select * 
-		from sido 
+		from ${sidoGugun}
 		order by ${orderByWhat}
 		desc limit 4;
 	</select>
 	
 	<select id="getPopularContentSido" resultMap="tourinfo">
-		select * from attraction_post_count p join attraction_info i
+		select p.content_id, p.post_count, i.content_type_id, i.title, i.addr1, i.addr2, i.zipcode, i.first_image, i.first_image2, i.readcount, i.sido_code, i.gugun_code, i.latitude, i.longitude, i.mlevel 
+		from attraction_post_count p join attraction_info i
 		on p.content_id = i.content_id
 		where sido_code = #{sidoCode}
+		order by p.post_count desc
+		limit 4;
+	</select>
+	
+	<select id="getPopularContentGugun" resultMap="tourinfo">
+		select p.content_id, p.post_count, i.content_type_id, i.title, i.addr1, i.addr2, i.zipcode, i.first_image, i.first_image2, i.readcount, i.sido_code, i.gugun_code, i.latitude, i.longitude, i.mlevel  
+		from attraction_post_count p join attraction_info i
+		on p.content_id = i.content_id
+		where sido_code = #{sidoCode} and gugun_code = #{gugunCode}
 		order by p.post_count desc
 		limit 4;
 	</select>
