@@ -324,6 +324,20 @@ public class MemberController {
 		}
 	}
 
+	@GetMapping("/followerlist")
+	public ResponseEntity<?> getFollowerRankList(){
+		System.out.println("get리스트 들어옴");
+		try{
+			ArrayList<String> list = memberService.getFollowerRankList();
+			return ResponseEntity.ok().body(list);
+		}catch (Exception e){
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		}
+	}
+
+//	@GetMapping("/followerlist")
+//	public ResponseEntity<?> foll
+
 // 마이페이지 이동 메서드
 //	@GetMapping(value="/viewinfo")
 //	public String viewinfo(Model model, HttpSession session){

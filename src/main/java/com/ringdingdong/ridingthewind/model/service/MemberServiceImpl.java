@@ -122,5 +122,10 @@ public class MemberServiceImpl implements MemberService {
 		return memberMapper.insertFollow(map);
 	}
 
+	@Override
+	public ArrayList<String> getFollowerRankList() {
+		return memberMapper.getFollowerRankList();
+	}
+
 
 }

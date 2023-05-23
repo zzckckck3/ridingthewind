@@ -39,4 +39,6 @@ public interface MemberService {
 	int deleteFollow(Map<String, String> map);
 
 	int insertFollow(Map<String, String> map);
+
+	ArrayList<String> getFollowerRankList();
 }

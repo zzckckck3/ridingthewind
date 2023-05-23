@@ -84,7 +84,7 @@
                     <v-col cols="12" md="6">
                         <v-text-field
                             label="생일"
-                            v-model="birthday"
+                            v-model="birth"
                             type="date"
                             required
                         ></v-text-field>
@@ -126,7 +126,7 @@ export default {
             phoneNumber: "",
             emailId: "",
             emailDomain: "",
-            birthday: "",
+            birth: "",
             nickname: "",
             mailCode: null,
             inputMailCode: "",
@@ -169,7 +169,7 @@ export default {
                 this.phoneNumber === "" ||
                 this.emailId === "" ||
                 this.emailDomain === "" ||
-                this.birthday === "" ||
+                this.birth === "" ||
                 this.nickname === ""
             ) {
                 alert("값을 모두 입력해주세요");
@@ -194,7 +194,7 @@ export default {
             signupForm.phoneNumber = this.phoneNumber;
             signupForm.emailId = this.emailId;
             signupForm.emailDomain = this.emailDomain;
-            signupForm.birthday = this.birthday;
+            signupForm.birth = this.birth;
             signupForm.nickname = this.nickname;
 
             http.post(signupurl, signupForm).then((response) => {
@@ -243,7 +243,7 @@ export default {
             this.phoneNumber = '',
             this.emailId = '',
             this.emailDomain = '',
-            this.birthday = '',
+            this.birth = '',
             this.nickname = '',
             this.inputMailCode = '',
             this.signupModal = true;
