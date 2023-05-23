@@ -19,7 +19,7 @@ public class MainController {
 	
 	private final TourService tourService;
 	
-	@GetMapping("/")
+	@GetMapping("/like")
 	public ResponseEntity<List<TourDto>> popularTour() throws SQLException{
 		List<TourDto> list = tourService.getPopularTourList();
 		return ResponseEntity.ok(list);
