@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ringdingdong.ridingthewind.model.mapper.LikeMapper">
+
+	<resultMap type="likeDto" id="likeDto">
+		<result column="article_no" property="articleNo"/>
+		<result column="member_id" property="memberId"/>
+	</resultMap>
+
+	<insert id="insertLike" parameterType="map">
+		insert into article_member_map
+		value (#{articleNo}, #{memberId})
+	</insert>
+
+	<select id="likeThisArticle" parameterType="map" resultType="int">
+		select count(*)
+		from article_member_map
+		where member_id = #{memberId}
+		and article_no = #{articleNo}
+	</select>
+
+	<select id="likeArticleList" parameterType="int" resultType="int">
+		select article_no
+		from article_member_map
+		where member_id = #{memberId}
+	</select>
+
+	<delete id="deleteLike" parameterType="map">
+		delete from article_member_map
+		where member_id = #{memberId}
+		and article_no = #{articleNo}
+	</delete>
+	
+</mapper>

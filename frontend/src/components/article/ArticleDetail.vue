@@ -58,7 +58,10 @@
                                     조회: {{ article.hit }}
                                 </v-row>
                                 <v-row align-content="center">
-                                    추천: {{ article.like }}
+                                    추천: {{ likeCount }}
+                                    <span class="mx-5" @click="likeClicked">
+                                        <v-icon :color="like ? 'blue' : ''">mdi-thumb-up</v-icon>
+                                    </span>
                                 </v-row>
                             </v-col>
                         </v-col>
@@ -197,6 +200,7 @@ export default {
             article: {},
             cards: [],
             comment: "",
+            like: false,
             dialog: false,
             commentDialog: false,
             deleteCommentNo: 0,
@@ -207,6 +211,9 @@ export default {
     },
     computed: {
         ...mapState(memberStore, ["userInfo"]),
+        likeCount() {
+            return this.article.like;
+        }
     },
     methods: {
         getArticle() {
@@ -231,6 +238,16 @@ export default {
                         };
                         this.cards.push(card);
                     });
+                    return http.get('/like', {
+                        params:
+                            {
+                              articleNo: this.$route.params.articleNo,
+                              memberId: this.userInfo.data.memberId
+                            }
+                    })
+                })
+                .then(({ data }) => {
+                  this.like = data == "SUCCESS";
                 })
                 .catch((error) => {
                     this.$router.push("error/error", error);
@@ -268,10 +285,63 @@ export default {
             this.commentDialog = true;
             this.deleteCommentNo = key;
         },
+        likeClicked() {
+            let likeDto = {
+                articleNo: this.article.articleNo,
+                memberId: this.userInfo.data.memberId
+            };
+
+            if(this.like) {
+                http.delete('/like', {
+                    params: {
+                      articleNo: this.article.articleNo,
+                      memberId: this.userInfo.data.memberId
+                    }
+                })
+                    .then(({ data }) => {
+                        if (data == "SUCCESS") {
+                          this.getArticle();
+                        } else {
+                            alert("서버 에러 발생");
+                        }
+                    })
+                    .catch((error) => {
+                        this.$router.push("error/error", error);
+                    });
+            } else {
+                http.post('/like', JSON.stringify(likeDto))
+                    .then(({ data }) => {
+                        if (data == "SUCCESS") {
+                          this.getArticle();
+                        } else {
+                            alert("서버 에러 발생");
+                        }
+                    })
+                    .catch((error) => {
+                        this.$router.push("error/error", error);
+                    });
+            }
+
+        },
+        // getLike() {
+        //     http.get('/like', {
+        //         params:
+        //             {
+        //                 articleNo: this.$route.params.articleNo,
+        //                 memberId: this.userInfo.data.memberId
+        //             }
+        //     })
+        //         .then(({ data }) => {
+        //             this.like = data == "SUCCESS";
+        //         })
+        //         .catch((error) => {
+        //             this.$router.push("error/error", error);
+        //         });
+        // }
     },
     components: {
         CommentDeleteConfirmDialog,
         DeleteConfirmDialog,
-    },
+    }
 };
 </script>

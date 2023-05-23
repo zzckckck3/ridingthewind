@@ -53,13 +53,24 @@
 	</select>
 	
 	<select id="getArticle" parameterType="int" resultMap="articleDetailDto">
-		select a.article_no, a.member_id, a.subject, a.content, a.hit, a.modify_time, m.nickname
+		select a.article_no, a.member_id, a.subject, a.content, a.hit, a.like, a.modify_time, m.nickname
 		from article a, member m
 		where a.member_id = m.member_id
 		and a.article_no = #{articleNo}
 	</select>
 
-	
+	<update id="addArticleLike" parameterType="int">
+		update article
+		set `like` = `like` + 1
+		where article_no = #{articleNo}
+	</update>
+
+	<update id="subArticleLike" parameterType="int">
+		update article
+		set `like` = `like` - 1
+		where article_no = #{articleNo}
+	</update>
+
 	<update id="updateHit" parameterType="int">
 		update article
 		set hit = hit + 1
