@@ -32,14 +32,21 @@ public class RecommendServiceImpl implements RecommendService {
 	}
 
 	@Override
-	public List<TourDto> getPopularTourSidoList(String orderByWhat) throws Exception {
-		return recommendMapper.getPopularTourSidoList(orderByWhat);
+	public List<TourDto> getPopularTourList(String sidoGugun, String orderByWhat) throws Exception {
+		return recommendMapper.getPopularTourList(sidoGugun, orderByWhat);
 	}
 
 	@Override
 	public List<TourDto> getPopularContentSido(int sidoCode) throws Exception {
 		return recommendMapper.getPopularContentSido(sidoCode);
 	}
+
+	@Override
+	public List<TourDto> getPopularContentGugun(int sidoCode, int gugunCode) throws Exception {
+		return recommendMapper.getPopularContentSido(sidoCode, gugunCode);
+	}
+
+
 
 
 }

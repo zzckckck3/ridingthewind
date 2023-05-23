@@ -130,6 +130,7 @@
                                     <v-img
                                     :src="showImg(card.src)"
                                     height="300px"
+                                    gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)"
                                     class="align-end"
                                     >
                                     <v-card-title class="text-h6 white--text pl-4 pt-4 d-inline-block font-weight-bold text-custom-2">{{ card.title }}</v-card-title>
