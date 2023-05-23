@@ -1,10 +1,12 @@
 <template>
     <div class="userinfo">
         <div class="button-container">
-            <h1>{{ userId }}</h1>
+            <div id="usernamediv">
+                <v-icon color="black" :size="40"> mdi-account </v-icon>
+                {{ userId }}</div>
             <v-btn
                 class="follow-button"
-                :color="myFollowCheckValue ? 'pink' : 'blue'"
+                :color="myFollowCheckValue ? 'warning' : 'gray'"
                 v-if="userInfo.data.memberId !== userId"
                 @click="clickfollow"
             >
@@ -58,12 +60,13 @@ export default {
                 }
             })
         },
-        clickfollow(){
+        async clickfollow(){
+
             // 팔로우상태인경우 삭제
             if(this.myFollowCheckValue){
                 let from = this.userInfo.data.memberId;
                 let to = this.userId;
-                http.delete(followcheckurl,{
+                await http.delete(followcheckurl,{
                     params:{
                         from : from,
                         to : to
@@ -76,12 +79,13 @@ export default {
                 const data = {};
                 data.from = this.userInfo.data.memberId;
                 data.to = this.userId;
-                http.post(followcheckurl,data).then(response => {
+                await http.post(followcheckurl,data).then(response => {
                     console.log(response);
                 })
                 this.myFollowCheckValue = true;
-                console.log("이벤트는 발생시킬텐데,, 부모로,,");
             }
+            console.log("데이터 업데이트 완료");
+            console.log("이벤트는 발생시킬텐데,, 부모로,,");
             this.$emit('follow-click');
         }
     }
@@ -90,7 +94,6 @@ export default {
 
 <style scoped>
 .userinfo {
-    background-color: red;
     padding: 20px;
 }
 
@@ -103,5 +106,8 @@ export default {
 .button-container {
     display: flex;
     justify-content: space-between;
+}
+#usernamediv {
+    font-size: 30px;
 }
 </style>
