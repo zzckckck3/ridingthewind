@@ -308,7 +308,7 @@ export default {
             return Math.floor(Math.random() * (max - min + 1)) + min;
         },
         getLikelist() {
-            http.get(`/`)
+            http.get(`/like`)
                 .then((response) => {
                     console.log(response.data);
                     response.data.forEach((area) => {

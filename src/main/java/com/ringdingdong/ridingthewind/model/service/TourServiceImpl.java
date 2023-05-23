@@ -119,27 +119,27 @@ public class TourServiceImpl implements TourService{
 	}
 
 	@Override
-	public List<TourDto> getList(int sidoCode, int gugunCode) throws SQLException {
+	public List<TourDto> getList(int sidoCode, int gugunCode) throws Exception {
 		return tourMapper.getList(sidoCode, gugunCode);
 	}
 
 	@Override
-	public List<TourDto> getList(String memberId) throws SQLException {
+	public List<TourDto> getList(String memberId) throws Exception {
 		return tourMapper.getList(memberId);
 	}
 	
 	@Override
-	public List<TourDto> getListByKeyword(Map<String, Object> map) throws SQLException {
+	public List<TourDto> getListByKeyword(Map<String, Object> map) throws Exception {
 		return tourMapper.getListByKeyword(map);
 	}
 
 	@Override
-	public List<TourDto> getListByContentIds(List<Integer> contentIds) throws SQLException {
+	public List<TourDto> getListByContentIds(List<Integer> contentIds) throws Exception {
 		return tourMapper.getListByContentIds(contentIds);
 	}
 
 	@Override
-	public List<PersonalTripDto> getLikeList(String memberId) throws SQLException {
+	public List<PersonalTripDto> getLikeList(String memberId) throws Exception {
 		return tourMapper.getLikeList(memberId);
 	}
 	
@@ -147,13 +147,5 @@ public class TourServiceImpl implements TourService{
 	public boolean addtour(int contentId, String memberId) throws Exception {
 		return tourMapper.addtour(contentId, memberId) == 1;
 	}
-
-	@Override
-	public List<TourDto> getPopularTourList() throws SQLException {
-		return tourMapper.getPopularTourList();
-	}
-
-
-
 
 }

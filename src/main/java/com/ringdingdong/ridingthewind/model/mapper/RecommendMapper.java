@@ -12,5 +12,7 @@ import com.ringdingdong.ridingthewind.model.TourDto;
 public interface RecommendMapper {
 	List<TourDto> getSidoCountList() throws SQLException;
 	List<TourDto> getGugunCountList(@Param("sidoCode") int sidoCode) throws SQLException;
+	List<TourDto> getMostLikeTourList() throws SQLException;
+	List<TourDto> getPopularTourSidoList() throws SQLException;
 
 }

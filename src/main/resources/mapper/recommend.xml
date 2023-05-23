@@ -62,4 +62,22 @@
 		where sido_code = #{sidoCode}
 		order by post_count desc
 	</select>
+	
+	<select id="getMostLikeTourList" resultMap="tourinfo">
+		select *
+		from (select content_id, count(member_id) as total_count
+		from personal_trip 
+		group by content_id 
+		order by total_count desc limit 8) p left join attraction_info i
+		on p.content_id = i.content_id;
+	</select>
+	
+	<select id="getPopularTourSidoList" resultMap="tourinfo">
+		select *
+		from (select content_id, count(member_id) as total_count
+		from personal_trip 
+		group by content_id 
+		order by total_count desc limit 8) p left join attraction_info i
+		on p.content_id = i.content_id;
+	</select>
 </mapper>

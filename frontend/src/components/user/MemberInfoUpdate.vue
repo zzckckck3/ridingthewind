@@ -1,3 +1,4 @@
+```
 <template>
     <v-container class="update-container">
         <h2>내정보 수정</h2>
@@ -164,3 +165,4 @@ export default {
     margin-top: 20px;
 }
 </style>
+```
