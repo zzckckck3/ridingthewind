@@ -45,7 +45,7 @@
                             <v-avatar color="teal" size="40"></v-avatar>
                         </v-col>
                         <v-col class="col-2">
-                            <v-row align-content="center">
+                            <v-row align-content="center" @click="moveToUserInfo(article.memberId)">
                                 {{ article.nickname }}
                             </v-row>
                             <v-row align-content="center">
@@ -322,6 +322,9 @@ export default {
                     });
             }
 
+        },
+        moveToUserInfo(userId) {
+            this.$router.push({name:"infopage", params: {userId : userId}});
         },
         // getLike() {
         //     http.get('/like', {

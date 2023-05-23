@@ -4,7 +4,7 @@
             <v-row>
                 <!--Left Container-->
                 <v-col class="text-center" cols="12" sm="2">
-                    <v-sheet cols="8" class="grey lighten-5" rounded="lg" width="200" min-height="268" elevation="8">
+                    <v-sheet cols="8" class="grey lighten-5" rounded="lg" min-height="268" elevation="8">
                         <h3 class="pt-2 pb-2">☆☆팔로워 순위!☆☆</h3>
                         <v-list>
                             <v-list-item

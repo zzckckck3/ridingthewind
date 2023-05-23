@@ -2,7 +2,7 @@
     <div class="mypage">
         <div class="top-space"></div>
         <MypageUserInfo  @follow-click="followButtonClick" :userId="userId"/>
-        <MypageBoard />
+        <MypageBoard :userId="userId"/>
         <div class="content">
             <div class="follower">
                 <MypageFollower ref="follwerRef" :userId="userId"/>
