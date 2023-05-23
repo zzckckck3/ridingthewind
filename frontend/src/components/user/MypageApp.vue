@@ -52,7 +52,8 @@ export default {
         },
         followButtonClick() {
             console.log("뭔가 찍히나요...?");
-            this.$refs.follwerRef.changecheck();
+            // this.$refs.follwerRef.changecheck();
+            this.$refs.follwerRef.getUserFollowerList();
         }
     }
 }
