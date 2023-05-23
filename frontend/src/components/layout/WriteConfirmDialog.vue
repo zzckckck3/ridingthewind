@@ -73,17 +73,26 @@ export default {
                 articleAttractionList: articleAttractionList,
             };
 
+            let birthday = this.userInfo.data.birth;
+            let birthyear = birthday.slice(0, 4);
             for (let i = 0; i < cardList.length; i++) {
                 let sidoCode = cardList[i].sidoCode;
                 let gugunCode = cardList[i].gugunCode;
+                let contentId = cardList[i].id;
 
-                http.put(`/tour/sido/${sidoCode}`)
+                http.put(`/tour/sido/${sidoCode}/${birthyear}`)
                     .then(() => {})
                     .catch((error) => {
                         console.log(error);
                     });
 
-                http.put(`/tour/gugun/${sidoCode}/${gugunCode}`)
+                http.put(`/tour/gugun/${sidoCode}/${gugunCode}/${birthyear}`)
+                    .then(() => {})
+                    .catch((error) => {
+                        console.log(error);
+                    });
+
+                http.put(`/tour/attraction-post-count-add/${contentId}`)
                     .then(() => {})
                     .catch((error) => {
                         console.log(error);

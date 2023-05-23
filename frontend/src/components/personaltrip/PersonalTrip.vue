@@ -36,7 +36,7 @@
             >
             
               <v-btn class="ma-1" outlined color="indigo" @click="optimalButtonClicked()">최적경로 보기</v-btn>
-              <v-btn class="ma-1" outlined color="indigo" @click="Test()">공유!</v-btn>
+              <v-btn class="ma-1" outlined color="indigo" @click="share()">공유!</v-btn>
               <v-btn class="ma-1" outlined color="indigo" @click="showRoute()">현재경로 보기</v-btn>
               <v-container fluid style="min-height: 500px;">
                 <v-row dense class="card-list" id="card-list-custom" style="min-height: 300px; min-width: 200px;">
@@ -150,6 +150,8 @@
     </v-main>
     <delete-tour-dialog ref="deleteOverlay" @agreed="deleteAgree=true" ></delete-tour-dialog>
     <cant-recommend-dialog ref="cantRecommendOverlay"></cant-recommend-dialog>
+    <cant-share-dialog ref="cantShareOverlay"></cant-share-dialog>
+    <alert-recommend-dialog ref="alertRecommendOverlay"></alert-recommend-dialog>
   </v-app>
 </template>
 
@@ -158,6 +160,8 @@ import http from "@/axios/http";
 import Sortable from 'sortablejs';
 import DeleteTourDialog from '@/components/tour/DeleteTourDialog.vue';
 import CantRecommendDialog from '@/components/personaltrip/CantRecommendDialog.vue';
+import CantShareDialog from '@/components/personaltrip/CantShareDialog.vue';
+import AlertRecommendDialog from '@/components/personaltrip/AlertRecommendDialog.vue';
 import { mapState } from "vuex";
 const memberStore = "memberStore";
 
@@ -166,6 +170,8 @@ export default {
   components: {
     DeleteTourDialog,
     CantRecommendDialog,
+    CantShareDialog,
+    AlertRecommendDialog,
   },
   data() {
     return {
@@ -283,26 +289,30 @@ export default {
   watch:{
     deleteAgree: {
         handler(val) {
-        if (val) {
+          if (val) {
             this. tripDelete(this.selectedId); // 예시로 this.id를 매개변수로 사용
             this.deleteAgree = false;
-        }
+          }
         },
         immediate: false
     },
   },
   methods: {
-    Test() {
+    share() {
       const customCards = document.querySelectorAll("#card-list-custom > div");
       const customCardList = Array.from(customCards);
       const customCardListId = [];
-      for (let i = 0; i < customCardList.length; i++){
-        customCardListId[i] = customCardList[i].id;
+      if (customCardList.length != 0) {
+        for (let i = 0; i < customCardList.length; i++) {
+          customCardListId[i] = customCardList[i].id;
+        }
+      } else {
+        this.cantShareDialog();
+        return;
       }
       console.log(customCardListId[0]);
       
       this.$router.push({ name: 'articleWithPlanWrite', params: { customCardListId: customCardListId } });
-
     },
     registAll() {
       this.customCards = document.querySelectorAll("#card-list > div");
@@ -773,8 +783,13 @@ export default {
       this.lngList = Array.from(lngNode);
 
       if (this.latList.length > 9) {
-        this.addOpenDialog();
+        this.cantRecommendDialog();
         return;
+      } else if (this.latList.length < 2) {
+        this.cantShareDialog();
+        return;
+      } else {
+        this.alertRecommendDialog();
       }
 
       this.visited = [];
@@ -891,8 +906,14 @@ export default {
         }, i * 100); // 요소의 인덱스에 따라 시간 간격 설정
       }
     },
-    async addOpenDialog() {
+    async cantShareDialog() {
+      this.$refs.cantShareOverlay.openDialog();
+    },
+    async cantRecommendDialog() {
       this.$refs.cantRecommendOverlay.openDialog();
+    },
+    async alertRecommendDialog() {
+      this.$refs.alertRecommendOverlay.openDialog();
     },
 
   },

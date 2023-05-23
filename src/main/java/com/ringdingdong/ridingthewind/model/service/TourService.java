@@ -23,8 +23,9 @@ public interface TourService {
 	boolean addtour(int contentId, String memberId) throws Exception;
 	List<TourDto> getPopularTourList() throws SQLException;
 
-	boolean addSidoCount(int sidoCode) throws Exception;
-	boolean addGugunCount(int sidoCode, int gugunCode) throws Exception;
+	boolean addSidoCount(int sidoCode, int birthyear) throws Exception;
+	boolean addGugunCount(int sidoCode, int gugunCode, int birthyear) throws Exception;
+	boolean addPostCount(int contentId) throws Exception;
 	
 
 }

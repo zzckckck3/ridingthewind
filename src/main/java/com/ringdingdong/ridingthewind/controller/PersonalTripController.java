@@ -16,8 +16,11 @@ import org.springframework.web.bind.annotation.RestController;
 import com.ringdingdong.ridingthewind.model.MemberDto;
 import com.ringdingdong.ridingthewind.model.service.PersonalTripService;
 
+import lombok.RequiredArgsConstructor;
+
 @RestController
 @RequestMapping(value = "/mypage")
+@RequiredArgsConstructor
 public class PersonalTripController {
 	
 	private final Logger logger = LoggerFactory.getLogger(PersonalTripController.class);
@@ -25,11 +28,6 @@ public class PersonalTripController {
 	private static final String FAIL = "fail";
 	
 	private PersonalTripService personalTripService;
-
-	public PersonalTripController(PersonalTripService personalTripService) {
-		super();
-		this.personalTripService = personalTripService;
-	}
 	
 	@PutMapping("/edit")
 	public ResponseEntity<String> edit(@RequestBody MemberDto memberDto) throws Exception {
