@@ -104,11 +104,9 @@ export default {
 
             http.post(`/article`, JSON.stringify(articleInfo))
                 .then(({ data }) => {
-                    if (data == "SUCCESS") {
-                        alert("등록 성공");
-                    } else {
+                    if (data != "SUCCESS") {
                         alert("등록 실패");
-                    }
+                    } 
                     this.$router.push({ name: "article" });
                 })
                 .catch((error) => {

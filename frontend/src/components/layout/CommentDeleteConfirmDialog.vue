@@ -52,11 +52,9 @@ export default {
             let commentNo = this.commentNo;
             http.delete(`/comment/${commentNo}`)
                 .then(({ data }) => {
-                    if (data == "SUCCESS") {
-                        alert("삭제 성공");
-                    } else {
+                    if (data != "SUCCESS") {
                         alert("삭제 실패");
-                    }
+                    } 
 
                     this.$emit("updateCommentList");
                 })

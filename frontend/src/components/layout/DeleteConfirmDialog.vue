@@ -48,11 +48,9 @@ export default {
             let articleNo = this.articleNo;
             http.delete(`/article/${articleNo}`)
                 .then(({ data }) => {
-                    if (data == "SUCCESS") {
-                        alert("삭제 성공");
-                    } else {
+                    if (data != "SUCCESS") {
                         alert("삭제 실패");
-                    }
+                    } 
                     this.$router.push({ name: "article" });
                 })
                 .catch((error) => {
