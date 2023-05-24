@@ -16,6 +16,8 @@ public interface ArticleMapper {
 
 	// Select
 	List<ArticleDto> listArticle(ArticleParameterDto articleParameterDto) throws SQLException;
+	List<ArticleDetailDto> listHotArticle(int period) throws SQLException;
+	List<ArticleDto> listMyLikeArticle(String memberId) throws SQLException;
 	int getTotalArticleCount(ArticleParameterDto articleParameterDto) throws SQLException;
 	ArticleDetailDto getArticle(int articleNo) throws SQLException;
 

@@ -2,18 +2,48 @@
     <div class="mypageBoard">
         <!-- 배너 내용 -->
         <div class="banner custom-font">
-            추천한 게시글
-
+            <v-simple-table>
+                <thead>
+                    <tr>
+                        <th
+                            v-for="(header, idx) in headers"
+                            :key="idx"
+                            v-text="header"
+                            class="text-center"
+                        ></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr
+                        v-for="article in articles"
+                        :key="article.articleNo"
+                        @click="moveToArticleDetail(article.articleNo)"
+                    >
+                      <td>{{ article.articleNo }}</td>
+                      <td>{{ article.like }}</td>
+                      <td>{{ article.subject }}</td>
+                      <td>{{ article.nickname }}</td>
+                      <td>{{ article.hit }}</td>
+                      <td>{{ article.registerTime }}</td>
+                    </tr>
+                </tbody>
+            </v-simple-table>
         </div>
     </div>
 </template>
 
 <script>
-// import http from "@/axios/http";
-// const likelisturl = "/member/likelist";
+import http from "@/axios/http";
+
 export default {
     name: 'MypageBoard',
     props:['userId'],
+    data() {
+        return {
+            headers: ["글번호", "추천수", "제목", "작성자", "조회수", "작성일"],
+            articles: [],
+        };
+    },
     created() {
         this.getLikeList();
     },
@@ -22,11 +52,17 @@ export default {
     },
     methods: {
         getLikeList(){
-            console.log("여기서"+ this.userId);
-            http.get(likelisturl).then(response => {
-                console.log(this.userId);
-            })
-        }
+            http.get(`/article/${this.userId}/like`)
+                .then( ({ data }) => {
+                    this.articles = data;
+                })
+        },
+        moveToArticleDetail(articleNo) {
+            this.$router.push({
+                name: "articleDetail",
+                params: { articleNo: articleNo },
+            });
+        },
     }
 
 }

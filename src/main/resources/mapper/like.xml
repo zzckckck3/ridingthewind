@@ -11,7 +11,7 @@
 
 	<insert id="insertLike" parameterType="map">
 		insert into article_member_map
-		value (#{articleNo}, #{memberId})
+		value (#{articleNo}, #{memberId}, DATE(NOW()))
 	</insert>
 
 	<select id="likeThisArticle" parameterType="map" resultType="int">

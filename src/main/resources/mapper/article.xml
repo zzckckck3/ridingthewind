@@ -44,7 +44,25 @@
 		order by a.article_no desc
 		limit #{start}, #{spp}
 	</select>
-	
+
+	<select id="listHotArticle" parameterType="int" resultMap="articleDetailDto">
+		SELECT *
+		FROM article
+		WHERE register_time >= DATE_SUB(CURDATE(), INTERVAL ${period} DAY)
+		  AND article_no IN (SELECT DISTINCT article_no
+							 FROM article_attraction_map)
+		ORDER BY `like` DESC LIMIT 5;
+	</select>
+
+	<select id="listMyLikeArticle" parameterType="string" resultMap="articleDto">
+		SELECT a.article_no, m.member_id, mem.nickname, a.subject, a.content, a.hit, a.like, a.register_time, a.modify_time
+		FROM article a
+				 JOIN article_member_map m ON a.article_no = m.article_no
+				 JOIN member mem ON m.member_id = mem.member_id
+		WHERE mem.member_id = #{userId}
+		ORDER BY m.likedate DESC;
+	</select>
+
 	<select id="getTotalArticleCount" parameterType="map" resultType="int">
 		select count(article_no)
 		from article a, member m
