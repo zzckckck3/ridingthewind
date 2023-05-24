@@ -1,21 +1,33 @@
 package com.ringdingdong.ridingthewind.model.service;
 
-import com.ringdingdong.ridingthewind.enumerate.Constant;
-import com.ringdingdong.ridingthewind.model.*;
-import com.ringdingdong.ridingthewind.model.mapper.*;
-import lombok.RequiredArgsConstructor;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import com.ringdingdong.ridingthewind.enumerate.Constant;
+import com.ringdingdong.ridingthewind.model.ArticleAttractionDto;
+import com.ringdingdong.ridingthewind.model.ArticleDetailDto;
+import com.ringdingdong.ridingthewind.model.ArticleDto;
+import com.ringdingdong.ridingthewind.model.ArticleListResponseDto;
+import com.ringdingdong.ridingthewind.model.ArticleParameterDto;
+import com.ringdingdong.ridingthewind.model.PageNavigationResponseDto;
+import com.ringdingdong.ridingthewind.model.TourDto;
+import com.ringdingdong.ridingthewind.model.mapper.ArticleAttractionMapper;
+import com.ringdingdong.ridingthewind.model.mapper.ArticleMapper;
+import com.ringdingdong.ridingthewind.model.mapper.CommentMapper;
+import com.ringdingdong.ridingthewind.model.mapper.TourMapper;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor
 @Transactional
 @Slf4j
+
 public class ArticleServiceImpl implements ArticleService {
 
 	private final ArticleMapper articleMapper;
@@ -55,14 +67,28 @@ public class ArticleServiceImpl implements ArticleService {
 				.maxPage(maxPage)
 				.build();
 	}
-
+	
 	@Override
-	public ArticleDetailDto getArticle(int articleNo) throws Exception {
-		ArticleDetailDto articleDetailDto = articleMapper.getArticle(articleNo);
-		articleDetailDto.setCommentList(commentMapper.listComment(articleNo));
-		articleDetailDto.setTourList(tourMapper.getListByContentIds(articleAttractionMapper.listArticleAttraction(articleNo).stream().map(ArticleAttractionDto::getContentId).collect(Collectors.toList())));
-		return articleDetailDto;
-	}
+    public ArticleDetailDto getArticle(int articleNo) throws Exception {
+        ArticleDetailDto articleDetailDto = articleMapper.getArticle(articleNo);
+        articleDetailDto.setCommentList(commentMapper.listComment(articleNo));
+
+        List<Integer> contentIds = articleAttractionMapper.listArticleAttraction(articleNo).stream().map(ArticleAttractionDto::getContentId).collect(Collectors.toList());
+        List<TourDto> result = tourMapper.getListByContentIds(contentIds);
+        List<TourDto> ret = new ArrayList<>();
+
+        for (Integer contentId : contentIds) {
+            for (TourDto tourDto : result) {
+                if (tourDto.getContentId() == contentId) {
+                    ret.add(tourDto);
+                    break;
+                }
+            }
+        }
+
+        articleDetailDto.setTourList(ret);
+        return articleDetailDto;
+    }
 
 	@Override
 	public boolean updateHit(int articleNo) throws Exception {

@@ -1,6 +1,11 @@
 <template>
     <v-container>
         <v-row>
+            <v-col cols="1"></v-col>
+            <v-col cols="10">
+            <h1>공유 게시판</h1>
+            <v-divider class="my-2"></v-divider>
+        <v-row class="mt-3">
             <v-col class="d-flex" cols="5">
                 <v-col cols="3">
                     <v-select
@@ -15,32 +20,17 @@
                 <v-col cols="5">
                     <v-text-field v-model="word" outlined dense></v-text-field>
                 </v-col>
-                <v-col cols="1">
-                    <v-btn color="" elevation="3" plain @click="getArticleList"
-                        >검색</v-btn
+                <v-col cols="1" style="padding-left: 0;">
+                    <v-btn color="indigo" elevation="3" @click="getArticleList"
+                        ><v-icon class="mt-1" color="white">mdi-magnify</v-icon></v-btn
                     >
                 </v-col>
             </v-col>
-            <v-col class="d-flex flex-row-reverse" offset="2" cols="5">
-                <v-col cols="4">
-                    <v-btn
-                        color="blue"
-                        elevation="3"
-                        plain
-                        @click="$router.push({ name: 'plan'})"
-                    >여행 경로 공유</v-btn>
-                </v-col>
-                <v-col cols="1">
-                    <v-btn
-                        color="blue"
-                        elevation="3"
-                        plain
-                        @click="moveToArticleWrite"
-                        >글 등록</v-btn
-                    >
-                </v-col>
-                <v-col cols="2">
+            <v-col class="d-flex flex-row" style="align-items: center;" offset="2" cols="5">
+                <v-col cols="6"></v-col>
+                <v-col cols="2" class="p-0 custom-margin-top">
                     <v-select
+                        style="width: 80%;"
                         :items="sppList"
                         value="`${spp}`"
                         label="표시"
@@ -49,9 +39,31 @@
                         @input="changeSpp"
                     ></v-select>
                 </v-col>
+                <v-col cols="3" class="p-0" >
+                    <v-btn
+                        color="blue"
+                        elevation="3"
+                        plain
+                        @click="$router.push({ name: 'plan'})"
+                    >여행 경로 공유</v-btn>
+                </v-col>
+                <v-col cols="1" class="p-0"> 
+                    <v-btn
+                    class="mx-2"
+                    fab
+                    dark
+                    large
+                    color="indigo"
+                    @click="moveToArticleWrite"
+                    >
+                    <v-icon dark>
+                        mdi-pencil
+                    </v-icon>
+                    </v-btn>
+                </v-col>
             </v-col>
         </v-row>
-        <v-simple-table>
+        <v-simple-table class="mt-3">
             <thead>
                 <tr>
                     <th
@@ -82,8 +94,13 @@
                 v-model="curPage"
                 :length="maxPage"
                 :total-visible="naviSize"
+                color="indigo"
+                dark
             ></v-pagination>
         </div>
+    </v-col>
+    <v-col cols="1"></v-col>
+    </v-row>
     </v-container>
 </template>
 
@@ -94,7 +111,7 @@ export default {
     name: "ArticleList",
     data() {
         return {
-            headers: ["글번호", "추천수", "제목", "작성자", "조회수", "작성일"],
+            headers: ["글번호", "구분", "제목", "작성자", "조회수", "작성일"],
             sppList: ["10", "20", "30", "40", "50"],
             keyList: [
                 { value: "subject", text: "제목" },
@@ -162,3 +179,12 @@ export default {
     },
 };
 </script>
+
+<style scoped>
+.p-0{
+    padding: 0;
+}
+.custom-margin-top{
+    margin-top: 25px;
+}
+</style>
