@@ -8,6 +8,7 @@ import com.ringdingdong.ridingthewind.model.mapper.TourMapper;
 import org.springframework.stereotype.Service;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -48,7 +49,19 @@ public class TourServiceImpl implements TourService{
 
 	@Override
 	public List<TourDto> getListByContentIds(List<Integer> contentIds) throws SQLException {
-		return tourMapper.getListByContentIds(contentIds);
+		List<TourDto> result = tourMapper.getListByContentIds(contentIds);
+		List<TourDto> ret = new ArrayList<>();
+
+		for (Integer contentId : contentIds) {
+			for (TourDto tourDto : result) {
+				if (tourDto.getContentId() == contentId) {
+					ret.add(tourDto);
+					break;
+				}
+			}
+		}
+
+		return ret;
 	}
 
 	@Override
