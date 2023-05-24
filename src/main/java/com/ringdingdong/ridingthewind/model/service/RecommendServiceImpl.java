@@ -43,7 +43,7 @@ public class RecommendServiceImpl implements RecommendService {
 
 	@Override
 	public List<TourDto> getPopularContentGugun(int sidoCode, int gugunCode) throws Exception {
-		return recommendMapper.getPopularContentSido(sidoCode, gugunCode);
+		return recommendMapper.getPopularContentGugun(sidoCode, gugunCode);
 	}
 
 

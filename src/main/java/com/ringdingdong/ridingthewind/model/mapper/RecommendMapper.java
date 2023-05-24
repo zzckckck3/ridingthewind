@@ -23,7 +23,7 @@ public interface RecommendMapper {
 	List<TourDto> getPopularContentSido(
 			@Param("sidoCode") int sidoCode) throws SQLException;
 
-	List<TourDto> getPopularContentSido(
+	List<TourDto> getPopularContentGugun(
 			@Param("sidoCode") int sidoCode, 
 			@Param("gugunCode") int gugunCode) throws SQLException;
 

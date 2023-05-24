@@ -15,7 +15,7 @@
                     <v-textarea
                         height="310"
                         outlined
-                        v-model="content"
+                        v-model="contents"
                         label="내용"
                     >
                     </v-textarea>
@@ -52,13 +52,18 @@ export default {
     data() {
         return {
             subject: "",
-            content: "",
+            contents: "",
             dialog: false,
         };
     },
     methods: {
         moveToList() {
             this.$router.push({ name: "article" });
+        },
+    },
+    computed: {
+        content() {
+            return this.contents.split('\n').join('<br>');
         },
     },
     components: {
