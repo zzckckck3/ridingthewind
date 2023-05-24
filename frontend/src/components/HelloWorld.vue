@@ -3,26 +3,16 @@
         <v-container>
             <v-row>
                 <!--Left Container-->
-                <v-col class="text-center" cols="12" sm="2">
-                    <v-sheet
-                        class="grey lighten-5"
-                        rounded="lg"
-                        min-height="268"
-                        elevation="8"
-                    >
-                        Left Container
-                    </v-sheet>
-                </v-col>
 
                 <!--Center Container-->
-                <v-col class="text-center" cols="12" sm="8">
+                <v-col class="text-center" cols="12" sm="9" style="margin-bottom: 50px;">
                     <v-sheet
                         rounded="lg"
                         elevation="8"
                         class="lighten-5 overflow-auto"
                         style="padding: 10px; padding-left: 20px; padding-right: 20px;"
                     >
-                        <h1>응애 뭐넣어</h1>
+                        <h1 style="padding-top: 20px;">여행정보 검색</h1>
                         <div style="display:flex; margin-top: 20px;">
                             <v-select
                                 id="search-area"
@@ -180,7 +170,7 @@
                 </v-col>
 
                 <!--Right Container-->
-                <v-col class="text-center" cols="12" sm="2">
+                <v-col class="text-center" cols="12" sm="3">
                     <v-sheet
                         class="grey lighten-5"
                         rounded="lg"
@@ -188,6 +178,7 @@
                         elevation="8"
                     >
                         아마도 광고
+                        <v-btn @click="Test1()">Test</v-btn>
                     </v-sheet>
                 </v-col>
             </v-row>
@@ -198,6 +189,7 @@
 
 <script>
 import http from "@/axios/http";
+// import { WEATHER_API_KEY } from '@/api/appKey.js';
 
 export default {
     data() {
@@ -223,6 +215,9 @@ export default {
             sidoSelection: 0,
             tempSelection: 99,
             cards: [],
+
+            /**recommend variable */
+            popularGugunListName: [],
         };
     },
     created() {
@@ -343,7 +338,21 @@ export default {
         redirectToNaverSite(searchTerm) {
             const searchUrl = `https://search.naver.com/search.naver?query=${encodeURIComponent(searchTerm)}`;
             window.location.href = searchUrl;
-        }
+        },
+        Test1() {
+            // let Seoul = [60, 127];
+            // let Incheon = [55, 124];
+            // let Daejeon = [67, 100];
+            // let Daegu = [89, 90];
+            // let Gwangju = [58, 74];
+            // let Pusan = [97, 76];
+            // let Ulsan = [102, 84];
+            // console.log(this.sido);
+            // http.get(`https://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getVilageFcst?serviceKey=${WEATHER_API_KEY}&pageNo=1&numOfRows=12&dataType=JSON&base_date=20230524&base_time=0500&nx=${seoul[0]}&ny=${seoul[1]}`)
+            //     .then((response) => {
+            //         console.log(response.data.response.body.items.item);
+            //     });
+        },
     }
 }
 </script>
