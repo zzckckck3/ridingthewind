@@ -89,13 +89,22 @@
 
                 <!--Right Container-->
                 <v-col class="text-center" cols="12" sm="2">
-                    <v-sheet
-                        class="grey lighten-5"
-                        rounded="lg"
-                        min-height="268"
-                        elevation="8"
-                    >
-                        아마도 광고
+                    <v-sheet cols="8" class="grey lighten-5" rounded="lg" min-height="268" elevation="8">
+                        <h3 class="pt-2 pb-2">☆☆핫 플레이스☆☆</h3>
+                        <v-list>
+                            <v-list-item
+                                style="height: 20px;"
+                                v-for="article in articles"
+                                :key="article"
+                                :value="article"
+                                active-color="primary"
+                                variant="tonal"
+                            >
+                                <v-col cols="10" offset="1">
+                                    <v-list-item-title class="" v-text="article.subject" @click="moveToArticleDetail(article.articleNo)"></v-list-item-title>
+                                </v-col>
+                            </v-list-item>
+                        </v-list>
                     </v-sheet>
                 </v-col>
             </v-row>
@@ -147,6 +156,12 @@ export default {
         },
         moveToUserInfo(userId) {
             this.$router.push({name:"infopage", params: {userId : userId}});
+        },
+        moveToArticleDetail(articleNo) {
+            this.$router.push({
+                name: "articleDetail",
+                params: { articleNo: articleNo },
+            });
         },
     }
 };
