@@ -67,9 +67,10 @@
                         </v-col>
                     </v-row>
                 </v-card>
+
                 <v-card class="my-2 offset-1 col-10" min-height="400">
-                    <v-row class="col-12 pa-6">
-                        {{ article.content }}
+                    <v-row class="col-12 pa-6 content-line">
+                        {{article.content}}
                     </v-row>
                 </v-card>
                 <v-card class="my-2 offset-1 col-10">
@@ -209,12 +210,14 @@ export default {
     created() {
         this.updateHit();
         this.getArticle();
+
     },
     computed: {
         ...mapState(memberStore, ["userInfo"]),
         likeCount() {
             return this.article.like;
-        }
+        },
+
     },
     methods: {
         updateHit() {
@@ -359,3 +362,10 @@ export default {
     }
 };
 </script>
+
+<style>
+ .content-line{
+     text-align: left;
+     white-space: pre-line;
+ }
+</style>
