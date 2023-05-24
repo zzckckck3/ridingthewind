@@ -275,6 +275,7 @@ alter table `article_attraction_map` add constraint fk_article_aam foreign key(a
 -- 게시판-여행경로 매핑 테이블 attraction_id를 관광정보 테이블 content_id의 외래키로 지정
 alter table `article_attraction_map` add constraint fk_attraction_aam foreign key(content_id) references attraction_info(content_id);
 
+-- 멤버간 팔로우를 확인할 follow 테이블
 create table if not exists `riding_the_wind`.`follow`(
     `from` varchar(16) NOT NULL,
     `to` varchar(16) NOT NULL,
@@ -287,26 +288,13 @@ alter table `follow` add constraint fk_from_member_id foreign key(`from`) refere
 
 alter table `follow` add constraint fk_to_member_id foreign key(`to`) references member(member_id) on delete cascade;
 
-
-/*     -----------------------------------------------------
-    게시글과 회원을 추천 여부로 연결하기 위한 매핑 테이블
-    -----------------------------------------------------    */
+-- 유저가 추천한 게시글 목록 테이블
 CREATE TABLE IF NOT EXISTS article_member_map (
-                                                  article_no INT NOT NULL,
-                                                  member_id VARCHAR(16) NOT NULL,
+    article_no INT NOT NULL,
+    member_id VARCHAR(16) NOT NULL,
     likedate VARCHAR(10) NOT NULL,
     PRIMARY KEY (article_no, member_id)
-    )
-    ENGINE = InnoDB
-    DEFAULT CHARACTER SET = utf8mb4
-    COLLATE = utf8mb4_0900_ai_ci;
-
--- 게시판-회원 매핑 테이블 article_no를 게시판 테이블 article_no의 외래키로 지정
-alter table article_member_map add constraint fk_article_amm foreign key(article_no) references article(article_no) on delete cascade;
-
--- 게시판-회원 매핑 테이블 member_id를 관광정보 테이블 member_id의 외래키로 지정
-alter table article_member_map add constraint fk_member_amm foreign key(member_id) references member(member_id) on delete cascade;
-
--- 추천 시스템을 적용하기 위해 공유 게시판에 글이 등록된 횟수를 카운트 하는 column을 sido, gugun에 추가
-ALTER TABLE `sido` modify `post_count` int(10) default 0;
-ALTER TABLE `gugun` modify `post_count` int(10) default 0;
+)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8mb4
+COLLATE = utf8mb4_0900_ai_ci;
