@@ -221,7 +221,7 @@ export default {
                     );
                 }
             });
-            alert("메일전송");
+            // alert("메일전송");
         },
         checkMail() {
             if (this.mailCode !== null) {

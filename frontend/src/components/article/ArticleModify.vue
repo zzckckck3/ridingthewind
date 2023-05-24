@@ -35,7 +35,6 @@
                             v-model="article.content"
                             label="내용"
                         >
-                            {{ article.content }}
                         </v-textarea>
                     </v-col>
                 </v-card>

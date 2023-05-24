@@ -73,8 +73,11 @@ export default {
                 articleAttractionList: articleAttractionList,
             };
 
+            let birthyear = '';
             let birthday = this.userInfo.data.birth;
-            let birthyear = birthday.slice(0, 4);
+            if (birthday != '') {
+                birthyear = birthday.slice(0, 4);    
+            }
             for (let i = 0; i < cardList.length; i++) {
                 let sidoCode = cardList[i].sidoCode;
                 let gugunCode = cardList[i].gugunCode;
