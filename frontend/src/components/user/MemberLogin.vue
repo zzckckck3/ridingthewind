@@ -20,6 +20,10 @@
                             required
                         >
                         </v-text-field>
+                        <v-row v-if="faillogin" style='color: red' class="ml-3">
+                            로그인에 실패하였습니다.
+                            아이디와 비밀번호를 확인해주세요.
+                        </v-row>
                         <v-btn
                             type="button"
                             color="blue lighten-1 text-capitalize"
@@ -27,7 +31,7 @@
                             large
                             block
                             dark
-                            class="mb-3"
+                            class="mb-3 mt-7"
                             @click="loginSubmit"
                         >
                             Login
@@ -46,6 +50,13 @@
                 </v-card>
             </v-flex>
         </v-container>
+        <v-bottom-sheet v-model="successlogin" inset hide-overlay>
+            <v-sheet class="sheet" height="56px">
+                <v-alert type="success">
+                    로그인이 완료되었습니다.
+                </v-alert>
+            </v-sheet>
+        </v-bottom-sheet>
     </v-dialog>
 </template>
 
@@ -64,6 +75,8 @@ export default {
                 userPwd: "",
             },
             loginModal: false,
+            successlogin : false,
+            faillogin : false,
         };
     },
     components: {},
@@ -77,14 +90,14 @@ export default {
             let token = sessionStorage.getItem("access-token");
             if (this.isLogin) {
                 await this.getUserInfo(token);
-                alert("로그인 성공");
+                this.successlogin = true;
                 this.loginModal = false;
                 const currentPath = currentRoute.value.path;
                 if (currentPath !== "/") {
                     this.$router.push({ name: "home" });
                 }
             } else {
-                alert("아이디와 비밀번호를 확인해주세요");
+                this.faillogin = true;
             }
       },
       addUserShow() {
@@ -95,6 +108,7 @@ export default {
         this.user.userId = '',
         this.user.userPwd = '',
         this.loginModal = true;
+          this.faillogin = false;
       },
   },
 };
