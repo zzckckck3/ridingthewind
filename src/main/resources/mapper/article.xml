@@ -55,10 +55,12 @@
 	</select>
 
 	<select id="listMyLikeArticle" parameterType="string" resultMap="articleDto">
-		select a.article_no, a.member_id, a.subject, a.content, a.hit, a.like, a.register_time, a.modify_time
-		from article a, article_member_map m
-		where a.article_no = m.article_no and m.member_id = #{userId}
-		order by m.likedate desc;
+		SELECT a.article_no, m.member_id, mem.nickname, a.subject, a.content, a.hit, a.like, a.register_time, a.modify_time
+		FROM article a
+				 JOIN article_member_map m ON a.article_no = m.article_no
+				 JOIN member mem ON m.member_id = mem.member_id
+		WHERE mem.member_id = #{userId}
+		ORDER BY m.likedate DESC;
 	</select>
 
 	<select id="getTotalArticleCount" parameterType="map" resultType="int">

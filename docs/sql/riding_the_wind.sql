@@ -282,17 +282,19 @@ create table if not exists `riding_the_wind`.`follow`(
     foreign key(`to`) references member(member_id),
     foreign key(`from`) references member(member_id)
     );
--- 추천 시스템을 적용하기 위해 공유 게시판에 글이 등록된 횟수를 카운트 하는 column을 sido, gugun에 추가
-ALTER TABLE `sido` modify `post_count` int(10) default 0;
-ALTER TABLE `gugun` modify `post_count` int(10) default 0;
+
+alter table `follow` add constraint fk_from_member_id foreign key(`from`) references member(member_id) on delete cascade;
+
+alter table `follow` add constraint fk_to_member_id foreign key(`to`) references member(member_id) on delete cascade;
 
 
 /*     -----------------------------------------------------
     게시글과 회원을 추천 여부로 연결하기 위한 매핑 테이블
     -----------------------------------------------------    */
 CREATE TABLE IF NOT EXISTS article_member_map (
-    article_no INT NOT NULL,
-    member_id VARCHAR(16) NOT NULL,
+                                                  article_no INT NOT NULL,
+                                                  member_id VARCHAR(16) NOT NULL,
+    likedate VARCHAR(10) NOT NULL,
     PRIMARY KEY (article_no, member_id)
     )
     ENGINE = InnoDB
@@ -305,6 +307,6 @@ alter table article_member_map add constraint fk_article_amm foreign key(article
 -- 게시판-회원 매핑 테이블 member_id를 관광정보 테이블 member_id의 외래키로 지정
 alter table article_member_map add constraint fk_member_amm foreign key(member_id) references member(member_id) on delete cascade;
 
-alter table `follow` add constraint fk_from_member_id foreign key(`from`) references member(member_id) on delete cascade;
-alter table `follow` add constraint fk_to_member_id foreign key(`to`) references member(member_id) on delete cascade;
-
+-- 추천 시스템을 적용하기 위해 공유 게시판에 글이 등록된 횟수를 카운트 하는 column을 sido, gugun에 추가
+ALTER TABLE `sido` modify `post_count` int(10) default 0;
+ALTER TABLE `gugun` modify `post_count` int(10) default 0;

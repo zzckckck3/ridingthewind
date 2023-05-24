@@ -9,7 +9,7 @@
                             v-for="(header, idx) in headers"
                             :key="idx"
                             v-text="header"
-                            class="text-h6 text-center"
+                            class="text-center"
                         ></th>
                     </tr>
                 </thead>
