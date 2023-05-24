@@ -80,6 +80,9 @@
                     </v-btn>
                     <v-btn @click="checkMail"> 인증번호 확인 </v-btn>
                 </v-row>
+                <v-row class="ml-2 mt-4" v-if="sendmailmessage" :style="{color: sendmailmessagecolor}">
+                    {{ sendmailmessage }}
+                </v-row>
                 <v-row>
                     <v-col cols="12" md="6">
                         <v-text-field
@@ -108,6 +111,22 @@
                 >
             </v-form>
         </v-container>
+        <v-bottom-sheet v-model="showAlert" inset hide-overlay>
+            <v-sheet class="sheet" height="56px">
+                <v-alert type="success">
+                    회원가입이 완료되었습니다.
+                    로그인을 진행해주세요
+                </v-alert>
+            </v-sheet>
+        </v-bottom-sheet>
+        <v-bottom-sheet v-model="faillogin" inset hide-overlay>
+            <v-sheet class="sheet" height="56px">
+                <v-alert type="warning">
+                    회원가입에 실패하였습니다.
+                    잠시 후 다시 시도해주세요
+                </v-alert>
+            </v-sheet>
+        </v-bottom-sheet>
     </v-dialog>
 </template>
 
@@ -134,6 +153,10 @@ export default {
             pwdcheckvalue: false,
             emailcheckvalue: false,
             signupModal: false,
+            sendmailmessage : false,
+            sendmailmessagecolor : 'black',
+            showAlert: false,
+            faillogin: false,
         };
     },
     computed: {
@@ -177,7 +200,7 @@ export default {
             }
 
             if (!this.idcheckvalue) {
-                alert("사용할 수 없는 아이디입니다.");
+                alert("아이디를 입력해주세요.");
                 return;
             } else if (!this.pwdcheckvalue) {
                 alert("비밀번호가 일치하지 않습니다.");
@@ -199,11 +222,11 @@ export default {
 
             http.post(signupurl, signupForm).then((response) => {
                 if (response.status === 202) {
-                    alert("성공");
+                    this.showAlert = true;
                     this.signupModal = false;
                     this.$emit("showLogin");
                 }else{
-                    alert("실패");
+                    this.faillogin = true;
                     this.$router.push({ name: "home" });
                 }
             });
@@ -214,25 +237,25 @@ export default {
                 this.mailCode = response.data.toString();
                 // sessionStorage.setItem()
                 if (response.status === 202) {
-                    alert("이메일이 전송되었습니다.");
+                    this.sendmailmessage = "이메일이 전송되었습니다.";
                 } else {
-                    alert(
-                        "이메일 전송에 실패하였습니다. 잠시 후 다시 시도해주세요"
-                    );
+                    this.sendmailmessage = "이메일 전송에 실패하였습니다. 잠시 후 다시 시도해주세요";
                 }
             });
-            alert("메일전송");
         },
         checkMail() {
             if (this.mailCode !== null) {
                 if (this.inputMailCode == this.mailCode) {
                     this.emailcheckvalue = true;
-                    alert("회원인증이 완료되었습니다.");
+                    this.sendmailmessagecolor = 'green';
+                    this.sendmailmessage = "이메일인증이 완료되었습니다.";
                 } else {
-                    alert("인증코드가 잘못되었습니다. 다시 확인해주세요");
+                    this.sendmailmessagecolor = 'red';
+                    this.sendmailmessage = "인증코드가 잘못되었습니다. 다시 확인해주세요.";
                 }
             } else {
-                alert("먼저 인증코드를 발송해주세요");
+                this.sendmailmessagecolor = 'red';
+                this.sendmailmessage = "인증코드를 발송해주세요.";
             }
         },
         openSignupModal() {

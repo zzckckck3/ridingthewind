@@ -11,6 +11,13 @@
                 <v-btn @click="deleteUser">회원 삭제</v-btn>
             </v-col>
         </v-row>
+        <v-bottom-sheet v-model="successdelete" inset hide-overlay>
+            <v-sheet class="sheet" height="56px">
+                <v-alert type="alerttype">
+                    {{ successdeletemessage }}
+                </v-alert>
+            </v-sheet>
+        </v-bottom-sheet>
     </v-container>
 </template>
 
@@ -25,6 +32,9 @@ export default {
     data() {
         return {
             currentPassword: "",
+            successdelete : false,
+            successdeletemessage : '',
+            alerttype:'success'
         };
     },
     computed: {
@@ -54,11 +64,13 @@ export default {
                             sessionStorage.removeItem("refresh-token"); //저장된 토큰 없애기
                             if (this.$route.path != "/")
                                 this.$router.push({ name: "home" });
-                            alert("회원탈퇴가 완료되었습니다.");
+                            this.alerttype = 'success';
+                            this.successdeletemessage = "회원탈퇴가 완료되었습니다.";
+                            this.successdelete = true;
                         } else {
-                            alert(
-                                "회원탈퇴에 실패하였습니다. 잠시 후에 시도해주세요"
-                            );
+                            this.alerttype = 'warning';
+                            this.successdeletemessage = "회원탈퇴에 실패하였습니다. 잠시 후에 시도해주세요";
+                            this.successdelete = true;
                         }
                     });
                 }
