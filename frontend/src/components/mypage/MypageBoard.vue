@@ -2,6 +2,7 @@
     <div class="mypageBoard">
         <!-- 배너 내용 -->
         <div class="banner custom-font">
+            <h6>추천한 게시글</h6>
             <v-simple-table>
                 <thead>
                     <tr>
