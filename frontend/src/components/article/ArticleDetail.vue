@@ -1,6 +1,11 @@
 <template>
     <v-container>
         <v-row>
+        <v-col cols="1"></v-col>
+        <v-col cols="10">
+        <h1>공유 게시판</h1>
+        <v-divider class="my-2"></v-divider>
+        <v-row class="mt-3">
             <v-card min-height="500" class="py-4 col-9">
                 <v-row class="col-4 offset-7 d-flex justify-end">
                     <v-btn
@@ -66,7 +71,7 @@
                 </v-card>
                 <v-card class="my-2 offset-1 col-10" min-height="400">
                     <v-row class="col-12 pa-6">
-                        {{ article.content }}
+                        <p v-html='article.content'></p>
                     </v-row>
                 </v-card>
                 <v-card class="my-2 offset-1 col-10">
@@ -180,6 +185,9 @@
                 </v-container>
             </v-card>
         </v-row>
+    </v-col>
+    <v-col cols="1"></v-col>
+    </v-row>
     </v-container>
 </template>
 
