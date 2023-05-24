@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -74,7 +75,21 @@ public class ArticleServiceImpl implements ArticleService {
 	public ArticleDetailDto getArticle(int articleNo) throws Exception {
 		ArticleDetailDto articleDetailDto = articleMapper.getArticle(articleNo);
 		articleDetailDto.setCommentList(commentMapper.listComment(articleNo));
-		articleDetailDto.setTourList(tourMapper.getListByContentIds(articleAttractionMapper.listArticleAttraction(articleNo).stream().map(ArticleAttractionDto::getContentId).collect(Collectors.toList())));
+
+		List<Integer> contentIds = articleAttractionMapper.listArticleAttraction(articleNo).stream().map(ArticleAttractionDto::getContentId).collect(Collectors.toList());
+		List<TourDto> result = tourMapper.getListByContentIds(contentIds);
+		List<TourDto> ret = new ArrayList<>();
+
+		for (Integer contentId : contentIds) {
+			for (TourDto tourDto : result) {
+				if (tourDto.getContentId() == contentId) {
+					ret.add(tourDto);
+					break;
+				}
+			}
+		}
+
+		articleDetailDto.setTourList(ret);
 		return articleDetailDto;
 	}
 
