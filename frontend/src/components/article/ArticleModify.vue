@@ -1,6 +1,12 @@
 <template>
     <v-container>
         <v-row>
+            <v-col cols="1"></v-col>
+            
+            <v-col cols="10">
+                <h1>공유 게시판</h1>
+                <v-divider class="my-2"></v-divider>
+            <v-row>
             <v-card min-height="500" class="py-4 col-9">
                 <v-card class="mb-2 col-10 offset-1 font-weight-bold">
                     <v-col cols="12" sm="6" md="3">
@@ -38,18 +44,20 @@
                         </v-textarea>
                     </v-col>
                 </v-card>
-                <v-row class="col-4 offset-7 d-flex justify-end">
+                <v-row class="mt-2 col-4 offset-7 d-flex justify-end">
                     <v-btn
                         class="my-auto mx-1 d-flex flex-row-reverse"
+                        color="indigo"
                         @click="dialog = true"
                     >
-                        수정
+                        <h4 style="color: white;">수정</h4>
                     </v-btn>
                     <v-btn
                         class="my-auto mx-1 d-flex flex-row-reverse"
+                        color="indigo"
                         @click="moveToList"
                     >
-                        목록
+                        <h4 style="color: white;">목록</h4>
                     </v-btn>
                     <modify-confirm-dialog
                         v-model="dialog"
@@ -136,6 +144,9 @@
                 </v-container>
             </v-card>
         </v-row>
+        </v-col>
+        <v-col cols="1"></v-col>
+    </v-row>
     </v-container>
 </template>
 

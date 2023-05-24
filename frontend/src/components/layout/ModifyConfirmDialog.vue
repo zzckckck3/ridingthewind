@@ -72,11 +72,9 @@ export default {
 
             http.put(`/article`, JSON.stringify(articleInfo))
                 .then(({ data }) => {
-                    if (data == "SUCCESS") {
-                        alert("수정 성공");
-                    } else {
+                    if (data != "SUCCESS") {
                         alert("수정 실패");
-                    }
+                    } 
                     this.$router.push({ name: "article" });
                 })
                 .catch((error) => {

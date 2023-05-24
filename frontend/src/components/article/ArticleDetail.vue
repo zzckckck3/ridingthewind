@@ -7,12 +7,13 @@
         <v-divider class="my-2"></v-divider>
         <v-row class="mt-3">
             <v-card min-height="500" class="py-4 col-9">
-                <v-row class="col-4 offset-7 d-flex justify-end">
+                <v-row class="col-4 offset-7 d-flex justify-end" style="padding-right:0;">
                     <v-btn
                         class="my-auto mx-1 d-flex flex-row-reverse"
                         @click="moveToList"
+                        color="indigo"
                     >
-                        목록
+                    <h4 style="color: white;">목록</h4>
                     </v-btn>
                     <v-btn
                         v-if="
@@ -21,8 +22,9 @@
                         "
                         class="my-auto mx-1 d-flex flex-row-reverse"
                         @click="moveToModify"
+                        color="indigo"
                     >
-                        수정
+                    <h4 style="color: white;">수정</h4>
                     </v-btn>
                     <v-btn
                         v-if="
@@ -31,15 +33,16 @@
                         "
                         class="my-auto mx-1 d-flex flex-row-reverse"
                         @click.stop="dialog = true"
+                        color="error"
                     >
-                        삭제
+                    <h4 style="color: white;">삭제</h4>
                     </v-btn>
                     <delete-confirm-dialog
                         v-model="dialog"
                         :articleNo="article.articleNo"
                     ></delete-confirm-dialog>
                 </v-row>
-                <v-card class="my-2 col-10 offset-1 font-weight-bold">
+                <v-card class="mt-3 my-2 col-10 offset-1 font-weight-bold">
                     <v-row class="my-0 px-8 d-flex">
                         {{ article.subject }}
                     </v-row>
@@ -61,9 +64,6 @@
                             <v-col>
                                 <v-row align-content="center">
                                     조회: {{ article.hit }}
-                                </v-row>
-                                <v-row align-content="center">
-                                    추천: {{ article.like }}
                                 </v-row>
                             </v-col>
                         </v-col>
@@ -100,7 +100,7 @@
                                     deleteComment(commentItem.commentNo, $event)
                                 "
                             >
-                                삭제
+                                <h4>삭제</h4>
                             </v-btn>
                         </v-row>
                         <comment-delete-confirm-dialog
@@ -118,7 +118,7 @@
                             class="my-auto mx-3 d-flex flex-row-reverse"
                             @click="addComment"
                         >
-                            등록
+                        <h4>등록</h4>
                         </v-btn>
                     </v-row>
                 </v-card>

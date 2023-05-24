@@ -355,8 +355,33 @@
                         min-height="268"
                         elevation="8"
                     >
-                        아마도 광고
-                        <v-btn @click="Test1()">Test</v-btn>
+                    <v-list subheader>
+                    <v-subheader>국내여행 관련 기사 (중앙일보)</v-subheader>
+
+                    <v-divider></v-divider>
+                    <v-list-item
+                        v-for="crawledArticle in crawledArticles"
+                        :key="crawledArticle.title"
+                    >
+                        <v-list-item-avatar height="70px" width="70px">
+                        <v-img
+                            :src="crawledArticle.src"
+                        ></v-img>
+                        </v-list-item-avatar>
+
+                        <v-list-item-content>
+                        <v-list-item-title>{{crawledArticle.title}}</v-list-item-title>
+                        </v-list-item-content>
+
+                        <v-list-item-icon>
+                        <v-btn icon :href="crawledArticle.href" target="_blank">
+                        <v-icon color="grey">
+                            mdi-newspaper-variant-multiple-outline
+                        </v-icon>
+                        </v-btn>
+                        </v-list-item-icon>
+                    </v-list-item>
+                    </v-list>
                     </v-sheet>
                 </v-col>
             </v-row>
@@ -406,7 +431,7 @@ export default {
             popularGugunListCodeAndName: [],
             postSelectionByGugun: 0,
 
-            crawledData: [],
+            crawledArticles: [],
         };
     },
     created() {
@@ -643,8 +668,34 @@ export default {
             try {
                 axios.get(`/api`)
                     .then((response) => { 
-                        const data = response.data;
-                        console.log(data);
+                        const parser = new DOMParser();
+                        const htmlDoc = parser.parseFromString(response.data, "text/html");
+                        for(let i=0; i<5; i++){
+                            const articleElement = this.findArticleElement(htmlDoc, i); // 기사가 있는 하위 태그 선택
+                            if (articleElement) {
+                                let tempTitle = articleElement.innerText; // 기사 내용 추출
+                                const title = tempTitle.replace(/\n/g, "");
+                                const anchorElement = articleElement.querySelector('a');
+                                const imgElement = articleElement.querySelector('img');
+                                let href = '';
+                                let src = '';
+                                if(anchorElement){
+                                    href = anchorElement.getAttribute('href');
+                                }
+                                if(imgElement){
+                                    src = imgElement.getAttribute('src');
+                                }
+                                let article = {
+                                    title: title,
+                                    href: href,
+                                    src: src
+                                }
+                                this.crawledArticles.push(article);
+                            } else {
+                                console.log("기사를 찾을 수 없습니다.");
+                            }
+                        }
+                        console.log(this.crawledArticles);
                     });
             } catch (error) {
                 console.error(error);
@@ -663,6 +714,15 @@ export default {
             //     .then((response) => {
             //         console.log(response.data.response.body.items.item);
             //     });
+        },
+        findArticleElement(htmlDoc, index) {
+            const cardElements = htmlDoc.querySelectorAll('.card');
+            if (cardElements.length > 1) {
+                const nextCardElement = cardElements[index+6];
+                return nextCardElement;
+            } else {
+                console.log("중복된 .card 클래스를 가진 요소가 부족합니다.");
+            }
         },
     }
 }
