@@ -17,6 +17,13 @@ module.exports = defineConfig({
           "^/article": "/article",
         },
       },
+      '/api': {
+        target: 'https://www.joongang.co.kr',
+        changeOrigin: true,
+        pathRewrite: {
+          '^/api': '/travel/domestic'
+        }
+      }
     },
     headers: {
       "Access-Control-Allow-Origin": "*", // 모든 도메인에서의 요청 허용
@@ -24,4 +31,5 @@ module.exports = defineConfig({
       "Access-Control-Allow-Headers": "Origin, X-Requested-With, Content-Type, Accept", // 허용할 요청 헤더 설정
     },
   },
+
 });
