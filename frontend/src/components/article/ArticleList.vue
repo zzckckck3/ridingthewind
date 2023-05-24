@@ -5,7 +5,7 @@
             <v-col cols="10">
             <h1>공유 게시판</h1>
             <v-divider class="my-2"></v-divider>
-        <v-row class="mt-3">
+            <v-row class="mt-3">
             <v-col class="d-flex" cols="5">
                 <v-col cols="3">
                     <v-select

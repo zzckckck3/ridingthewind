@@ -127,7 +127,7 @@
                                     </v-img>
                                     <v-card-actions class="white justify-center">
 
-                                    <v-icon class="custom-heart"  :color="'red'"> mdi-heart-multiple </v-icon><h5 class="custom-heart-text ms-3">{{ card.totalCount }}</h5>
+                                    <v-icon class="custom-heart"  :color="'red'"> mdi-heart-multiple </v-icon><h5 class="custom-heart-text">{{ card.totalCount }}</h5>
 
                                     <v-btn
                                         :color="'green'"
@@ -367,7 +367,11 @@
 
 <script>
 import http from "@/axios/http";
+import axios from "axios";
+
+
 // import { WEATHER_API_KEY } from '@/api/appKey.js';
+
 
 export default {
     data() {
@@ -401,6 +405,8 @@ export default {
             popularGugunList: [],
             popularGugunListCodeAndName: [],
             postSelectionByGugun: 0,
+
+            crawledData: [],
         };
     },
     created() {
@@ -408,6 +414,7 @@ export default {
         this.create_sido();
         this.getPostCount();
         this.getPostCountByGugun();
+        this.performCrawling();
     },
     computed: {
         filteredCards() {
@@ -419,9 +426,14 @@ export default {
             
         },
         filteredPopularGuguns() {
-            const nowGugunCode = this.popularGugunListCodeAndName[this.postSelectionByGugun].gugunCode;
-            const nowSidoCode = this.popularGugunListCodeAndName[this.postSelectionByGugun].sidoCode;
-            return this.popularGugunList.filter(popularGugun => nowSidoCode === popularGugun.sidoCode && nowGugunCode === popularGugun.gugunCode);  
+            const nowGugunCodeObj = this.popularGugunListCodeAndName[this.postSelectionByGugun];
+            if (nowGugunCodeObj) {
+            const nowGugunCode = nowGugunCodeObj.gugunCode;
+            const nowSidoCode = nowGugunCodeObj.sidoCode;
+            return this.popularGugunList.filter(popularGugun => nowSidoCode === popularGugun.sidoCode && nowGugunCode === popularGugun.gugunCode);
+            } else {
+            return [];
+            }
         },
         showImg() { // 이미지 가져오기
             return (src) => {
@@ -626,6 +638,17 @@ export default {
         redirectToNaverSite(searchTerm) {
             const searchUrl = `https://search.naver.com/search.naver?query=${encodeURIComponent(searchTerm)}`;
             window.location.href = searchUrl;
+        },
+        async performCrawling() {
+            try {
+                axios.get(`/api`)
+                    .then((response) => { 
+                        const data = response.data;
+                        console.log(data);
+                    });
+            } catch (error) {
+                console.error(error);
+            }
         },
         Test1() {
             // let Seoul = [60, 127];
