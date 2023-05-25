@@ -20,6 +20,7 @@ public class ArticleParameterDto {
 	private String key;
 	@ApiModelProperty(value = "검색어")
 	private String word;
-
+	@ApiModelProperty(value = "추천받을  ID")
+	private String contentId;
 }
 

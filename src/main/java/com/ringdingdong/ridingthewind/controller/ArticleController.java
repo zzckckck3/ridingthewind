@@ -28,7 +28,7 @@ import lombok.RequiredArgsConstructor;
 
 @RestController
 @CrossOrigin(origins = "*", allowedHeaders = "*")
-@RequestMapping(value = "/article")
+@RequestMapping(value = "/articleapi")
 @RequiredArgsConstructor
 @Api("게시판 컨트롤러 API V1")
 public class ArticleController {
@@ -48,6 +48,12 @@ public class ArticleController {
 	@GetMapping
 	public ResponseEntity<ArticleListResponseDto> listArticle(@ApiParam(value = "게시글을 얻기위한 부가정보.", required = true) ArticleParameterDto articleParameterDto) throws Exception {
 		return new ResponseEntity<>(articleService.listArticle(articleParameterDto), HttpStatus.OK);
+	}
+	
+	@ApiOperation(value = "게시판 글목록(추천)", notes = "여행지 ID 기반 추천 게시글의 정보를 반환한다.", response = List.class)
+	@GetMapping("/recommend")
+	public ResponseEntity<ArticleListResponseDto> listArticleWithRecommend(@ApiParam(value = "게시글을 얻기위한 부가정보.", required = true) ArticleParameterDto articleParameterDto) throws Exception {
+		return new ResponseEntity<>(articleService.listArticleWithRecommend(articleParameterDto), HttpStatus.OK);
 	}
 
 	@ApiOperation(value = "게시판 글보기", notes = "글번호에 해당하는 게시글의 정보를 반환한다.", response = ArticleDto.class)

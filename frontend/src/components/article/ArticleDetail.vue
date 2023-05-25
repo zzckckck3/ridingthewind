@@ -219,7 +219,7 @@ export default {
     methods: {
         getArticle() {
             let articleNo = this.$route.params.articleNo;
-            http.get(`/article/${articleNo}`)
+            http.get(`/articleapi/${articleNo}`)
                 .then(({ data }) => {
                     this.article = data;
                     this.comment = "";

@@ -53,6 +53,14 @@ public class ArticleServiceImpl implements ArticleService {
 				.pageNavigation(makePageNavigation(articleParameterDto))
 				.build();
 	}
+	
+	@Override
+	public ArticleListResponseDto listArticleWithRecommend(ArticleParameterDto articleParameterDto) throws Exception {
+		return ArticleListResponseDto.builder()
+				.articles(articleMapper.listArticleWithRecommend(articleParameterDto))
+				.pageNavigation(makePageNavigation(articleParameterDto))
+				.build();
+	}
 
 	@Override
 	public PageNavigationResponseDto makePageNavigation(ArticleParameterDto articleParameterDto) throws Exception {

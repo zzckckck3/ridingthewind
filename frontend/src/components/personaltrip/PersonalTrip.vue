@@ -128,8 +128,8 @@
                               {{ card.overview }}
                             </div>
                           </div>
-                          <v-btn class="mt-6 mb-2" outlined color="indigo" @click="openDetailList()" style="margin-right: 10px;">
-                            관련글 보기
+                          <v-btn class="mt-6 mb-2" outlined color="indigo" @click="openDetailListNewTab(card.id, card.title)" style="margin-right: 10px;">
+                            관련글 보기(새 탭)
                           </v-btn>
                           <v-btn
                             class="mt-6 mb-2"
@@ -155,7 +155,6 @@
     <cant-recommend-dialog ref="cantRecommendOverlay"></cant-recommend-dialog>
     <cant-share-dialog ref="cantShareOverlay"></cant-share-dialog>
     <alert-recommend-dialog ref="alertRecommendOverlay"></alert-recommend-dialog>
-    <article-list-dialog ref="articleListDialog"></article-list-dialog>
   </v-app>
 </template>
 
@@ -166,8 +165,6 @@ import DeleteTourDialog from '@/components/tour/DeleteTourDialog.vue';
 import CantRecommendDialog from '@/components/personaltrip/CantRecommendDialog.vue';
 import CantShareDialog from '@/components/personaltrip/CantShareDialog.vue';
 import AlertRecommendDialog from '@/components/personaltrip/AlertRecommendDialog.vue';
-import ArticleListDialog from '@/components/article/ArticleListDialog.vue';
-// import ArticleDetailDialog from '../article/ArticleDetailDialog.vue';
 import { mapState } from "vuex";
 const memberStore = "memberStore";
 
@@ -178,8 +175,6 @@ export default {
     CantRecommendDialog,
     CantShareDialog,
     AlertRecommendDialog,
-    ArticleListDialog,
-    // ArticleDetailDialog,
   },
   data() {
     return {
@@ -442,7 +437,7 @@ export default {
         this.drawingFlag = false;
         
       }
-      //this.map.setCenter(new window.kakao.maps.LatLng(this.latList[0].innerHTML, this.lngList[0].innerHTML));
+      this.map.setCenter(new window.kakao.maps.LatLng(this.latList[0].innerHTML, this.lngList[0].innerHTML));
     },
     viewSmall() {
         const cardImages = document.querySelectorAll('.card-image');
@@ -923,9 +918,26 @@ export default {
     async alertRecommendDialog() {
       this.$refs.alertRecommendOverlay.openDialog();
     },
-    async openDetailList(){
-      this.$refs.articleListDialog.openDialog();
-    },
+    openDetailListNewTab(id, title) {
+      const routeName = "articleListRecommend";
+      const resolvedRoute = this.$router.resolve({
+        name: routeName,
+        query: {
+          
+          recommendArticleTitle: title,
+          recommendArticleNo: id,
+        },
+      });
+      const url = resolvedRoute.href;
+      const newTab = window.open(url, "_blank", "width=1200, height=800");
+      console.log(id);
+      //newTab.document.getElementById("recommendArticleNo").innerHTML = id;
+      newTab.onload = () => {
+        // newTab.postMessage({ type: "recommendArticleNo", value: id }, window.location.origin);
+        newTab.document.getElementById("recommendArticleNo").textContent = id;
+        newTab.document.getElementById("recommendArticleTitle").textContent = `'${title}' 관련 게시글`;
+      };
+    }
   },
 };
 </script>

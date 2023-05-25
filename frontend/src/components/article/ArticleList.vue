@@ -144,7 +144,7 @@ export default {
     },
     methods: {
         getArticleList() {
-            http.get(`/article`, {
+            http.get(`/articleapi`, {
                 params: {
                     curPage: this.curPage,
                     spp: this.spp,

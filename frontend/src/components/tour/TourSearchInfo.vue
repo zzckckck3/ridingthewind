@@ -178,13 +178,16 @@
                                         {{ card.overview }}
                                     </div>
                                 </div>
+                                <v-btn class="mt-6 mb-2" outlined color="indigo" @click="openDetailListNewTab(card.id, card.title)" style="margin-right: 10px;">
+                                    관련글 보기(새 탭)
+                                </v-btn>
                                 <v-btn
-                                class="mt-6 mb-2"
-                                text
-                                color="error"
-                                @click="card.show = !card.show"
+                                    class="mt-6 mb-2"
+                                    outlined
+                                    color="red"
+                                    @click="card.show = !card.show"
                                 >
-                                닫기
+                                    닫기
                                 </v-btn>
                             </div>
                         </v-sheet>
@@ -661,6 +664,26 @@ export default {
         },
         sidogugunException(){
             alert("시,도 혹은 군, 구를 반드시 선택해주세요!!");
+        },
+        openDetailListNewTab(id, title) {
+            const routeName = "articleListRecommend";
+            const resolvedRoute = this.$router.resolve({
+                name: routeName,
+                query: {
+                
+                recommendArticleTitle: title,
+                recommendArticleNo: id,
+                },
+            });
+            const url = resolvedRoute.href;
+            const newTab = window.open(url, "_blank", "width=1200, height=800");
+            console.log(id);
+            //newTab.document.getElementById("recommendArticleNo").innerHTML = id;
+            newTab.onload = () => {
+                // newTab.postMessage({ type: "recommendArticleNo", value: id }, window.location.origin);
+                newTab.document.getElementById("recommendArticleNo").textContent = id;
+                newTab.document.getElementById("recommendArticleTitle").textContent = `'${title}' 관련 게시글`;
+            };
         }
         
 

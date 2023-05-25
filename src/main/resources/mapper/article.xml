@@ -45,6 +45,16 @@
 		limit #{start}, #{spp}
 	</select>
 	
+	<select id="listArticleWithRecommend" parameterType="map" resultMap="articleDto">
+		SELECT a.article_no, a.subject, a.hit, a.like, a.register_time, m.nickname
+		FROM article a
+		INNER JOIN member m ON a.member_id = m.member_id
+		INNER JOIN article_attraction_map am ON a.article_no = am.article_no
+		WHERE am.content_id = #{contentId}
+		ORDER BY a.article_no DESC
+		LIMIT #{start}, #{spp};
+	</select>
+	
 	<select id="getTotalArticleCount" parameterType="map" resultType="int">
 		select count(article_no)
 		from article a, member m

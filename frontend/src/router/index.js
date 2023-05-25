@@ -74,6 +74,12 @@ const routes = [
           import(/* webpackChunkName: "article" */ "@/components/article/ArticleList.vue"),
       },
       {
+        path: "list/recommend",
+        name: "articleListRecommend",
+        component: () =>
+          import(/* webpackChunkName: "article" */ "@/components/article/ArticleListDialog.vue"),
+      },
+      {
         path: "detail",
         name: "articleDetail",
         component: () =>
@@ -130,7 +136,7 @@ const routes = [
 ];
 
 const router = new VueRouter({
-  mode: "history",
+  mode: "hash",
   base: process.env.BASE_URL,
   routes,
 });

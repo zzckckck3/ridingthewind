@@ -46,7 +46,7 @@ export default {
         deleteArticle() {
             this.dialog = false;
             let articleNo = this.articleNo;
-            http.delete(`/article/${articleNo}`)
+            http.delete(`/articleapi/${articleNo}`)
                 .then(({ data }) => {
                     if (data != "SUCCESS") {
                         alert("삭제 실패");

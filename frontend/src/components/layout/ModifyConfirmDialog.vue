@@ -70,7 +70,7 @@ export default {
                 articleAttractionList: articleAttractionList,
             };
 
-            http.put(`/article`, JSON.stringify(articleInfo))
+            http.put(`/articleapi`, JSON.stringify(articleInfo))
                 .then(({ data }) => {
                     if (data != "SUCCESS") {
                         alert("수정 실패");

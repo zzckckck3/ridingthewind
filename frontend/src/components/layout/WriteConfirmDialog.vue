@@ -102,7 +102,7 @@ export default {
                     });
             }
 
-            http.post(`/article`, JSON.stringify(articleInfo))
+            http.post(`/articleapi`, JSON.stringify(articleInfo))
                 .then(({ data }) => {
                     if (data != "SUCCESS") {
                         alert("등록 실패");
