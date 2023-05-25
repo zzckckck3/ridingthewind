@@ -1,3 +1,4 @@
+```
 <template>
     <v-container class="update-container">
         <h2>내정보 수정</h2>
@@ -64,8 +65,8 @@
                     ></v-text-field>
                 </v-col>
             </v-row>
-            <v-btn class="signup-btn" @click="update" color="primary"
-                >수정완료</v-btn
+            <v-btn class="signup-btn" @click="update" color="indigo"
+                ><h4 style="color: white;">수정완료</h4></v-btn
             >
         </v-form>
     </v-container>
@@ -164,3 +165,4 @@ export default {
     margin-top: 20px;
 }
 </style>
+```

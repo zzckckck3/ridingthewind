@@ -1,5 +1,6 @@
 <template>
-    <v-dialog v-model="signupModal" max-width="450" persistent>
+    <div>
+    <v-dialog v-model="signupModal" max-width="500" persistent>
         <v-container class="signup-container" fill-height>
             <h2>회원 가입</h2>
             <v-form class="signup-form">
@@ -66,25 +67,30 @@
                     </v-col>
                 </v-row>
                 <v-row>
-                    <v-col cols="12" md="12">
+                    <v-col cols="9" md="9">
                         <v-text-field
                             label="인증번호 입력"
                             v-model="inputMailCode"
+                            :readonly="isReadOnly"
                             required
                         ></v-text-field>
                     </v-col>
-                </v-row>
-                <v-row>
-                    <v-btn class="mr-5" @click="sendMail">
-                        인증번호 발송
-                    </v-btn>
-                    <v-btn @click="checkMail"> 인증번호 확인 </v-btn>
+                    <v-col cols="3" md="3">
+                        <v-btn class="mt-3" 
+                        @click="send ? checkMail() : sendMail()" 
+                        color="indigo"
+                        width="90"
+                        v-if="!certification"
+                        >
+                            <h5 style="color: white;">{{send ? "인증번호 확인" : "인증번호 발송"}}</h5>
+                        </v-btn>
+                    </v-col>
                 </v-row>
                 <v-row>
                     <v-col cols="12" md="6">
                         <v-text-field
                             label="생일"
-                            v-model="birthday"
+                            v-model="birth"
                             type="date"
                             required
                         ></v-text-field>
@@ -97,18 +103,36 @@
                         ></v-text-field>
                     </v-col>
                 </v-row>
-                <v-btn class="signup-btn" @click="signup" color="primary"
-                    >가입하기</v-btn
+                <v-btn class="signup-btn" @click="signup" color="indigo"
+                    ><h4 style="color: white;">가입하기</h4></v-btn
                 >
                 <v-btn
                     class="signup-btn ms-4"
                     @click="signupModal = false"
-                    color="primary"
-                    >취소</v-btn
+                    color="indigo"
+                    ><h4 style="color: white;">취소</h4></v-btn
                 >
             </v-form>
         </v-container>
     </v-dialog>
+    <v-snackbar
+        v-model="snackbar"
+        :timeout="3000"
+        >
+        {{ "정상적으로 회원가입이 완료되었습니다." }}
+
+        <template v-slot:action="{ attrs }">
+            <v-btn
+            color="indigo"
+            text
+            v-bind="attrs"
+            @click="snackbar = false"
+            >
+            Close
+            </v-btn>
+        </template>
+        </v-snackbar>
+    </div>
 </template>
 
 <script>
@@ -126,7 +150,7 @@ export default {
             phoneNumber: "",
             emailId: "",
             emailDomain: "",
-            birthday: "",
+            birth: "",
             nickname: "",
             mailCode: null,
             inputMailCode: "",
@@ -134,6 +158,10 @@ export default {
             pwdcheckvalue: false,
             emailcheckvalue: false,
             signupModal: false,
+            send: false,
+            certification: false,
+            isReadOnly: false,
+            snackbar: false
         };
     },
     computed: {
@@ -154,6 +182,8 @@ export default {
             http.get(idcheckurl + "/" + memberId).then((response) => {
                 if (response.data === "SUCCESS") {
                     this.idcheckvalue = true;
+                } else {
+                    this.idcheckvalue = false;
                 }
             });
         },
@@ -169,7 +199,7 @@ export default {
                 this.phoneNumber === "" ||
                 this.emailId === "" ||
                 this.emailDomain === "" ||
-                this.birthday === "" ||
+                this.birth === "" ||
                 this.nickname === ""
             ) {
                 alert("값을 모두 입력해주세요");
@@ -194,12 +224,12 @@ export default {
             signupForm.phoneNumber = this.phoneNumber;
             signupForm.emailId = this.emailId;
             signupForm.emailDomain = this.emailDomain;
-            signupForm.birthday = this.birthday;
+            signupForm.birth = this.birth;
             signupForm.nickname = this.nickname;
 
             http.post(signupurl, signupForm).then((response) => {
                 if (response.status === 202) {
-                    alert("성공");
+                    this.snackbar = true;
                     this.signupModal = false;
                     this.$emit("showLogin");
                 }else{
@@ -215,18 +245,21 @@ export default {
                 // sessionStorage.setItem()
                 if (response.status === 202) {
                     alert("이메일이 전송되었습니다.");
+                    this.send = true;
                 } else {
+                    this.send = false;
                     alert(
                         "이메일 전송에 실패하였습니다. 잠시 후 다시 시도해주세요"
                     );
                 }
             });
-            alert("메일전송");
         },
         checkMail() {
             if (this.mailCode !== null) {
                 if (this.inputMailCode == this.mailCode) {
                     this.emailcheckvalue = true;
+                    this.certification = true;
+                    this.isReadOnly = true;
                     alert("회원인증이 완료되었습니다.");
                 } else {
                     alert("인증코드가 잘못되었습니다. 다시 확인해주세요");
@@ -243,17 +276,21 @@ export default {
             this.phoneNumber = '',
             this.emailId = '',
             this.emailDomain = '',
-            this.birthday = '',
+            this.birth = '',
             this.nickname = '',
             this.inputMailCode = '',
             this.signupModal = true;
+            this.send = false;
+            this.certification = false;
+            this.isReadOnly = false;
+            this.snackbar = false;
         },
     },
 };
 </script>
 <style scoped>
 .signup-container {
-    max-width: 450px;
+    max-width: 500;
     background-color: white;
     padding: 50px;
 }

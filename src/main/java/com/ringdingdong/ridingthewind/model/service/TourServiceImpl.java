@@ -1,16 +1,18 @@
 package com.ringdingdong.ridingthewind.model.service;
 
+import java.sql.SQLException;
+import java.time.Year;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.stereotype.Service;
+
 import com.ringdingdong.ridingthewind.model.PersonalTripDto;
 import com.ringdingdong.ridingthewind.model.TourDto;
 import com.ringdingdong.ridingthewind.model.TourGugunDto;
 import com.ringdingdong.ridingthewind.model.TourSidoDto;
 import com.ringdingdong.ridingthewind.model.mapper.TourMapper;
-import org.springframework.stereotype.Service;
-
-import java.sql.SQLException;
-import java.time.Year;
-import java.util.List;
-import java.util.Map;
 
 @Service
 public class TourServiceImpl implements TourService{
@@ -119,27 +121,39 @@ public class TourServiceImpl implements TourService{
 	}
 
 	@Override
-	public List<TourDto> getList(int sidoCode, int gugunCode) throws SQLException {
+	public List<TourDto> getList(int sidoCode, int gugunCode) throws Exception {
 		return tourMapper.getList(sidoCode, gugunCode);
 	}
 
 	@Override
-	public List<TourDto> getList(String memberId) throws SQLException {
+	public List<TourDto> getList(String memberId) throws Exception {
 		return tourMapper.getList(memberId);
 	}
 	
 	@Override
-	public List<TourDto> getListByKeyword(Map<String, Object> map) throws SQLException {
+	public List<TourDto> getListByKeyword(Map<String, Object> map) throws Exception {
 		return tourMapper.getListByKeyword(map);
 	}
 
 	@Override
-	public List<TourDto> getListByContentIds(List<Integer> contentIds) throws SQLException {
-		return tourMapper.getListByContentIds(contentIds);
-	}
+    public List<TourDto> getListByContentIds(List<Integer> contentIds) throws SQLException {
+        List<TourDto> result = tourMapper.getListByContentIds(contentIds);
+        List<TourDto> ret = new ArrayList<>();
+
+        for (Integer contentId : contentIds) {
+            for (TourDto tourDto : result) {
+                if (tourDto.getContentId() == contentId) {
+                    ret.add(tourDto);
+                    break;
+                }
+            }
+        }
+
+        return ret;
+    }
 
 	@Override
-	public List<PersonalTripDto> getLikeList(String memberId) throws SQLException {
+	public List<PersonalTripDto> getLikeList(String memberId) throws Exception {
 		return tourMapper.getLikeList(memberId);
 	}
 	
@@ -147,13 +161,6 @@ public class TourServiceImpl implements TourService{
 	public boolean addtour(int contentId, String memberId) throws Exception {
 		return tourMapper.addtour(contentId, memberId) == 1;
 	}
-
-	@Override
-	public List<TourDto> getPopularTourList() throws SQLException {
-		return tourMapper.getPopularTourList();
-	}
-
-
-
+	
 
 }

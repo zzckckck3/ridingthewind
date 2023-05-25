@@ -128,13 +128,16 @@
                               {{ card.overview }}
                             </div>
                           </div>
+                          <v-btn class="mt-6 mb-2" outlined color="indigo" @click="openDetailList()" style="margin-right: 10px;">
+                            관련글 보기
+                          </v-btn>
                           <v-btn
-                          class="mt-6 mb-2"
-                          text
-                          color="error"
-                          @click="card.show = !card.show"
+                            class="mt-6 mb-2"
+                            outlined
+                            color="red"
+                            @click="card.show = !card.show"
                           >
-                          닫기
+                            닫기
                           </v-btn>
                         </div>
                       </v-sheet>
@@ -152,6 +155,7 @@
     <cant-recommend-dialog ref="cantRecommendOverlay"></cant-recommend-dialog>
     <cant-share-dialog ref="cantShareOverlay"></cant-share-dialog>
     <alert-recommend-dialog ref="alertRecommendOverlay"></alert-recommend-dialog>
+    <article-list-dialog ref="articleListDialog"></article-list-dialog>
   </v-app>
 </template>
 
@@ -162,6 +166,8 @@ import DeleteTourDialog from '@/components/tour/DeleteTourDialog.vue';
 import CantRecommendDialog from '@/components/personaltrip/CantRecommendDialog.vue';
 import CantShareDialog from '@/components/personaltrip/CantShareDialog.vue';
 import AlertRecommendDialog from '@/components/personaltrip/AlertRecommendDialog.vue';
+import ArticleListDialog from '@/components/article/ArticleListDialog.vue';
+// import ArticleDetailDialog from '../article/ArticleDetailDialog.vue';
 import { mapState } from "vuex";
 const memberStore = "memberStore";
 
@@ -172,6 +178,8 @@ export default {
     CantRecommendDialog,
     CantShareDialog,
     AlertRecommendDialog,
+    ArticleListDialog,
+    // ArticleDetailDialog,
   },
   data() {
     return {
@@ -915,7 +923,9 @@ export default {
     async alertRecommendDialog() {
       this.$refs.alertRecommendOverlay.openDialog();
     },
-
+    async openDetailList(){
+      this.$refs.articleListDialog.openDialog();
+    },
   },
 };
 </script>

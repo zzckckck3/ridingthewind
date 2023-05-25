@@ -1,12 +1,13 @@
 <template>
-    <v-app-bar app color="grey-light" flat>
+    <v-app-bar app color="rgb(245, 245, 245);" height="75">
         <!-- 좌 상단 홈 버튼 -->
-        <v-col cols="auto">
+        <v-col cols="2" class="ms-5">
             <v-btn
-                elevation="2"
-                size="x-large"
+                elevation="0"
+                height="65"
+                width="300"
+                style="color:rgb(245, 245, 245);"
                 :to="{ name: 'home' }"
-                class="white"
                 ><v-img
                     src="@/assets/img/logo.png"
                     :width="100"
@@ -16,24 +17,15 @@
         </v-col>
 
         <!-- 중앙 메뉴 탭 -->
-        <v-tabs centered class="ml-n9" color="black darken-1">
+        <v-tabs centered class="ml-n9" color="black darken-1" style="max-width: 68%;">
             <v-tab :to="{ name: 'home' }">Home</v-tab>
             <v-tab :to="{ name: 'article' }">게시판</v-tab>
-            <!--v-tab :to="{ name: 'notice' }">공지사항</!--v-tab>
-            <v-tab-- :to="{ name: 'qna' }">Q&A</v-tab-->
             <v-tab :to="{ name: 'tour' }">여행정보</v-tab>
             <v-tab :to="{ name: 'plan' }">여행계획</v-tab>
         </v-tabs>
-
         <!-- 우측 회원 관리 창 -->
-        <v-avatar
-            class="hidden-sm-and-down"
-            color="grey darken-1 shrink"
-            size="32"
-            style="margin-right: 10px"
-            ><img src="https://cdn.vuetifyjs.com/images/john.jpg" alt=""
-        /></v-avatar>
 
+        <h5 class="me-5" color='black'>{{ isLogin ? `${userInfo.data.memberId}님 환영합니다.` : "" }}</h5>
         <div class="text-center">
             <v-menu
                 v-model="menu"
@@ -41,24 +33,37 @@
                 :nudge-width="200"
                 offset-x
             >
-                <template v-slot:activator="{ on, attrs }">
+        
+                <template v-slot:activator="{ on, attrs }" v-if="isLogin">
                     <v-btn
-                        color="blue lighten-1 text-capitalize"
+                        rounded
+                        width="10"
+                        x-small
+                        v-bind="attrs"
+                        v-on="on"
+                        @click="menu = true"
+                    >
+                    <img src="@/assets/img/profile.png" alt=""  style="width: 40px; height: 40px; border-radius: 50%;"/>
+                    </v-btn>
+                </template>
+                <template v-slot:activator="{ on, attrs }" v-else>
+                    <v-btn
+                        color="indigo"
+                        style="margin-left:80px;"
                         dark
                         v-bind="attrs"
                         v-on="on"
-                        @click="isLogin ? (menu = true) : openLoginModal()"
+                        @click="openLoginModal()"
                     >
-                        {{ isLogin ? userInfo.data.memberId : "Login" }}
+                        {{ "Login" }}
                     </v-btn>
                 </template>
-
                 <v-card>
                     <v-list v-if="isLogin">
                         <v-list-item>
                             <v-list-item-avatar>
                                 <img
-                                    src="https://cdn.vuetifyjs.com/images/john.jpg"
+                                    src="@/assets/img/profile.png"
                                     alt=""
                                 />
                             </v-list-item-avatar>
@@ -138,7 +143,23 @@
             <member-login ref="loginOverlay" @showSignup="openSignupModal"></member-login>
             <member-signup ref="signupOverlay" @showLogin="openLoginModal"></member-signup>
         </div>
-    </v-app-bar>
+        <v-snackbar
+            v-model="snackbar"
+            :timeout="1500"
+            >
+            {{ "정상적으로 로그아웃 되었습니다" }}
+
+            <template v-slot:action="{ attrs }">
+                <v-btn
+                color="red"
+                v-bind="attrs"
+                @click="snackbar = false"
+                >
+                Close
+                </v-btn>
+            </template>
+            </v-snackbar>
+        </v-app-bar>
 </template>
 
 <script>
@@ -157,6 +178,7 @@ export default {
         menu: null,
         selectedTab: null,
         showConfirmationDialog: false,
+        snackbar: false
     }),
     computed: {
         ...mapState(memberStore, ["isLogin", "userInfo"]),
@@ -167,6 +189,7 @@ export default {
 
         onClickLogout() {
             this.menu = false;
+            this.snackbar = true;
             this.userLogout(this.userInfo.data.memberId);
             sessionStorage.removeItem("access-token"); //저장된 토큰 없애기
             sessionStorage.removeItem("refresh-token"); //저장된 토큰 없애기
@@ -182,6 +205,10 @@ export default {
         async openSignupModal() {
             this.$refs.signupOverlay.openSignupModal();
         },
+        async openButtomSheet() {
+            this.$refs.beforeloginBottomSheet.showAndHideButtomSheet();
+        },
+        
     },
 };
 </script>

@@ -57,7 +57,6 @@ export default {
         writeArticle() {
             this.dialog = false;
             let cardList = Array.isArray(this.cards) ? this.cards : [];
-            console.log(cardList);
 
             const articleAttractionList = cardList.map((card, index) => {
                 return {
@@ -73,8 +72,11 @@ export default {
                 articleAttractionList: articleAttractionList,
             };
 
+            let birthyear = '';
             let birthday = this.userInfo.data.birth;
-            let birthyear = birthday.slice(0, 4);
+            if (birthday != '') {
+                birthyear = birthday.slice(0, 4);    
+            }
             for (let i = 0; i < cardList.length; i++) {
                 let sidoCode = cardList[i].sidoCode;
                 let gugunCode = cardList[i].gugunCode;
@@ -101,11 +103,9 @@ export default {
 
             http.post(`/article`, JSON.stringify(articleInfo))
                 .then(({ data }) => {
-                    if (data == "SUCCESS") {
-                        alert("등록 성공");
-                    } else {
+                    if (data != "SUCCESS") {
                         alert("등록 실패");
-                    }
+                    } 
                     this.$router.push({ name: "article" });
                 })
                 .catch((error) => {
