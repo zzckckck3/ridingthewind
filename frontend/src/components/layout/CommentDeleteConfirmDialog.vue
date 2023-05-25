@@ -18,6 +18,13 @@
                 </v-btn>
             </v-card-actions>
         </v-card>
+        <v-bottom-sheet v-model="deleteCommentAlert" inset hide-overlay>
+            <v-sheet class="sheet" height="56px">
+                <v-alert type="success">
+                    댓글이 삭제되었습니다.
+                </v-alert>
+            </v-sheet>
+        </v-bottom-sheet>
     </v-dialog>
 </template>
 
@@ -26,6 +33,11 @@ import http from "@/axios/http.js";
 
 export default {
     name: "CommentDeleteConfirmDialog",
+    data() {
+        return{
+            deleteCommentAlert : false
+        }
+    },
     props: {
         value: {
             type: Boolean,
@@ -53,7 +65,7 @@ export default {
             http.delete(`/comment/${commentNo}`)
                 .then(({ data }) => {
                     if (data == "SUCCESS") {
-                        alert("삭제 성공");
+                        this.deleteCommentAlert = true;
                     } else {
                         alert("삭제 실패");
                     }

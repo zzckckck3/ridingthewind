@@ -14,6 +14,13 @@
                 </v-btn>
             </v-card-actions>
         </v-card>
+        <v-bottom-sheet v-model="articleUpdateAlert" inset hide-overlay>
+            <v-sheet class="sheet" height="56px">
+                <v-alert type="success">
+                    게시글이 수정되었습니다.
+                </v-alert>
+            </v-sheet>
+        </v-bottom-sheet>
     </v-dialog>
 </template>
 
@@ -24,6 +31,11 @@ const memberStore = "memberStore";
 
 export default {
     name: "ModifyConfirmDialog",
+    data() {
+        return {
+            articleUpdateAlert : false,
+        }
+    },
     props: {
         value: {
             type: Boolean,
@@ -73,11 +85,14 @@ export default {
             http.put(`/article`, JSON.stringify(articleInfo))
                 .then(({ data }) => {
                     if (data == "SUCCESS") {
-                        alert("수정 성공");
+                        this.articleUpdateAlert = true;
                     } else {
                         alert("수정 실패");
                     }
-                    this.$router.push({ name: "article" });
+                    setTimeout(() => {
+                        // 1초 후에 실행될 코드
+                        this.$router.push({ name: "article" });
+                    }, 1000); // 1000ms = 1초
                 })
                 .catch((error) => {
                     this.$router.push("error/error", error);
