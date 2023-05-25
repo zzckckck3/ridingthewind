@@ -93,9 +93,9 @@
                                 <v-chip class="custom-chip-like" :style="{display : cards.some(card => card.sidoCode === 3) ? '' : 'none'}" >대전</v-chip>
                                 <v-chip class="custom-chip-like" :style="{display : cards.some(card => card.sidoCode === 4) ? '' : 'none'}" >대구</v-chip>
                                 <v-chip class="custom-chip-like" :style="{display : cards.some(card => card.sidoCode === 5) ? '' : 'none'}" >광주</v-chip>
-                                <v-chip class="custom-chip-like" :style="{display : cards.some(card => card.sidoCode === 7) ? '' : 'none'}" >울산</v-chip>
-                                <v-chip class="custom-chip-like" :style="{display : cards.some(card => card.sidoCode === 8) ? '' : 'none'}" >세종</v-chip>
-                                <v-chip class="custom-chip-like" :style="{display : cards.some(card => card.sidoCode === 6) ? '' : 'none'}" >부산</v-chip>
+                                <v-chip class="custom-chip-like" :style="{display : cards.some(card => card.sidoCode === 6) ? '' : 'none'}" >울산</v-chip>
+                                <v-chip class="custom-chip-like" :style="{display : cards.some(card => card.sidoCode === 7) ? '' : 'none'}" >세종</v-chip>
+                                <v-chip class="custom-chip-like" :style="{display : cards.some(card => card.sidoCode === 8) ? '' : 'none'}" >부산</v-chip>
                                 <v-chip class="custom-chip-like" :style="{display : cards.some(card => card.sidoCode === 31) ? '' : 'none'}" >경기</v-chip>
                                 <v-chip class="custom-chip-like" :style="{display : cards.some(card => card.sidoCode === 32) ? '' : 'none'}" >강원</v-chip>
                                 <v-chip class="custom-chip-like" :style="{display : cards.some(card => card.sidoCode === 33) ? '' : 'none'}" >충북</v-chip>
@@ -481,8 +481,8 @@ export default {
     watch: {
         sidoSelection: {
             handler(val) {
-                if (val > 8) {
-                    this.tempSelection = val + 30;
+                if (val > 7) {
+                    this.tempSelection = val + 23;
                 } else {
                     this.tempSelection = val + 1;
                 }
@@ -490,8 +490,8 @@ export default {
         },
         postSelection: {
             handler(val) {
-                if (val > 8) {
-                    this.tempPostSelection = val + 30;
+                if (val > 7) {
+                    this.tempPostSelection = val + 23;
                 } else {
                     this.tempPostSelection = val + 1;
                 }
