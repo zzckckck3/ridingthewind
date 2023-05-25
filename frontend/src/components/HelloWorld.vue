@@ -34,7 +34,7 @@
                         <template>
                             <v-carousel>
                                 <v-carousel-item v-for="article in articles" :key="article.id">
-                                    <v-col>
+                                    <v-col @click="moveToArticleDetail(article.articleNo)">
                                         <v-card>
                                             <v-row>
                                                 <v-col v-for="tour in article.tourList.slice(0, 3)" :key="tour.contentId" cols="4">
