@@ -13,7 +13,7 @@
             </v-btn>
             <v-col class="lighten-2 py-4 text-center black--text" cols="12">
                 {{ new Date().getFullYear() }} —
-                <strong>Riding the Wind</strong>
+                <strong>I'm a traveler</strong>
             </v-col>
         </v-row>
     </v-footer>

@@ -147,7 +147,6 @@ export default {
             },
         })
             .then(({ data }) => {
-                console.log(data.length);
                 data.forEach((area) => {
                     let card = {
                         id: area.contentId,
