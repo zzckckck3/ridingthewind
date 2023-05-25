@@ -74,11 +74,16 @@ export default {
                     alert("새 비밀번호가 일치하지 않습니다.");
                     return;
                 } else {
-                    http.post(setpwdurl, {
+                    let newInfo = {
                         userId: this.userInfo.data.memberId,
                         userPassword: this.newPassword,
-                    }).then((response) => {
-                        console.log(response);
+                    };
+
+                    http.post(setpwdurl, JSON.stringify(newInfo)).then((response) => {
+                        if (response.data !== "SUCCESS") {
+                            alert("비밀번호 변경에 실패했습니다.");
+                            return;
+                        }
                     });
                     alert("비밀번호 변경이 완료되었습니다.");
                     if (this.$route.path != "/")

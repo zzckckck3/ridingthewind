@@ -24,7 +24,7 @@ import javax.crypto.spec.SecretKeySpec;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import javax.xml.ws.Response;
+//import javax.xml.ws.Response;
 import java.util.*;
 
 @RestController
@@ -253,14 +253,14 @@ public class MemberController {
 	}
 
 	@PostMapping("/setpwd")
-	public ResponseEntity<?> setpwd(@RequestParam Map<String, String> map){
-		String status = ResponseResult.FAIL.name();
+	public ResponseEntity<?> setpwd(@RequestBody Map<String, String> map){
 		try {
 			memberService.setPassword(map);
+			return new ResponseEntity<>(ResponseResult.SUCCESS.name(), HttpStatus.OK);
 		}catch (Exception e){
 
 		}
-		return ResponseEntity.ok().body(status);
+		return new ResponseEntity<>(ResponseResult.FAIL.name(), HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
 	@GetMapping("/following/{userId}")
