@@ -48,7 +48,7 @@ public class ArticleController {
 		return new ResponseEntity<>(articleService.listHotArticle(period), HttpStatus.OK);
 	}
 
-	@ApiOperation(value = "핫글 목록", notes = "특정 기간안의 추천수가 높은 게시글의 정보를 반환한다.", response = List.class)
+	@ApiOperation(value = "내가 추천한 게시글 목록", notes = "내가 추천한 게시글의 정보를 반환한다.", response = List.class)
 	@GetMapping("/{userId}/like")
 	public ResponseEntity<List<ArticleDto>> listMyLikeArticle(@ApiParam(value = "추천 게시글을 얻기 위한 회원의 ID", required = true) @PathVariable("userId") String memberId) throws Exception {
 		return new ResponseEntity<>(articleService.listMyLikeArticle(memberId), HttpStatus.OK);

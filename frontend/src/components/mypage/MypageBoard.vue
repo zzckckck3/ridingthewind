@@ -53,8 +53,10 @@ export default {
     created() {
         this.getLikeList();
     },
-    watch(){
-        this.getLikeList();
+    watch: {
+        userId() {
+            this.getLikeList();
+        }
     },
     methods: {
         getLikeList(){

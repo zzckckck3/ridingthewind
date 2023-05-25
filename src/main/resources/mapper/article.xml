@@ -59,7 +59,7 @@
 		FROM article a
 				 JOIN article_member_map m ON a.article_no = m.article_no
 				 JOIN member mem ON m.member_id = mem.member_id
-		WHERE mem.member_id = #{userId}
+		WHERE mem.member_id = #{memberId}
 		ORDER BY m.likedate DESC;
 	</select>
 
