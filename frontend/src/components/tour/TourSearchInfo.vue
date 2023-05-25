@@ -197,6 +197,13 @@
             </v-sheet>
             </v-col>
         </v-row>
+        <v-bottom-sheet v-model="placeSelectAlert" inset hide-overlay>
+            <v-sheet class="sheet" height="56px">
+                <v-alert type="warning">
+                    시,도 혹은 군, 구를 반드시 선택해주세요!!
+                </v-alert>
+            </v-sheet>
+        </v-bottom-sheet>
     </v-container>
     </v-main>
     <add-tour-dialog ref="addOverlay" @agreed="addAgree=true"></add-tour-dialog>
@@ -251,7 +258,8 @@ export default {
             addAgree: false,
             deleteAgree: false,
             rightElement: false,
-            loginLikeData: []
+            loginLikeData: [],
+            placeSelectAlert: false
         };
     },
     created() {
@@ -652,7 +660,7 @@ export default {
             this.selectedId = id;
         },
         sidogugunException(){
-            alert("시,도 혹은 군, 구를 반드시 선택해주세요!!");
+            this.placeSelectAlert = true;
         }
         
 

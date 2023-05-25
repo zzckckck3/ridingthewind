@@ -13,7 +13,7 @@
         </v-row>
         <v-bottom-sheet v-model="successdelete" inset hide-overlay>
             <v-sheet class="sheet" height="56px">
-                <v-alert type="alerttype">
+                <v-alert :type="alerttype">
                     {{ successdeletemessage }}
                 </v-alert>
             </v-sheet>
@@ -51,7 +51,10 @@ export default {
                 },
             }).then((response) => {
                 if (response.data !== "SUCCESS") {
-                    alert("현재 비밀번호가 일치하지 않습니다.");
+
+                    this.alerttype = 'warning';
+                    this.successdeletemessage = "현재 비밀번호가 일치하지 않습니다.";
+                    this.successdelete = true;
                     return;
                 } else {
                     const memberId = this.userInfo.data.memberId.toString();
@@ -67,15 +70,19 @@ export default {
                             this.alerttype = 'success';
                             this.successdeletemessage = "회원탈퇴가 완료되었습니다.";
                             this.successdelete = true;
+                            setTimeout(() => {
+                                // 1초 후에 실행될 코드
+                            }, 1000); // 1000ms = 1초
                         } else {
                             this.alerttype = 'warning';
                             this.successdeletemessage = "회원탈퇴에 실패하였습니다. 잠시 후에 시도해주세요";
                             this.successdelete = true;
+                            return ;
                         }
                     });
                 }
                 if (this.$route.path != "/")
-                    this.$router.push({ name: "home" });
+                this.$router.push({ name: "home" });
             });
         },
     },
