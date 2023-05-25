@@ -54,33 +54,32 @@
                 </template>
 
                 <v-card>
+<!--                    <v-list v-if="isLogin">-->
+<!--                        <v-list-item>-->
+<!--                            <v-list-item-avatar>-->
+<!--                                <img-->
+<!--                                    src="https://cdn.vuetifyjs.com/images/john.jpg"-->
+<!--                                    alt=""-->
+<!--                                />-->
+<!--                            </v-list-item-avatar>-->
+
+<!--                            <v-list-item-content>-->
+<!--                                <v-list-item-title>-->
+<!--                                    {{-->
+<!--                                        isLogin-->
+<!--                                            ? userInfo.data.memberId-->
+<!--                                            : "name"-->
+<!--                                    }}</v-list-item-title-->
+<!--                                >-->
+<!--                                <v-list-item-subtitle>{{-->
+<!--                                    isLogin ? userInfo.data.nickname : "userId"-->
+<!--                                }}</v-list-item-subtitle>-->
+<!--                            </v-list-item-content>-->
+<!--                        </v-list-item>-->
+
+<!--                        <v-divider></v-divider>-->
+<!--                    </v-list>-->
                     <v-list v-if="isLogin">
-                        <v-list-item>
-                            <v-list-item-avatar>
-                                <img
-                                    src="https://cdn.vuetifyjs.com/images/john.jpg"
-                                    alt=""
-                                />
-                            </v-list-item-avatar>
-
-                            <v-list-item-content>
-                                <v-list-item-title>
-                                    {{
-                                        isLogin
-                                            ? userInfo.data.memberId
-                                            : "name"
-                                    }}</v-list-item-title
-                                >
-                                <v-list-item-subtitle>{{
-                                    isLogin ? userInfo.data.nickname : "userId"
-                                }}</v-list-item-subtitle>
-                            </v-list-item-content>
-                        </v-list-item>
-
-                        <v-divider></v-divider>
-                    </v-list>
-                    <v-list v-if="isLogin">
-
                         <v-list-item @click="moveToMypageApp()">
                             <v-list-item-content class="pl-3" >
                                 <v-list-item-title>마이페이지</v-list-item-title>
