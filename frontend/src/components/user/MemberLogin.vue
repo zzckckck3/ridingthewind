@@ -108,7 +108,7 @@ export default {
         this.user.userId = '',
         this.user.userPwd = '',
         this.loginModal = true;
-          this.faillogin = false;
+        this.faillogin = false;
       },
   },
 };

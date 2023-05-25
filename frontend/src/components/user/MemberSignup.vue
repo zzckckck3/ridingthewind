@@ -177,6 +177,8 @@ export default {
             http.get(idcheckurl + "/" + memberId).then((response) => {
                 if (response.data === "SUCCESS") {
                     this.idcheckvalue = true;
+                }else {
+                    this.idcheckvalue = false;
                 }
             });
         },
@@ -206,7 +208,8 @@ export default {
                 alert("비밀번호가 일치하지 않습니다.");
                 return;
             } else if (!this.emailcheckvalue) {
-                alert("이메일 인증을 완료하지 않았습니다.");
+                this.sendmailmessagecolor = 'red';
+                this.sendmailmessage = "인증코드를 발송해주세요.";
                 return;
             }
 
@@ -269,7 +272,9 @@ export default {
             this.birth = '',
             this.nickname = '',
             this.inputMailCode = '',
-            this.signupModal = true;
+            this.signupModal = true,
+            this.sendmailmessage = false
+
         },
     },
 };

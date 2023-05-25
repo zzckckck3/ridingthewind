@@ -1,7 +1,7 @@
 <template>
     <v-container class="update-container">
         <h2>내정보 수정</h2>
-        <v-form class="update-form" @submit="submitForm">
+        <v-form class="update-form">
             <v-row>
                 <v-col cols="12" md="12">
                     <v-text-field
@@ -68,6 +68,13 @@
                 >수정완료</v-btn
             >
         </v-form>
+        <v-bottom-sheet v-model="successupdate" inset hide-overlay>
+            <v-sheet class="sheet" height="56px">
+                <v-alert type="success">
+                    {{ successupdatemessage }}
+                </v-alert>
+            </v-sheet>
+        </v-bottom-sheet>
     </v-container>
 </template>
 
@@ -90,6 +97,8 @@ export default {
             emailDomain: "",
             birth: "",
             nickname: "",
+            successupdate: false,
+            successupdatemessage : '',
         };
     },
     computed: {
@@ -140,11 +149,17 @@ export default {
             updateForm.nickname = this.nickname;
             http.post(updateurl, updateForm).then((response) => {
                 if (response.status == 202) {
-                    alert("수정 완료");
+                    this.successupdatemessage = '수정 완료. 메인페이지로 이동합니다.';
                 } else {
-                    alert("수정 실패");
+                    this.successupdatemessage = '수정 실패';
                 }
-                this.$router.push({ name: "home" });
+                console.log(this.successupdatemessage);
+                console.log(this.alerttype);
+                this.successupdate = true;
+                setTimeout(() => {
+                    // 1초 후에 실행될 코드
+                    this.$router.push({ name: "home" });
+                }, 1000); // 1000ms = 1초
             });
         },
     },
