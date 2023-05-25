@@ -1,7 +1,7 @@
 <template>
 <v-app>
 
-    <v-main class="white">
+    <v-main class="custom-main-backgoround">
       <v-container class="text-center">
         <h1>여행계획</h1>
         <v-divider class="my-2"></v-divider>

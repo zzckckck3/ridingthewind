@@ -1,6 +1,6 @@
 ```
 <template>
-    <v-container class="update-container">
+    <v-container class="update-container custom-main-backgoround">
         <h2>내정보 수정</h2>
         <v-form class="update-form" @submit="submitForm">
             <v-row>

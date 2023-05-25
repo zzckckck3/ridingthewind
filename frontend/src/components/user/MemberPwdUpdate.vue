@@ -1,5 +1,5 @@
 <template>
-    <v-container class="signup-container">
+    <v-container class="signup-container custom-main-backgoround">
         <v-form @submit="changePassword" class="mt-16 mb-16">
             <v-row>
                 <v-col cols="12" md="12">

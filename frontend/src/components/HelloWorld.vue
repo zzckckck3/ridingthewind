@@ -735,9 +735,9 @@ export default {
 </script>
 
 <style scoped>
-    .custom-main-backgoround{
-        background-image: linear-gradient(to right, rgb(63,81,181), #E1F5FE, rgb(168,117,243) );
-    }
+    /* .custom-main-backgoround{
+        background-image: linear-gradient(to right,  rgb(219, 217, 217), rgb(255, 245, 233));
+    } */
     .margin-top{
         margin-top: 50px;
     }
