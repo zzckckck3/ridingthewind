@@ -1,20 +1,13 @@
 package com.ringdingdong.ridingthewind.controller;
 
 import com.ringdingdong.ridingthewind.enumerate.ResponseResult;
-import com.ringdingdong.ridingthewind.model.ArticleAttractionDto;
 import com.ringdingdong.ridingthewind.model.LikeDto;
-import com.ringdingdong.ridingthewind.model.service.ArticleAttractionService;
 import com.ringdingdong.ridingthewind.model.service.LikeService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @CrossOrigin(origins = "*", allowedHeaders = "*")

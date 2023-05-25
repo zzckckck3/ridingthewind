@@ -1,4 +1,4 @@
-package com.ringdingdong.ridingthewind.controller.api;
+package com.ringdingdong.ridingthewind.controller;
 
 import com.ringdingdong.ridingthewind.model.PersonalTripDto;
 import com.ringdingdong.ridingthewind.model.service.PersonalTripService;
