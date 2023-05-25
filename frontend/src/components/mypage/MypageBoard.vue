@@ -1,7 +1,7 @@
 <template>
     <div class="mypageBoard">
         <!-- 배너 내용 -->
-        <div class="banner custom-font">
+        <div class="banner custom-font" >
             <h6>추천한 게시글</h6>
             <v-simple-table>
                 <thead>
@@ -28,7 +28,11 @@
                       <td>{{ article.registerTime }}</td>
                     </tr>
                 </tbody>
+
             </v-simple-table>
+            <tr v-if="articles.length === 0" class="likeArtileCheck-row">
+                추천한 게시글이 없습니다.
+            </tr>
         </div>
     </div>
 </template>
@@ -43,6 +47,7 @@ export default {
         return {
             headers: ["글번호", "추천수", "제목", "작성자", "조회수", "작성일"],
             articles: [],
+            articlesNullCheck: false,
         };
     },
     created() {
@@ -57,6 +62,11 @@ export default {
                 .then( ({ data }) => {
                     this.articles = data;
                 })
+            if(this.articles.length === 0){
+                this.articlesNullCheck = true;
+            }else{
+                this.articlesNullCheck = false;
+            }
         },
         moveToArticleDetail(articleNo) {
             this.$router.push({
@@ -80,5 +90,12 @@ export default {
 }
 .banner {
     font-size: 25px;
+}
+.likeArtileCheck-row {
+    font-size: 14px; /* 폰트 크기 조정 */
+    color: gray; /* 폰트 색상을 회색으로 설정 */
+    display: flex; /* 가운데 정렬을 위해 flexbox를 사용 */
+    justify-content: center; /* 가로 방향 가운데 정렬 */
+    align-items: center; /* 세로 방향 가운데 정렬 */
 }
 </style>
