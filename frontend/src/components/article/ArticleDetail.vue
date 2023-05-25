@@ -59,7 +59,7 @@
                                 </v-row>
                                 <v-row align-content="center">
                                     추천: {{ likeCount }}
-                                    <span class="mx-5" @click="likeClicked">
+                                    <span class="mx-5" v-if="userInfo.data.memberId != article.memberId" @click="likeClicked">
                                         <v-icon :color="like ? 'blue' : ''">mdi-thumb-up</v-icon>
                                     </span>
                                 </v-row>
@@ -326,7 +326,7 @@ export default {
                 http.post('/like', JSON.stringify(likeDto))
                     .then(({ data }) => {
                         if (data == "SUCCESS") {
-                          this.getArticle();
+                            this.getArticle();
                         } else {
                             alert("서버 에러 발생");
                         }
@@ -340,21 +340,6 @@ export default {
         moveToUserInfo(userId) {
             this.$router.push({name:"infopage", params: {userId : userId}});
         },
-        // getLike() {
-        //     http.get('/like', {
-        //         params:
-        //             {
-        //                 articleNo: this.$route.params.articleNo,
-        //                 memberId: this.userInfo.data.memberId
-        //             }
-        //     })
-        //         .then(({ data }) => {
-        //             this.like = data == "SUCCESS";
-        //         })
-        //         .catch((error) => {
-        //             this.$router.push("error/error", error);
-        //         });
-        // }
     },
     components: {
         CommentDeleteConfirmDialog,
