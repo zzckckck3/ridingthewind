@@ -5,14 +5,14 @@
                 <!--Left Container-->
 
                 <!--Center Container-->
-                <v-col class="text-center" cols="12" sm="9" style="margin-bottom: 50px;">
+                <v-col class="text-center" cols="9" sm="9" style="margin-bottom: 50px;">
                     <v-sheet
                         rounded="lg"
                         elevation="8"
-                        class="lighten-5 overflow-auto"
+                        class="grey lighten-4 overflow-auto"
                         style="padding: 10px; padding-left: 20px; padding-right: 20px;"
                     >
-                        <h1 style="padding-top: 20px;">여행정보 검색</h1>
+                        <h1 style="padding-top: 20px; color: rgb(255, 205, 74); text-stroke: 1px black;">여행정보 검색</h1>
                         <div style="display:flex; margin-top: 20px;">
                             <v-select
                                 id="search-area"
@@ -74,9 +74,10 @@
                     </v-sheet>
                     <!-- 하단 인기순 -->
                     <v-row class="margin-top">
-                        <v-container
+                        <v-sheet
                             class="grey lighten-4 rounded-lg"
                             style="padding-left: 40px; padding-right: 80px; padding-top: 30px; padding-bottom: 40px;"
+                            elevation="6"
                             fluid
                         >
                         <v-subheader class="text-1">찜 많은순 ( 지역별 )</v-subheader>
@@ -165,14 +166,15 @@
                             </v-col>
                             <v-spacer></v-spacer>
                         </v-row>
-                        </v-container>
+                        </v-sheet>
                     </v-row>
 
                     <!--하단 시도 별 postcount-->
                     <v-row class="margin-top">
-                    <v-container
+                    <v-sheet
                         class="grey lighten-4 rounded-lg"
                         style="padding-left: 40px; padding-right: 80px; padding-top: 30px; padding-bottom: 40px;"
+                        elevation="6"
                         fluid
                     >
                     <v-subheader class="text-1">포스팅 많은 순 ( 시도별 )</v-subheader>
@@ -223,7 +225,7 @@
                                 </v-img>
                                 <v-card-actions class="white justify-center">
 
-                                <v-icon class="custom-heart"  :color="'gray'"> mdi-note-edit </v-icon><h5 class="custom-post-text ms-3">{{ popularSido.postCount }}</h5>
+                                <v-icon class="custom-heart" :color="'gray'"> mdi-note-edit </v-icon><h5 class="custom-post-text ms-3">{{ popularSido.postCount }}</h5>
 
                                 <v-btn
                                     :color="'green'"
@@ -261,14 +263,15 @@
                         </v-col>
                         <v-spacer></v-spacer>
                     </v-row>
-                    </v-container>
+                    </v-sheet>
                 </v-row>
 
                 <!--하단 구군 별 postcount-->
                 <v-row class="margin-top">
-                    <v-container
+                    <v-sheet
                         class="grey lighten-4 rounded-lg"
                         style="padding-left: 40px; padding-right: 80px; padding-top: 30px; padding-bottom: 40px;"
+                        elevation="6"
                         fluid
                     >
                     <v-subheader class="text-1">포스팅 많은 순 ( 구군별 )</v-subheader>
@@ -343,12 +346,12 @@
                         </v-col>
                         <v-spacer></v-spacer>
                     </v-row>
-                    </v-container>
+                    </v-sheet>
                 </v-row>
                 </v-col>
 
                 <!--Right Container-->
-                <v-col class="text-center" cols="12" sm="3">
+                <v-col class="text-center" cols="3" sm="3">
                     <v-sheet
                         class="grey lighten-5"
                         rounded="lg"
@@ -356,7 +359,7 @@
                         elevation="8"
                     >
                     <v-list subheader>
-                    <v-subheader>국내여행 관련 기사 (중앙일보)</v-subheader>
+                    <v-subheader class="custom-subheader">국내여행 관련 기사 (중앙일보)</v-subheader>
 
                     <v-divider></v-divider>
                     <v-list-item
@@ -385,6 +388,7 @@
                     </v-sheet>
                 </v-col>
             </v-row>
+            <before-login-bottom-sheet> </before-login-bottom-sheet>
         </v-container>
         <v-spacer></v-spacer>
     </v-main>
@@ -393,12 +397,14 @@
 <script>
 import http from "@/axios/http";
 import axios from "axios";
-
+import BeforeLoginBottomSheet from '@/components/layout/BeforeLoginBottomSheet.vue';
 
 // import { WEATHER_API_KEY } from '@/api/appKey.js';
 
-
 export default {
+    components: {
+        BeforeLoginBottomSheet
+    },
     data() {
         return {
             /* 상단 여행 정보 표시 변수 */
@@ -730,7 +736,7 @@ export default {
 
 <style scoped>
     .custom-main-backgoround{
-        background-image: linear-gradient(to right, rgb(86,82,218), rgb(168,117,243));
+        background-image: linear-gradient(to right, rgb(63,81,181), #E1F5FE, rgb(168,117,243) );
     }
     .margin-top{
         margin-top: 50px;
@@ -770,5 +776,11 @@ export default {
     .font-weight-bold{
         font-style: oblique;
         text-shadow: 0px 2px 4px rgba(0, 0, 0, 0.5); 
+    }
+    .custom-subheader{
+        font-size: unset;
+        font-style: oblique;
+        font-family: -webkit-body;
+        font-weight: bold;
     }
 </style>

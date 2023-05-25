@@ -1,6 +1,7 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
 import HomeView from "../views/HomeView.vue";
+import BeforeLoginBottomSheet from '@/components/layout/BeforeLoginBottomSheet.vue';
 import store from "@/store";
 Vue.use(VueRouter);
 
@@ -13,7 +14,9 @@ const onlyAuthUser = async (to, from, next) => {
     await store.dispatch("memberStore/getUserInfo", token);
   }
   if (!checkToken || checkUserInfo === null) {
-    alert("로그인이 필요한 페이지입니다..");
+    const beforeLoginBottomSheet = new Vue( BeforeLoginBottomSheet ).$mount();
+    beforeLoginBottomSheet.showAndHideButtomSheet();
+    // alert("로그인이 필요한 페이지입니다..");
     next({ name: "home" });
   } else {
     next();

@@ -57,7 +57,6 @@ export default {
         writeArticle() {
             this.dialog = false;
             let cardList = Array.isArray(this.cards) ? this.cards : [];
-            console.log(cardList);
 
             const articleAttractionList = cardList.map((card, index) => {
                 return {

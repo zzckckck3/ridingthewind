@@ -33,7 +33,7 @@
             </v-row>
             <v-row>
                 <v-col>
-                    <v-btn @click="changePassword">비밀번호 변경</v-btn>
+                    <v-btn @click="changePassword" color="indigo"><h4 style="color: white;">비밀번호 변경</h4></v-btn>
                 </v-col>
             </v-row>
         </v-form>
