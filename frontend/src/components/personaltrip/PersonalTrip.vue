@@ -516,6 +516,7 @@ export default {
           this.latList = Array.from(document.getElementsByClassName("latitude"));
           this.lngList = Array.from(document.getElementsByClassName("longitude"));
         });
+        
       },
       displayMarker() {
         var imageSrc = "";
