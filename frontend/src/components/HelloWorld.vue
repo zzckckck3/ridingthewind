@@ -660,15 +660,15 @@ export default {
         },
         redirectToFaceBookSite(searchTerm) {
             const searchUrl = `https://www.facebook.com/search/posts/?q=${encodeURIComponent(searchTerm)}`;
-            window.location.href = searchUrl;
+            window.open(searchUrl, "_blank");
         },
         redirectToInstagramSite(searchTerm) {
             const searchUrl = `https://www.instagram.com/explore/tags/${encodeURIComponent(searchTerm)}/`;
-            window.location.href = searchUrl;
+            window.open(searchUrl, "_blank");
         },
         redirectToNaverSite(searchTerm) {
             const searchUrl = `https://search.naver.com/search.naver?query=${encodeURIComponent(searchTerm)}`;
-            window.location.href = searchUrl;
+            window.open(searchUrl, "_blank");
         },
         async performCrawling() {
             try {
